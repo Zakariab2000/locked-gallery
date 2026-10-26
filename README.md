@@ -9,7 +9,7 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 3. Explore the crime scenes, examine the evidence, interrogate the suspects and solve the mini-puzzles.
 4. Agree on **who** did it, **how**, and **where** — score 3/3 to close the case.
 
-## Cases (12)
+## Cases (22)
 
 - **Case 01 — The Locked Gallery:** an art heist in a locked gallery. 12 evidence items, 4 suspects.
 - **Case 02 — Dinner for Five: The Last Course:** a murder at a dinner party.
@@ -23,6 +23,19 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 - **Case 10 — The Vault on the Fourteenth Floor**
 - **Case 11 — Till Death Do Us Part**
 - **Case 12 — The Stolen Papers**
+
+### Hard mode (10 cases — genuinely hard: red herrings, alibis with gaps, no single clue closes the case)
+
+- **Case 13 — The Dark Hour** 🔴 HARD: murder at Tarnmoor Light lighthouse.
+- **Case 14 — Whiteout** 🔴 HARD: murder at a ski chalet.
+- **Case 15 — The Dead Man's Hand** 🔴 HARD: murder in a private casino salon.
+- **Case 16 — Cut to Black** 🔴 HARD: murder on a film set.
+- **Case 17 — The Bitter Harvest** 🔴 HARD: murder in a vineyard cellar.
+- **Case 18 — The Dark Transit** 🔴 HARD: murder at an observatory.
+- **Case 19 — The Wilting Hour** 🔴 HARD: murder in a botanical garden.
+- **Case 20 — The Overnight Wing** 🔴 HARD: murder at an airport.
+- **Case 21 — Silent Depth** 🔴 HARD: murder aboard a submarine.
+- **Case 22 — The Long Night** 🔴 HARD: murder at an arctic research station.
 
 ## Play
 

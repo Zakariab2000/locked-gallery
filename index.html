@@ -504,7 +504,7 @@
             <span class="kicker">Play together · 2–4 players</span>
             <p style="margin:8px 0 0">One person creates a room and shares the room code. Each friend opens the game on <b>their own phone</b>, joins with the code, picks a <b>different role</b>, and gets a <b>secret clue only that role can see</b>. The evidence board is the same for everyone — the case is only solvable if you tell each other what your clue says.</p>
             <div class="note" style="margin-top:14px">
-              <p><b>How this co-op works:</b> the room code deals the right secret clues to the right roles, and the <b>Live Room</b> connects your phones peer-to-peer — you'll see each other in the room, with live progress (evidence found, interviews done, board pins) as you play. There's still <b>no in-app chat and no vote</b>, on purpose: talk in the room, on a call, or by message — outside the app — then agree on one answer and submit it together on the Solve tab. If the live connection can't be established (poor network, blocked peer-to-peer), the game says “Playing separately” and everything still works exactly the same, each on your own device.</p>
+              <p><b>How this co-op works:</b> the room code deals the right secret clues to the right roles, and the <b>Live Room</b> syncs your team live (Firebase cloud for Cases 1–2, peer-to-peer as backup) — you'll see each other in the room, with live progress (evidence found, interviews done, board pins) as you play. There's still <b>no in-app chat and no vote</b>, on purpose: talk in the room, on a call, or by message — outside the app — then agree on one answer and submit it together on the Solve tab. If the live connection can't be established (poor network, blocked peer-to-peer), the game says “Playing separately” and everything still works exactly the same, each on your own device.</p>
             </div>
           </section>
 
@@ -1772,29 +1772,30 @@
         "use strict";
 
         /* ================================================================
-           FIREBASE — PLACEHOLDER ONLY (firebase-plan.md §4). DO NOT INVENT
-           A REAL API KEY. The real firebaseConfig comes ONLY from the
-           Firebase console (project "Locked Gallery", signed in as
-           zakariaboulhand2001@gmail.com, §3 step 9). Until the real values
-           below are pasted in, firebaseReady() is false and the game keeps
-           running on the existing PeerJS live multiplayer + fallback,
-           exactly as before. The ?room=CODE link + Copy link button are
-           unchanged; the room code doubles as the Firestore document ID
-           once Firebase is configured.
+           FIREBASE — LIVE (firebase-plan.md §4). Project "Locked Gallery"
+           (locked-gallery-game, zakariaboulhand2001@gmail.com), created
+           2026-10-26. Firestore europe-west1, Anonymous auth only,
+           Analytics OFF, Spark free. firebaseReady() is true with the real
+           config below; the Firebase sync section after liveStart() uses it.
+           If the SDK or sign-in fails, everything falls back to PeerJS.
+           The ?room=CODE link + Copy link button are unchanged; the room
+           code is hashed to the 4-letter Firestore document ID (see
+           fbDocId) because the published rules require a 4-char doc id
+           and only allow caseId 1|2.
            ================================================================ */
         var firebaseConfig = {
-          apiKey: "PASTE_REAL_API_KEY_HERE",
+          apiKey: "AIzaSyAKCPGHTqSCpfxTsfnem8ARXIT0Od0fOwM",
           authDomain: "locked-gallery-game.firebaseapp.com",
           projectId: "locked-gallery-game",
           storageBucket: "locked-gallery-game.firebasestorage.app",
-          messagingSenderId: "PASTE_REAL_SENDER_ID_HERE",
-          appId: "PASTE_REAL_APP_ID_HERE"
+          messagingSenderId: "594066972676",
+          appId: "1:594066972676:web:7077ae6fb34d15f888d551"
         };
         function firebaseReady(){
           return !!firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE_") !== 0;
         }
-        /* Firebase sync is additive only: with placeholder values nothing
-           initialises, nothing is fetched, and PeerJS stays the transport. */
+        /* Firebase sync is additive only: if the SDK or anonymous sign-in
+           fails, nothing syncs and PeerJS stays the transport. */
 
 
         /* ---------------- data ---------------- */
@@ -2067,12 +2068,14 @@
         });
 
         $("btn-submit").addEventListener("click", function(){
+          if(FB.verdict){ $("solve-error").textContent = "Your team's verdict is already locked in — " + FB.verdict.score + " / 3. Talk it over and start a new room to play again."; return; }
           var missing = ["who","how","where"].filter(function(k){ return !picks[k]; });
           if(missing.length){
             $("solve-error").textContent = "Your team still has " + missing.length + " question" + (missing.length>1 ? "s" : "") + " unanswered — agree on all three before submitting.";
             return;
           }
           var score = ["who","how","where"].reduce(function(n,k){ return n + (picks[k]===ANSWERS[k] ? 1 : 0); }, 0);
+          try{ fbSubmitVerdict(1, picks, score); }catch(e){}
           $("result-score").textContent = score + " / 3";
           var stamp = $("result-stamp"), line = $("result-line");
           if(score===3){ stamp.textContent = "Case closed"; line.textContent = "Every link in the chain, found. The courier is met at the door at 09:00 — by the police. The Blue Hour goes back on the wall."; }
@@ -2274,11 +2277,11 @@
           var d=document.createElement("div"); d.className="bcard"+(pinned.has(id)?" pinned":""); d.dataset.eid=id;
           d.style.left=boardPos[id].x+"%"; d.style.top=boardPos[id].y+"%";
           d.innerHTML="<b>"+id+"</b>"+ev[1]+"<button class='pinbtn' type='button' aria-label='Pin "+id+"'>📌</button>";
-          d.querySelector(".pinbtn").addEventListener("click",function(e){ e.stopPropagation(); if(pinned.has(id)){pinned.delete(id);d.classList.remove("pinned");}else{pinned.add(id);d.classList.add("pinned");sndPop();} persist(); });
+          d.querySelector(".pinbtn").addEventListener("click",function(e){ e.stopPropagation(); if(pinned.has(id)){pinned.delete(id);d.classList.remove("pinned");}else{pinned.add(id);d.classList.add("pinned");sndPop();} persist(); try{ fbPin(id, pinned.has(id), boardPos[id].x, boardPos[id].y); }catch(e){} });
           var drag=null,moved=false;
           d.addEventListener("pointerdown",function(e){ if(e.target.closest(".pinbtn")) return; var r0=cork.getBoundingClientRect(); drag={sx:e.clientX,sy:e.clientY,ox:d.offsetLeft,oy:d.offsetTop}; moved=false; try{d.setPointerCapture(e.pointerId);}catch(err){} });
           d.addEventListener("pointermove",function(e){ if(!drag) return; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>8) moved=true; if(!moved) return; var r=cork.getBoundingClientRect(); var x=Math.max(0,Math.min(r.width-110,drag.ox+(e.clientX-drag.sx))); var y=Math.max(0,Math.min(r.height-60,drag.oy+(e.clientY-drag.sy))); d.style.left=(x/r.width*100)+"%"; d.style.top=(y/r.height*100)+"%"; boardPos[id]={x:x/r.width*100,y:y/r.height*100}; drawLinks(); });
-          d.addEventListener("pointerup",function(){ if(drag && !moved){ handleCardTap(d,id); } if(drag&&moved) persist(); drag=null; });
+          d.addEventListener("pointerup",function(){ if(drag && !moved){ handleCardTap(d,id); } if(drag&&moved){ persist(); try{ if(pinned.has(id)) fbPin(id, true, boardPos[id].x, boardPos[id].y); }catch(e){} } drag=null; });
           cork.appendChild(d);
         });
         function cardCenter(id){ var el=cork.querySelector("[data-eid='"+id+"']"); if(!el) return {x:0,y:0}; return {x:el.offsetLeft+el.offsetWidth/2,y:el.offsetTop+el.offsetHeight/2}; }
@@ -2288,10 +2291,10 @@
           if(selCard===id){ selCard=null; d.classList.remove("selected"); return; }
           var a=selCard,b=id; cork.querySelectorAll(".bcard").forEach(function(c){c.classList.remove("selected");}); selCard=null;
           if(links.some(function(l){return (l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a);})){ $("board-feedback").textContent="Already linked."; return; }
-          if(CONNECT[a+"|"+b]){ links.push([a,b]); drawLinks(); persist(); $("board-feedback").textContent="🧵 These connect — good thread."; sndPop(); }
+          if(CONNECT[a+"|"+b]){ links.push([a,b]); drawLinks(); persist(); $("board-feedback").textContent="🧵 These connect — good thread."; sndPop(); try{ fbLink(a,b); }catch(e){} }
           else { $("board-feedback").textContent="🧵 No clear link yet — no string for that pair. Keep both in mind."; }
         }
-        $("btn-clear-links").addEventListener("click",function(){ links=[]; drawLinks(); persist(); $("board-feedback").textContent="String cleared."; });
+        $("btn-clear-links").addEventListener("click",function(){ links=[]; drawLinks(); persist(); $("board-feedback").textContent="String cleared."; try{ fbClearLinks(); }catch(e){} });
         $("btn-link-mode").addEventListener("click",function(){ toast("Tap one card, then a second, to string them together."); });
         window.addEventListener("resize",drawLinks); setTimeout(drawLinks,60);
 
@@ -2472,7 +2475,7 @@
           $("hud-links2").textContent=links2.length;
           var pct=Math.round(((Math.min(ev2Opened.size,12)/12)*40)+((interviews2Done.size/4)*30)+((Math.min(unlocked2.size,6)/6)*20)+((puzzles2Done.size/3)*10));
           $("hud-fill2").style.width=Math.min(100,pct)+"%";
-          checkTwists(2); liveSyncProgress();
+          checkTwists(2); liveSyncProgress(); try{ fbSyncProgress(); }catch(e){}
         }
         setInterval(function(){ if(currentCase===2){ var el=$("hud-timer2"); if(el) el.textContent=fmtT(elapsed); } },1000);
 
@@ -2540,9 +2543,11 @@
           });
         });
         $("btn-submit2").addEventListener("click",function(){
+          if(FB.verdict){ $("solve-error2").textContent = "Your team's verdict is already locked in — " + FB.verdict.score + " / 3. Talk it over and start a new room to play again."; return; }
           var missing=["who","how","where"].filter(function(k){ return !picks2[k]; });
           if(missing.length){ $("solve-error2").textContent="Your team still has "+missing.length+" question"+(missing.length>1?"s":"")+" unanswered — agree on all three before submitting."; return; }
           var score=["who","how","where"].reduce(function(n,k){ return n+(picks2[k]===ANSWERS2[k]?1:0); },0);
+          try{ fbSubmitVerdict(2, picks2, score); }catch(e){}
           $("result-score2").textContent=score+" / 3";
           var stamp=$("result-stamp2"), line=$("result-line2");
           if(score===3){ stamp.textContent="Case closed"; line.textContent="Every link in the chain, found. Whitfield is arrested before the coats are even collected from the cloakroom."; }
@@ -2580,11 +2585,11 @@
             var d=document.createElement("div"); d.className="bcard"+(pinned2.has(id)?" pinned":""); d.dataset.eid2=id;
             d.style.left=board2Pos[id].x+"%"; d.style.top=board2Pos[id].y+"%";
             d.innerHTML="<b>"+id+"</b>"+ev[1]+"<button class='pinbtn' type='button' aria-label='Pin "+id+"'>📌</button>";
-            d.querySelector(".pinbtn").addEventListener("click",function(e){ e.stopPropagation(); if(pinned2.has(id)){ pinned2.delete(id); d.classList.remove("pinned"); } else { pinned2.add(id); d.classList.add("pinned"); sndPop(); liveAct("pinned evidence "+id); } persist2(); updateHUD2(); });
+            d.querySelector(".pinbtn").addEventListener("click",function(e){ e.stopPropagation(); if(pinned2.has(id)){ pinned2.delete(id); d.classList.remove("pinned"); } else { pinned2.add(id); d.classList.add("pinned"); sndPop(); liveAct("pinned evidence "+id); } persist2(); updateHUD2(); try{ fbPin(id, pinned2.has(id), board2Pos[id].x, board2Pos[id].y); }catch(e){} });
             var drag=null,moved=false;
             d.addEventListener("pointerdown",function(e){ if(e.target.closest(".pinbtn")) return; drag={sx:e.clientX,sy:e.clientY,ox:d.offsetLeft,oy:d.offsetTop}; moved=false; try{ d.setPointerCapture(e.pointerId); }catch(err){} });
             d.addEventListener("pointermove",function(e){ if(!drag) return; if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>8) moved=true; if(!moved) return; var r=cork.getBoundingClientRect(); var x=Math.max(0,Math.min(r.width-110,drag.ox+(e.clientX-drag.sx))); var y=Math.max(0,Math.min(r.height-60,drag.oy+(e.clientY-drag.sy))); d.style.left=(x/r.width*100)+"%"; d.style.top=(y/r.height*100)+"%"; board2Pos[id]={x:x/r.width*100,y:y/r.height*100}; drawLinks2(); });
-            d.addEventListener("pointerup",function(){ if(drag && !moved){ handleCardTap2(d,id); } if(drag&&moved) persist2(); drag=null; });
+            d.addEventListener("pointerup",function(){ if(drag && !moved){ handleCardTap2(d,id); } if(drag&&moved){ persist2(); try{ if(pinned2.has(id)) fbPin(id, true, board2Pos[id].x, board2Pos[id].y); }catch(e){} } drag=null; });
             cork.appendChild(d);
           });
           setTimeout(drawLinks2,60);
@@ -2596,10 +2601,10 @@
           if(selCard2===id){ selCard2=null; d.classList.remove("selected"); return; }
           var a=selCard2,b=id; $("cork2").querySelectorAll(".bcard").forEach(function(c){ c.classList.remove("selected"); }); selCard2=null;
           if(links2.some(function(l){ return (l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a); })){ $("board-feedback2").textContent="Already linked."; return; }
-          if(CONNECT2[a+"|"+b]){ links2.push([a,b]); drawLinks2(); persist2(); updateHUD2(); $("board-feedback2").textContent="🧵 These connect — good thread."; sndPop(); liveAct("linked "+a+" to "+b); }
+          if(CONNECT2[a+"|"+b]){ links2.push([a,b]); drawLinks2(); persist2(); updateHUD2(); $("board-feedback2").textContent="🧵 These connect — good thread."; sndPop(); liveAct("linked "+a+" to "+b); try{ fbLink(a,b); }catch(e){} }
           else { $("board-feedback2").textContent="🧵 No clear link yet — no string for that pair. Keep both in mind."; }
         }
-        $("btn-clear-links2").addEventListener("click",function(){ links2=[]; drawLinks2(); persist2(); updateHUD2(); $("board-feedback2").textContent="String cleared."; });
+        $("btn-clear-links2").addEventListener("click",function(){ links2=[]; drawLinks2(); persist2(); updateHUD2(); $("board-feedback2").textContent="String cleared."; try{ fbClearLinks(); }catch(e){} });
         window.addEventListener("resize",function(){ drawLinks2(); });
 
         /* ---- Puzzles 2 ---- */
@@ -2682,6 +2687,7 @@
           try{ beep(980,.12,"sine"); setTimeout(function(){ beep(980,.12,"sine"); },220); setTimeout(function(){ beep(980,.12,"sine"); },440); }catch(e){}
           toast("📞 New evidence just came in!");
           liveAct("got a call — new evidence arrived");
+          try{ fbTwist(c, idx); }catch(e){}
         }
         $("btn-phone-answer").addEventListener("click",function(){
           if(!pendingTwist) return;
@@ -2731,6 +2737,7 @@
           });
         }
         function renderPresence(){
+          if(typeof FB!=="undefined" && FB.active) return; /* Firebase presence owns the chips */
           var list=Object.keys(live.members).map(function(k){ return live.members[k]; });
           if(!list.length){ renderPresenceLocal("wait","Live Room — connecting…","Waiting for the room to come together."); return; }
           renderPresenceLocal("on", live.isHost ? "Live — you're hosting this room" : "Live — connected to your team", "Presence + progress only — no chat, no vote. Talk outside the app, as always.");
@@ -2745,12 +2752,14 @@
           });
         }
         function liveFallback(why){
+          if(typeof FB!=="undefined" && FB.active) return; /* Firebase owns the presence UI while live */
           if(live.mode==="live") return;
           live.mode="off";
           renderPresenceLocal("off","Playing separately", why+" The game works exactly as before — each of you on your own device, talking outside the app.");
           ["", "2", "G"].forEach(function(sfx){ var e=presenceEls(sfx); if(e.members) e.members.innerHTML=""; });
         }
         function liveStop(){
+          try{ fbStop(); }catch(e){}
           try{ if(live.peer) live.peer.destroy(); }catch(e){}
           live={ mode:"off", isHost:false, peer:null, members:{}, hostConn:null, lastProg:"" };
         }
@@ -2825,6 +2834,309 @@
           }catch(e){ liveFallback("The live connection couldn't start."); }
         }
 
+        /* ================= FIREBASE LIVE SYNC (Firestore, additive) =================
+           Wired 2026-10-26 to project locked-gallery-game (real config above).
+           Modular Firebase v10 SDK loads lazily via dynamic import(); if the CDN
+           or anonymous sign-in is unreachable, every function below no-ops and
+           PeerJS stays the only transport — the game never depends on Firebase.
+           LIMITS (published Firestore rules — do not change from this file):
+           * Rules allow caseId 1|2 only, so Firestore sync activates for Cases
+             1-2. Cases 3-12 keep PeerJS only (liveStart still runs for all).
+           * Rules allow ONLY the keys listed in validRoom(): no extra fields.
+           * Room codes are WORD-NNNN (e.g. BLUE-4821) but rules require a
+             4-char doc id, so the doc id is a deterministic FNV-1a hash of the
+             room code -> 4 letters. Same code => same doc on every device.
+             A hash collision between two live rooms is possible in theory
+             (~1 in 330k); the join path rejects a doc whose caseId differs.
+           * Verdict is write-once (rules + transaction guard). No chat, no
+             vote, no answer keys in Firestore — answers stay in this file.
+           * Presence = 30s heartbeat; a player is "away" when lastSeenAt is
+             older than ~90s. Nobody is kicked; rejoin reclaims the slot.
+           ========================================================================== */
+        var FB = { f:null, app:null, auth:null, db:null, uid:null, initP:null, active:false, roomDocId:null, unsub:null, hb:null, lastSig:"", sentClues:{}, seenClues:{}, seenTwists:{}, seenPins:{}, seenLinks:{}, verdict:null, verdictNotified:false, members:{} };
+        var FB_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ"; /* no I/O */
+        function fbDocId(code){
+          var h = 2166136261 >>> 0, s = String(code||"").toUpperCase(), i, out = "";
+          for(i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = (h*16777619) >>> 0; }
+          for(i=0;i<4;i++){ h = ((h ^ 0x9e3779b9) * 16777619) >>> 0; out += FB_ALPHABET[h % 24]; }
+          return out;
+        }
+        function fbInit(){
+          if(FB.initP) return FB.initP;
+          FB.initP = (async function(){
+            try{
+              var appMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+              var authMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+              var fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+              FB.f = { doc:fsMod.doc, getDoc:fsMod.getDoc, setDoc:fsMod.setDoc, updateDoc:fsMod.updateDoc, onSnapshot:fsMod.onSnapshot, serverTimestamp:fsMod.serverTimestamp, arrayUnion:fsMod.arrayUnion, runTransaction:fsMod.runTransaction, addDoc:fsMod.addDoc, collection:fsMod.collection };
+              FB.app = appMod.initializeApp(firebaseConfig);
+              FB.auth = authMod.getAuth(FB.app);
+              var cred = await authMod.signInAnonymously(FB.auth);
+              FB.uid = cred.user.uid;
+              FB.db = fsMod.getFirestore(FB.app);
+              return true;
+            }catch(e){ FB.f = null; FB.db = null; return false; }
+          })();
+          return FB.initP;
+        }
+        function fbMyProgress(){
+          var p = myProg(), clues = 0, bl = 0, pins = 0;
+          if(currentCase===2){ clues = unlocked2.size; bl = links2.length; pins = pinned2.size; }
+          else if(currentCase>=3){ clues = G ? G.unlocked.size : 0; bl = G ? G.links.length : 0; pins = G ? G.pinned.size : 0; }
+          else { clues = unlocked.size; bl = links.length; pins = pinned.size; }
+          return { evidenceFound:p.ev, interviewsDone:p.int, cluesFound:clues, boardLinks:bl, pins:pins };
+        }
+        function fbLocalClues(){
+          if(currentCase===2) return unlocked2;
+          if(currentCase>=3) return (G ? G.unlocked : new Set());
+          return unlocked;
+        }
+        function fbNewPlayer(){
+          return { name:String(state.name||"Detective").slice(0,20), role:state.role||"detective", online:true, lastSeenAt:FB.f.serverTimestamp(), progress:fbMyProgress() };
+        }
+        function fbBoardRef(){ return FB.f.doc(FB.db, "rooms", FB.roomDocId); }
+        function fbStart(){ fbStartAsync().catch(function(){}); }
+        async function fbStartAsync(){
+          if(!firebaseReady()) return false;
+          if(state.caseId!==1 && state.caseId!==2) return false; /* rules allow caseId 1|2 only */
+          var ok = await fbInit();
+          if(!ok || !FB.db) return false;
+          var f = FB.f, docId = fbDocId(state.room), ref = f.doc(FB.db, "rooms", docId);
+          var snap = null, tries = 0;
+          while(tries < 4){
+            try{ snap = await f.getDoc(ref); }catch(e){ return false; }
+            if(snap.exists()) break;
+            if(pendingCreated) break;
+            tries++;
+            if(tries < 4) await new Promise(function(r){ setTimeout(r, 2000); });
+          }
+          try{
+            if(!snap.exists()){
+              if(!pendingCreated) return false; /* host has not created the room yet */
+              var me = {}; me[FB.uid] = fbNewPlayer();
+              await f.setDoc(ref, { caseId:state.caseId, hostUid:FB.uid, createdAt:f.serverTimestamp(), status:"lobby", teamName:"Team "+state.room, timerStartedAt:null, timerPausedMs:0, timerState:"paused", players:me, cluesFound:[], twistsUnlocked:[], board:{pins:[], links:[]}, verdict:null, lastActivityAt:f.serverTimestamp() });
+            } else {
+              var data = snap.data();
+              if(data.caseId !== state.caseId) return false; /* hash collision with another case's room */
+              if(data.verdict) FB.verdict = data.verdict;
+              var joined = await f.runTransaction(FB.db, async function(tx){
+                var s = await tx.get(ref);
+                if(!s.exists()) return false;
+                var d = s.data();
+                if(d.verdict) FB.verdict = d.verdict;
+                var keys = Object.keys(d.players||{});
+                if(keys.indexOf(FB.uid) !== -1) return true; /* same browser rejoining */
+                if(keys.length >= 4) return false;
+                var roles = keys.map(function(k){ return d.players[k].role; });
+                if(roles.indexOf(state.role||"detective") !== -1) return false;
+                var upd = {}; upd["players."+FB.uid] = fbNewPlayer(); upd.lastActivityAt = f.serverTimestamp();
+                tx.update(ref, upd);
+                return true;
+              });
+              if(!joined) return false;
+            }
+            var cur = await f.getDoc(ref);
+            if(cur.exists() && cur.data().status === "lobby"){
+              try{ await f.updateDoc(ref, { status:"playing", timerStartedAt:f.serverTimestamp(), timerState:"running", lastActivityAt:f.serverTimestamp() }); }catch(e){}
+            }
+            FB.roomDocId = docId; FB.active = true;
+            FB.unsub = f.onSnapshot(ref, function(s){ if(s.exists()) fbOnRoom(s.data()); }, function(){ fbStop(); });
+            fbHeartbeat();
+            FB.hb = setInterval(fbHeartbeat, 30000);
+            window.addEventListener("beforeunload", fbMarkOffline);
+            renderPresenceLocal("on", "Live — Firebase sync", "Connecting to the shared room…");
+            return true;
+          }catch(e){ return false; }
+        }
+        function fbMarkOffline(){
+          if(!FB.active || !FB.db || !FB.roomDocId) return;
+          try{ var u = {}; u["players."+FB.uid+".online"] = false; FB.f.updateDoc(FB.f.doc(FB.db, "rooms", FB.roomDocId), u).catch(function(){}); }catch(e){}
+        }
+        function fbStop(silent){
+          try{ if(FB.hb){ clearInterval(FB.hb); FB.hb = null; } }catch(e){}
+          try{ if(FB.unsub){ FB.unsub(); FB.unsub = null; } }catch(e){}
+          try{ window.removeEventListener("beforeunload", fbMarkOffline); }catch(e){}
+          if(FB.active && FB.db && FB.roomDocId){ try{ fbMarkOffline(); }catch(e){} }
+          var wasActive = FB.active;
+          FB.active = false; FB.roomDocId = null; FB.verdict = null; FB.verdictNotified = false; FB.lastSig = ""; FB.sentClues = {}; FB.seenClues = {}; FB.seenTwists = {}; FB.seenPins = {}; FB.seenLinks = {};
+          if(wasActive && !silent && typeof live !== "undefined" && live.mode === "live"){ try{ renderPresence(); }catch(e){} }
+        }
+        function fbHeartbeat(){
+          if(!FB.active || !FB.db) return;
+          try{
+            var upd = {};
+            upd["players."+FB.uid+".online"] = true;
+            upd["players."+FB.uid+".lastSeenAt"] = FB.f.serverTimestamp();
+            upd["players."+FB.uid+".progress"] = fbMyProgress();
+            upd.lastActivityAt = FB.f.serverTimestamp();
+            FB.f.updateDoc(FB.f.doc(FB.db, "rooms", FB.roomDocId), upd).catch(function(){});
+            fbSyncClues();
+          }catch(e){}
+        }
+        function fbSyncClues(){
+          if(!FB.active || !FB.db) return;
+          var set = fbLocalClues(), fresh = [];
+          set.forEach(function(id){ if(!FB.sentClues[id]){ FB.sentClues[id] = 1; fresh.push(id); } });
+          if(fresh.length){
+            try{ FB.f.updateDoc(FB.f.doc(FB.db, "rooms", FB.roomDocId), { cluesFound:FB.f.arrayUnion.apply(null, fresh), lastActivityAt:FB.f.serverTimestamp() }).catch(function(){}); }catch(e){}
+          }
+        }
+        function fbSyncProgress(){
+          if(!FB.active || !FB.db) return;
+          var pr = fbMyProgress(), sig = JSON.stringify(pr) + "|" + state.caseId;
+          if(sig === FB.lastSig) return; FB.lastSig = sig;
+          try{
+            var upd = {}; upd["players."+FB.uid+".progress"] = pr; upd.lastActivityAt = FB.f.serverTimestamp();
+            FB.f.updateDoc(FB.f.doc(FB.db, "rooms", FB.roomDocId), upd).catch(function(){});
+          }catch(e){}
+          fbSyncClues();
+        }
+        function fbTwist(c, idx){
+          if(!FB.active || !FB.db) return;
+          try{ FB.f.updateDoc(fbBoardRef(), { twistsUnlocked:FB.f.arrayUnion(c+"-"+idx), lastActivityAt:FB.f.serverTimestamp() }).catch(function(){}); }catch(e){}
+        }
+        function fbPin(eid, pinnedNow, x, y){
+          if(!FB.active || !FB.db) return;
+          var ref = fbBoardRef(), pid = "pin-"+eid;
+          FB.f.runTransaction(FB.db, async function(tx){
+            var s = await tx.get(ref); if(!s.exists()) return;
+            var b = s.data().board || {pins:[], links:[]};
+            var pins = (b.pins||[]).filter(function(p){ return p.id !== pid; });
+            if(pinnedNow) pins.push({ id:pid, evidenceId:eid, x:Math.round((+x||0)*100)/100, y:Math.round((+y||0)*100)/100, pinnedBy:FB.uid, pinnedAt:new Date().toISOString() });
+            var links = b.links || [];
+            if(!pinnedNow) links = links.filter(function(l){ return l.fromPinId !== pid && l.toPinId !== pid; });
+            tx.update(ref, { board:{ pins:pins, links:links }, lastActivityAt:FB.f.serverTimestamp() });
+          }).catch(function(){});
+        }
+        function fbLink(a, b){
+          if(!FB.active || !FB.db) return;
+          var ref = fbBoardRef(), lid = "link-"+a+"-"+b;
+          FB.f.runTransaction(FB.db, async function(tx){
+            var s = await tx.get(ref); if(!s.exists()) return;
+            var bd = s.data().board || {pins:[], links:[]};
+            var links = bd.links || [];
+            if(!links.some(function(l){ return l.id === lid || (l.fromPinId === "pin-"+b && l.toPinId === "pin-"+a); })){
+              links.push({ id:lid, fromPinId:"pin-"+a, toPinId:"pin-"+b, linkedBy:FB.uid, linkedAt:new Date().toISOString() });
+              tx.update(ref, { board:{ pins:bd.pins||[], links:links }, lastActivityAt:FB.f.serverTimestamp() });
+            }
+          }).catch(function(){});
+        }
+        function fbClearLinks(){
+          if(!FB.active || !FB.db) return;
+          try{ FB.f.updateDoc(fbBoardRef(), { "board.links":[], lastActivityAt:FB.f.serverTimestamp() }).catch(function(){}); }catch(e){}
+        }
+        function fbSubmitVerdict(caseId, picks, score){
+          if(!FB.active || !FB.db) return;
+          fbSubmitVerdictAsync(caseId, picks, score).catch(function(){});
+        }
+        async function fbSubmitVerdictAsync(caseId, picks, score){
+          var f = FB.f, ref = f.doc(FB.db, "rooms", FB.roomDocId);
+          var timeMs = Math.max(0, (typeof elapsed === "number" ? elapsed : 0) * 1000);
+          var res = await f.runTransaction(FB.db, async function(tx){
+            var s = await tx.get(ref);
+            if(!s.exists()) return { ok:false };
+            var d = s.data();
+            if(d.verdict) return { ok:false, locked:true, score:d.verdict.score };
+            tx.update(ref, { status:"solved", verdict:{ who:picks.who, how:picks.how, where:picks.where, score:score, submittedBy:FB.uid, submittedAt:f.serverTimestamp(), timeMs:timeMs } });
+            return { ok:true };
+          });
+          if(!res.ok){ if(res.locked){ FB.verdict = { score:res.score }; toast("🔒 Your team's verdict was already locked in — " + res.score + " / 3."); } return; }
+          FB.verdict = { who:picks.who, how:picks.how, where:picks.where, score:score };
+          var names = Object.keys(FB.members).map(function(k){ return FB.members[k].name; });
+          if(names.indexOf(state.name) === -1) names.push(state.name);
+          try{
+            await f.addDoc(f.collection(FB.db, "savedGames"), { teamName:"Team "+state.room, caseId:caseId, score:score, timeMs:timeMs, date:f.serverTimestamp(), roomCode:state.room, playerNames:names.slice(0,4) });
+          }catch(e){}
+          try{
+            await f.runTransaction(FB.db, async function(tx){
+              var lref = f.doc(FB.db, "leaderboard", String(caseId));
+              var s = await tx.get(lref);
+              var entries = s.exists() ? (s.data().entries || []) : [];
+              entries.push({ teamName:"Team "+state.room, score:score, timeMs:timeMs, date:new Date().toISOString() });
+              entries.sort(function(a,b){ return (b.score - a.score) || (a.timeMs - b.timeMs); });
+              entries = entries.slice(0, 10);
+              tx.set(lref, { caseId:caseId, entries:entries, updatedAt:f.serverTimestamp() });
+            });
+          }catch(e){}
+          toast("🔒 Verdict locked in — " + score + " / 3. Saved to your team's record.");
+        }
+        function fbOnRoom(data){
+          if(!FB.active) return;
+          FB.members = data.players || {};
+          if(data.verdict){
+            if(!FB.verdict && !FB.verdictNotified){ FB.verdictNotified = true; toast("🔒 A teammate submitted the verdict — " + data.verdict.score + " / 3. The verdict is locked."); }
+            FB.verdict = data.verdict;
+          }
+          fbRenderPresence(data);
+          (data.cluesFound || []).forEach(function(id){
+            if(!FB.seenClues[id]){ FB.seenClues[id] = 1; if(!fbLocalClues().has(id)) toast("🔔 A teammate shared a new clue — ask them to read it out."); }
+          });
+          (data.twistsUnlocked || []).forEach(function(tid){
+            if(FB.seenTwists[tid]) return; FB.seenTwists[tid] = 1;
+            var parts = String(tid).split("-"), c = parseInt(parts[0], 10), idx = parseInt(parts[1], 10);
+            if(c === currentCase && !twistsFired[c+"-"+idx]){
+              var vid = c===2 ? "view-case2" : (c>=3 ? "view-caseG" : "view-case");
+              var el = $(vid);
+              if(el && !el.classList.contains("hidden")){ twistsFired[c+"-"+idx] = true; fireTwist(c, idx); }
+            }
+          });
+          if(state.caseId === 1 || state.caseId === 2) fbApplyBoard(data.board || {pins:[], links:[]});
+        }
+        function fbRenderPresence(data){
+          var players = data.players || {};
+          var list = Object.keys(players).map(function(uid){
+            var p = players[uid], ageMs = 1e9, online = false;
+            try{ if(p.lastSeenAt && p.lastSeenAt.toMillis) ageMs = Date.now() - p.lastSeenAt.toMillis(); else if(p.lastSeenAt) ageMs = Date.now() - Date.parse(p.lastSeenAt); }catch(e){}
+            online = !!p.online && ageMs < 90000;
+            return { uid:uid, name:p.name || "Teammate", role:(p.role && ROLE_INFO[p.role]) ? ROLE_INFO[p.role].name : "—", ev:(p.progress && p.progress.evidenceFound) || 0, int:(p.progress && p.progress.interviewsDone) || 0, pins:(p.progress && p.progress.pins) || 0, online:online };
+          });
+          renderPresenceLocal("on", "Live — Firebase sync", "Live via Firebase — presence, clues and board sync. Peer-to-peer runs as backup. No chat, no vote.");
+          ["", "2", "G"].forEach(function(sfx){
+            var e = presenceEls(sfx); if(!e.members) return; e.members.innerHTML = "";
+            list.forEach(function(m){
+              var chip = document.createElement("span"); chip.className = "p-chip";
+              if(!m.online) chip.style.opacity = ".45";
+              chip.innerHTML = "● <b>" + m.name + (m.uid === FB.uid ? " (you)" : "") + "</b> · " + m.role + " · 📁 " + m.ev + " 💬 " + m.int + " 📌 " + m.pins + (m.online ? "" : " · away");
+              e.members.appendChild(chip);
+            });
+          });
+        }
+        function fbApplyBoard(board){
+          var pins = board.pins || [], links = board.links || [];
+          var is2 = state.caseId === 2;
+          var pinnedSet = is2 ? pinned2 : pinned, posMap = is2 ? board2Pos : boardPos, linksArr = is2 ? links2 : links;
+          var corkId = is2 ? "cork2" : "cork", eidAttr = is2 ? "data-eid2" : "data-eid";
+          var changed = false;
+          pins.forEach(function(pin){
+            var eid = pin.evidenceId; if(!eid) return;
+            if(!pinnedSet.has(eid)){
+              pinnedSet.add(eid); posMap[eid] = { x:(+pin.x || 4), y:(+pin.y || 4) }; changed = true;
+              if(!FB.seenPins[pin.id]) toast("📌 " + (pin.pinnedBy === FB.uid ? "You" : (FB.members[pin.pinnedBy] ? FB.members[pin.pinnedBy].name : "A teammate")) + " pinned " + eid);
+              var el = document.querySelector("#" + corkId + " [" + eidAttr + "='" + eid + "']");
+              if(el){ el.classList.add("pinned"); el.style.left = posMap[eid].x + "%"; el.style.top = posMap[eid].y + "%"; }
+            } else if(pin.x != null && posMap[eid] && (posMap[eid].x !== +pin.x || posMap[eid].y !== +pin.y)){
+              posMap[eid] = { x:+pin.x, y:+pin.y }; changed = true;
+              var el2 = document.querySelector("#" + corkId + " [" + eidAttr + "='" + eid + "']");
+              if(el2){ el2.style.left = posMap[eid].x + "%"; el2.style.top = posMap[eid].y + "%"; }
+            }
+            FB.seenPins[pin.id] = 1;
+          });
+          links.forEach(function(l){
+            var a = String(l.fromPinId || "").replace(/^pin-/, ""), b = String(l.toPinId || "").replace(/^pin-/, "");
+            if(!a || !b) return;
+            var exists = linksArr.some(function(x){ return (x[0] === a && x[1] === b) || (x[0] === b && x[1] === a); });
+            if(!exists){
+              linksArr.push([a, b]); changed = true;
+              if(!FB.seenLinks[l.id]) toast("🧵 A teammate linked " + a + " to " + b);
+            }
+            FB.seenLinks[l.id] = 1;
+          });
+          if(changed){
+            try{ if(is2) persist2(); else persist(); }catch(e){}
+            try{ if(is2) drawLinks2(); else drawLinks(); }catch(e){}
+            try{ if(is2) updateHUD2(); else updateHUD(); }catch(e){}
+          }
+        }
 
         /* ================= CASES 3-12 (data-driven, mirrors Cases 1-2) =================
            Content implemented exactly from cases-3-7.md and cases-8-12.md: culprits,
@@ -4371,7 +4683,7 @@
           $("hud-linksG").textContent = G.links.length;
           var pct = Math.round(((Math.min(G.evOpened.size,12)/12)*40) + ((G.intDone.size/4)*30) + ((Math.min(G.unlocked.size,6)/6)*20) + ((G.puzzles.size/3)*10));
           $("hud-fillG").style.width = Math.min(100,pct) + "%";
-          checkTwists(currentCase); liveSyncProgress();
+          checkTwists(currentCase); liveSyncProgress(); try{ fbSyncProgress(); }catch(e){}
         }
         setInterval(function(){ if(currentCase>=3){ var el = $("hud-timerG"); if(el) el.textContent = fmtT(elapsed); } },1000);
 
@@ -4528,9 +4840,11 @@
             $("hint-textG").textContent = "💡 " + GC.hints[Math.min(G.hintIdx, GC.hints.length-1)]; G.hintIdx++;
           });
           $("btn-submitG").addEventListener("click", function(){
+            if(FB.verdict){ $("solve-errorG").textContent = "Your team's verdict is already locked in — " + FB.verdict.score + " / 3. Talk it over and start a new room to play again."; return; }
             var missing = ["who","how","where"].filter(function(k){ return !picksG[k]; });
             if(missing.length){ $("solve-errorG").textContent = "Your team still has "+missing.length+" question"+(missing.length>1?"s":"")+" unanswered — agree on all three before submitting."; return; }
             var score = ["who","how","where"].reduce(function(n,k){ return n + (picksG[k]===GC.answers[k] ? 1 : 0); }, 0);
+            try{ fbSubmitVerdict(state.caseId, picksG, score); }catch(e){}
             $("result-scoreG").textContent = score + " / 3";
             var stamp = $("result-stampG"), line = $("result-lineG");
             if(score===3){ stamp.textContent = "Case closed"; line.textContent = GC.solveLines.closed; }
@@ -4580,14 +4894,14 @@
 
         /* ---- wrappers: enter flow, HUD hooks, scene close ---- */
         var _updateHUD=updateHUD;
-        updateHUD=function(){ _updateHUD(); checkTwists(1); liveSyncProgress(); };
+        updateHUD=function(){ _updateHUD(); checkTwists(1); liveSyncProgress(); try{ fbSyncProgress(); }catch(e){} };
         var _unlockClue=unlockClue;
         unlockClue=function(id){ var had=unlocked.has(id); _unlockClue(id); if(!had && unlocked.has(id)) liveAct("found a clue"); };
         var _enterCase=enterCase;
         enterCase=function(){
           currentCase=state.caseId;
           if(state.caseId===2){ enterCase2(); } else if(state.caseId>=3){ enterCaseG(); } else { _enterCase(); }
-          liveStart();
+          liveStart(); try{ fbStart(); }catch(e){}
         };
         var _closeScene=closeScene;
         closeScene=function(){

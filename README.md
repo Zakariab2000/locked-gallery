@@ -9,10 +9,20 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 3. Explore the crime scenes, examine the evidence, interrogate the suspects and solve the mini-puzzles.
 4. Agree on **who** did it, **how**, and **where** — score 3/3 to close the case.
 
-## Cases
+## Cases — Twelve case files
 
-- **Case 1 — The Locked Gallery:** an art heist in a locked gallery. 12 evidence items, 4 suspects.
-- **Case 2 — Dinner for Five:** a murder at a dinner party.
+- **Case 01 — The Locked Gallery**
+- **Case 02 — Dinner for Five: The Last Course**
+- **Case 03 — Gone Live**
+- **Case 04 — The Northern Star**
+- **Case 05 — Room 712**
+- **Case 06 — Ward 4B**
+- **Case 07 — The Final Bow**
+- **Case 08 — Dead Calm at Sea**
+- **Case 09 — Death in the Stacks**
+- **Case 10 — The Vault on the Fourteenth Floor**
+- **Case 11 — Till Death Do Us Part**
+- **Case 12 — The Stolen Papers**
 
 ## Play
 

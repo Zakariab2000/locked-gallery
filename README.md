@@ -53,3 +53,12 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 ## Play
 
 Live at https://zakariab2000.github.io/locked-gallery/
+
+## AAA Stage 1 (2026-10-27)
+
+- **Swipe navigation:** game screens slide between pages — touch swipe, on-screen arrows + dots, keyboard arrows. Content inside a page still scrolls vertically.
+- **Audio hints:** tapping a Hint speaks it aloud (Web Speech API, no downloads) as well as showing the text, with a Male / Female voice switch and a stop button. Hint counts and rules unchanged.
+- **Trailer:** `videos/trailer.mp4` (10s, 720p) plays from the home screen, with its own play + mute controls.
+- **AAA polish:** cinematic slide/fade transitions, slow Ken Burns movement on hero/scene images, ambient WebAudio pad + soft generative notes (same mute control), richer HUD (mode + case chip), loading screen when a case opens, subtle vignette + film grain.
+
+Deferred to later batches: per-case intro videos (`videos/case-XX-intro.mp4`) and suspect interrogation videos (`videos/case-XX-suspect-<id>.mp4`) — see `videos/README.md` for the naming convention.

@@ -19,3 +19,13 @@ player hides its card (error handler) instead of breaking the page.
 
 Keep each video small (720p, ~10s, a few MB). The whole repo tree must stay
 well under GitHub's limits; the HTML file itself is already ~29 MB.
+
+## Shipped
+
+- **Batch 1 (2026-10-27):** `case-01-intro.mp4` (6.2 MB) through
+  `case-06-intro.mp4` (4.5 MB) — 10s h264 1280x720 cinematic intros for
+  Cases 1–6, title on screen, no dialogue. Wired into the briefing screens
+  via the shared `aaaVideoPlayer()` helper (static cards for Cases 1–2,
+  dynamic card for the generic view, Cases 3–6; hidden for Cases 7+ until
+  their batch lands).
+- Next: batch 2 = Cases 7–12 intro videos; later batches = suspect videos.

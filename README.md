@@ -9,7 +9,7 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 3. Explore the crime scenes, examine the evidence, interrogate the suspects and solve the mini-puzzles.
 4. Agree on **who** did it, **how**, and **where** — score 3/3 to close the case.
 
-## Cases (22)
+## Cases (32)
 
 - **Case 01 — The Locked Gallery:** an art heist in a locked gallery. 12 evidence items, 4 suspects.
 - **Case 02 — Dinner for Five: The Last Course:** a murder at a dinner party.
@@ -36,6 +36,19 @@ A co-op unsolved-cases web game for 2–4 players. Friends join by link — no i
 - **Case 20 — The Overnight Wing** 🔴 HARD: murder at an airport.
 - **Case 21 — Silent Depth** 🔴 HARD: murder aboard a submarine.
 - **Case 22 — The Long Night** 🔴 HARD: murder at an arctic research station.
+
+### God mode (10 cases — harder than Hard: every red herring has a near-complete false case, at least one suspect lies, at least one item is misleading on its face, and the proof only comes from combining 3–4 items. Minimum evidence to solve: 11–12 of 12)
+
+- **Case 23 — The Airlock** 👑 GOD: murder aboard the Astraeus orbital station.
+- **Case 24 — The Poisoned Psalter** 👑 GOD: murder in a medieval castle.
+- **Case 25 — The Midnight Midway** 👑 GOD: murder at a travelling carnival.
+- **Case 26 — Dead on D-Wing** 👑 GOD: two murders on a prison D-Wing.
+- **Case 27 — The Silent Bell** 👑 GOD: murder in the Monastery of St Aldhelm.
+- **Case 28 — The Last Mirage** 👑 GOD: murder at a desert oasis resort.
+- **Case 29 — The Drowned Suite** 👑 GOD: murder in a submerged hotel.
+- **Case 30 — The Last Bow** 👑 GOD: murder under the circus big top.
+- **Case 31 — The Empty Cage** 👑 GOD: murder in a zoo's Amur tiger enclosure.
+- **Case 32 — Dead Air** 👑 GOD: murder at the Meridian FM radio station.
 
 ## Play
 

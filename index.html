@@ -1326,7 +1326,7 @@ function suspectFigure(sp, idx, caseId){
   g.add(b2(0.2, 0.07, 0.3, texMat("metalDark"), -0.11, 0.035, 0.05));
   g.add(b2(0.2, 0.07, 0.3, texMat("metalDark"), 0.11, 0.035, 0.05));
   // torso (0.62m) + shoulders + arms
-  var torso = b2(0.56, 0.62, 0.28, topM, 0, 1.09, 0); g.add(torso);
+  var torso = b2(0.56, 0.62, 0.28, topM, 0, 1.09, 0); torso.name = "torso10"; g.add(torso);
   var shoulder9 = c2(0.085, 0.085, 0.6, topM, 0, 1.37, 0, 10); shoulder9.rotation.z = Math.PI / 2; g.add(shoulder9);
   if(out.style === "suit" || out.style === "coat"){
     g.add(b2(0.1, 0.3, 0.02, new THREE.MeshStandardMaterial({color: 0xc9a227, roughness: 0.5}), 0, 1.2, 0.13));
@@ -1344,10 +1344,13 @@ function suspectFigure(sp, idx, caseId){
   armR.add(new THREE.Mesh(geo("hand2", function(){ return new THREE.SphereGeometry(0.06, 10, 8); }), skinM));
   armR.children[1].position.y = -0.6;
   g.add(armR);
-  // neck + head (0.24m) with face texture
-  g.add(c2(0.06, 0.07, 0.12, skinM, 0, 1.44, 0, 10));
-  var head = new THREE.Group(); head.position.set(0, 1.62, 0);
-  var skull = new THREE.Mesh(geo("skull", function(){ return new THREE.SphereGeometry(0.15, 20, 16); }), skinM);
+  // neck + head — v10: a BIG, readable head. Radius 0.20 with the head
+  // centre 0.20 above the torso top (torso top = 1.09 + 0.31 = 1.40 local),
+  // so the whole head reads at 3 m instead of a small ball on a wide torso.
+  g.add(c2(0.07, 0.08, 0.16, skinM, 0, 1.44, 0, 10));
+  var head = new THREE.Group(); head.position.set(0, 1.60, 0); head.name = "head10";
+  var skull = new THREE.Mesh(geo("skull10", function(){ return new THREE.SphereGeometry(0.20, 24, 18); }), skinM);
+  skull.name = "skull10";
   head.add(skull);
   var faceUri = null;
   try{ faceUri = (typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[caseId + ":" + (sp.key || "")] : null; }catch(e){}
@@ -1380,28 +1383,25 @@ function suspectFigure(sp, idx, caseId){
       fimg9.src = faceUri;
     }catch(e){}
   }
-  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.33),
+  var faceCap = new THREE.Mesh(geo("facecap10", function(){
+      return new THREE.SphereGeometry(0.206, 24, 18, Math.PI / 2 - 0.675, 1.35, Math.PI / 2 - 0.60, 1.30);
+    }),
     new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.65}));
-  facePlane.position.set(0, -0.01, 0.152); facePlane.name = "face9";
-  head.add(facePlane);
+  faceCap.name = "face10";
+  head.add(faceCap);
   if(hairStyle !== "bald"){
-    var cap8 = new THREE.Mesh(geo("haircap8", function(){ return new THREE.SphereGeometry(0.158, 20, 12, 0, Math.PI * 2, 0, 1.85); }), hairM);
-    cap8.position.set(0, 0.018, -0.012); cap8.rotation.x = -0.28; cap8.name = "hair8";
-    head.add(cap8);
-  }
-  var hairMesh;
-  if(hairStyle === "long"){
-    hairMesh = b2(0.26, 0.42, 0.06, hairM, 0, 0.02, -0.1);
-    head.add(hairMesh);
-    head.add(b2(0.3, 0.1, 0.26, hairM, 0, 0.13, 0));
-  } else if(hairStyle === "bald"){
-    head.add(new THREE.Mesh(geo("baldcap", function(){ return new THREE.SphereGeometry(0.152, 20, 12, 0, Math.PI * 2, 0, 1.1); }), skinM));
-  } else {
-    head.add(b2(0.30, 0.08, 0.28, hairM, 0, 0.12, 0));
-    head.add(b2(0.30, 0.12, 0.05, hairM, 0, 0.05, -0.11));
+    var cap10 = new THREE.Mesh(geo("haircap10", function(){ return new THREE.SphereGeometry(0.212, 24, 14, 0, Math.PI * 2, 0, 1.95); }), hairM);
+    cap10.position.set(0, 0.012, -0.01); cap10.rotation.x = -0.24; cap10.name = "hair10";
+    head.add(cap10);
+    if(hairStyle === "long"){
+      var back10 = new THREE.Mesh(geo("hairback10", function(){ return new THREE.SphereGeometry(0.212, 24, 12, Math.PI * 1.5 - 0.95, 1.9, 0.55, 1.9); }), hairM);
+      back10.name = "hair-back10";
+      head.add(back10);
+    }
   }
   g.add(head);
   g.userData.anim = {torso: torso, head: head, armL: armL, armR: armR, phase: Math.random() * 6, baseY: 0};
+  g.userData.face10 = {headR: 0.20, faceR: 0.206};
   g.scale.set(1.18, 1.18, 1.18);
   return shadowed(g);
 }
@@ -1530,6 +1530,25 @@ function placeLabel9(px, py, w, h, rect){
   if(px < 0 || py < 0 || px > rect.width || py > rect.height) return {hidden: true};
   var c = clampLabelBox8(px, py, w, h, rect.width, rect.height);
   return {hidden: false, x: c.x, y: c.y};
+}
+/* v10 — canvas-rect placement. v9 clamped label boxes inside the LABEL
+   LAYER rect, but the layer is not the visible scene: the visible scene
+   is the canvas element, and the layer can extend past it, so a box
+   "inside the layer" could still sit half off the visible scene (and
+   flush-to-border reads as cut even when fully inside). placeLabel10
+   takes the canvas rect EXPLICITLY, in layer coordinates:
+     - anchor outside the canvas rect -> hidden
+     - otherwise the box centre is clamped so the whole box stays inside
+       the canvas rect with a 12px margin on every side. */
+function placeLabel10(px, py, w, h, rect){
+  var L = rect.left, T = rect.top, R = rect.left + rect.width, B = rect.top + rect.height;
+  if(px < L || px > R || py < T || py > B) return {hidden: true};
+  var M = 12, cx, cy;
+  if(w + 2 * M >= rect.width) cx = (L + R) / 2;
+  else cx = Math.max(L + w / 2 + M, Math.min(R - w / 2 - M, px));
+  if(h + 2 * M >= rect.height) cy = (T + B) / 2;
+  else cy = Math.max(T + h / 2 + M, Math.min(B - h / 2 - M, py));
+  return {hidden: false, x: cx, y: cy};
 }
 var MOODLIGHT = {
   night: {amb: 0.95, dir: 1.0, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
@@ -1690,6 +1709,90 @@ function dressTheme(room){
   if(/corridor|stairs|staircase|tower|walkway|gantry|bridge|deck|lobby/.test(s)) return "passage";
   return "room";
 }
+/* ---- v10 kind-gating: paintings / framed art / rugs / painting heroes
+   belong ONLY in gallery-type rooms. Storage / lab / prison rooms get a
+   big kind-appropriate hero element on the hero wall instead. ---- */
+var NOART10 = {storage: 1, lab: 1, prison: 1};
+function artKind10(room){
+  var t = dressTheme(room);
+  return NOART10[t] ? t : "gallery";
+}
+function screenTex10(seed){
+  return cvTex(256, 160, function(ctx, w, h){
+    ctx.fillStyle = "#0a1a22"; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = "rgba(70,200,220,0.5)"; ctx.lineWidth = 1;
+    var gx, gy;
+    for(gx = 0; gx <= 4; gx++){ ctx.beginPath(); ctx.moveTo(gx * w / 4, 0); ctx.lineTo(gx * w / 4, h); ctx.stroke(); }
+    for(gy = 0; gy <= 3; gy++){ ctx.beginPath(); ctx.moveTo(0, gy * h / 3); ctx.lineTo(w, gy * h / 3); ctx.stroke(); }
+    var rnd = mulberry32(seed * 331 + 7);
+    ctx.fillStyle = "#7ae0a0";
+    for(var d = 0; d < 9; d++) ctx.fillRect(10 + rnd() * (w - 24), 10 + rnd() * (h - 24), 5, 5);
+    ctx.fillStyle = "rgba(122,224,160,0.85)"; ctx.fillRect(12, 12, 70, 8);
+  });
+}
+function heroStorage10(){
+  var g = new THREE.Group();
+  var woodD = texMat("woodDark"), paper = texMat("paper");
+  var cols = [0x8a6a42, 0x6a5136, 0x9a7a4e, 0x7a5c38];
+  g.add(b2(3.6, 2.3, 0.08, woodD, 0, 1.55, -4.88));
+  [-1.72, -0.58, 0.58, 1.72].forEach(function(ux){ g.add(b2(0.09, 2.24, 0.36, woodD, ux, 1.52, -4.8)); });
+  [0.62, 1.32, 2.02].forEach(function(sy, si){
+    g.add(b2(3.5, 0.06, 0.36, woodD, 0, sy, -4.8));
+    for(var bx = 0; bx < 5; bx++){
+      if(si === 1 && bx === 2) continue;
+      var bw = 0.62, bxPos = -1.5 + bx * 0.75;
+      g.add(b2(bw, 0.42, 0.3, mat(cols[(si + bx) % 4]), bxPos, sy + 0.24, -4.8));
+      g.add(b2(0.32, 0.14, 0.02, paper, bxPos, sy + 0.26, -4.63));
+    }
+  });
+  return g;
+}
+function heroLab10(){
+  var g = new THREE.Group();
+  var metal = texMat("metal"), metalD = texMat("metalDark");
+  g.add(b2(3.6, 2.3, 0.08, metalD, 0, 1.55, -4.88));
+  [-1.2, 0, 1.2].forEach(function(cxx, ci){
+    g.add(b2(1.08, 1.42, 0.34, metal, cxx, 0.92, -4.78));
+    g.add(b2(0.3, 0.05, 0.03, metalD, cxx, 0.95, -4.59));
+    var stx = screenTex10(ci + 1);
+    var scr = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.58),
+      new THREE.MeshStandardMaterial({map: stx, roughness: 0.4, emissive: 0xffffff, emissiveMap: stx, emissiveIntensity: 0.7}));
+    scr.position.set(cxx, 2.02, -4.82); g.add(scr);
+  });
+  for(var d = 0; d < 8; d++){
+    g.add(b2(0.07, 0.07, 0.03, new THREE.MeshStandardMaterial({color: 0x223322, emissive: d % 3 ? 0x2aff5a : 0xffa02a, emissiveIntensity: 1.4}), -1.5 + d * 0.43, 1.68, -4.6));
+  }
+  return g;
+}
+function heroPrison10(){
+  var g = new THREE.Group();
+  var metalD = texMat("metalDark");
+  g.add(b2(3.6, 2.3, 0.08, metalD, 0, 1.55, -4.88));
+  g.add(b2(3.0, 0.1, 0.06, metalD, 0, 2.32, -4.8));
+  g.add(b2(3.0, 0.1, 0.06, metalD, 0, 0.78, -4.8));
+  for(var bi = 0; bi < 9; bi++) g.add(c2(0.028, 0.028, 1.5, texMat("metal"), -1.4 + bi * 0.35, 1.55, -4.8, 8));
+  return g;
+}
+function kindPanel10(kind){
+  var g = new THREE.Group();
+  if(kind === "lab"){
+    g.add(b2(1.3, 1.7, 0.06, texMat("metalDark"), 0, 0, 0));
+    var stx2 = screenTex10(5);
+    var scr2 = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 1.4),
+      new THREE.MeshStandardMaterial({map: stx2, roughness: 0.4, emissive: 0xffffff, emissiveMap: stx2, emissiveIntensity: 0.7}));
+    scr2.position.z = 0.045; g.add(scr2);
+  } else if(kind === "prison"){
+    g.add(b2(1.3, 1.7, 0.06, texMat("metal"), 0, 0, 0));
+    [-0.45, -0.15, 0.15, 0.45].forEach(function(bx){ g.add(b2(0.05, 1.5, 0.03, texMat("metalDark"), bx, 0, 0.045)); });
+  } else {
+    g.add(b2(1.3, 1.7, 0.06, texMat("woodDark"), 0, 0, 0));
+    g.add(b2(1.14, 0.2, 0.02, texMat("paper"), 0, 0.66, 0.045));
+    for(var si2 = 0; si2 < 6; si2++){
+      g.add(b2(0.3, 0.36, 0.02, texMat("paper"), -0.36 + (si2 % 3) * 0.36, 0.28 - Math.floor(si2 / 3) * 0.55, 0.045));
+    }
+  }
+  return g;
+}
 function dressRoom(scene, c, room, ri, th){
   var cx = roomCenter(ri);
   var rnd = mulberry32((c.id || S.caseId) * 1000 + ri * 131 + 7);
@@ -1732,7 +1835,8 @@ function dressRoom(scene, c, room, ri, th){
   });
   // ---- wall art + room plaque (frames read as paintings, not flat rectangles) ----
   var artXs = [-4.2, -1.4, 1.6, 4.2];
-  artXs.forEach(function(x, i){
+  // v10: framed paintings only in gallery-type rooms (kind-gated art).
+  if(!NOART10[theme]) artXs.forEach(function(x, i){
     var z = i % 2 ? 4.88 : -4.88, ry = i % 2 ? Math.PI : 0;
     var fr = new THREE.Group();
     fr.add(box(0.9, 1.15, 0.06, texMat("metal")));
@@ -1773,7 +1877,8 @@ function dressRoom(scene, c, room, ri, th){
   var rug2 = new THREE.Mesh(new THREE.PlaneGeometry(R(2.2, 3.0), R(1.6, 2.2)),
     new THREE.MeshStandardMaterial({map: texMat("carpet", pick(rugCols)).map, roughness: 0.95}));
   rug2.rotation.x = -Math.PI / 2;
-  put(rug2, cx + R(-2.5, 2.5), 0.03, R(-2.5, 2.5) > 0 ? 3.6 : -3.6, "rug2");
+  // v10: no rugs in storage/lab/prison rooms.
+  if(!NOART10[theme]) put(rug2, cx + R(-2.5, 2.5), 0.03, R(-2.5, 2.5) > 0 ? 3.6 : -3.6, "rug2");
   var pouf = c2(0.42, 0.42, 0.35, texMat("fabric", pick(rugCols)), 0, 0.18, 0, 14);
   put(pouf, cx + pick([-5.0, 5.0]), 0.18, pick([-3.8, 3.8]), "pouf");
   [1, 2].forEach(function(){
@@ -2117,7 +2222,8 @@ function dressWalls6(scene, c, room, ri, th){
   var runner = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 1.4),
     new THREE.MeshStandardMaterial({map: texMat("carpet", pick(["#5a1a1a", "#1a3a5a", "#2a4a2a"])).map, roughness: 0.95}));
   runner.rotation.x = -Math.PI / 2;
-  add(runner, cx, 0.035, 0, "runner");
+  // v10: the runner rug is art too — gallery-type rooms only.
+  if(!NOART10[dressTheme(room)]) add(runner, cx, 0.035, 0, "runner");
   var fp2 = new THREE.Group(); fp2.userData.dressKind = "floor-plant";
   fp2.add(c2(0.2, 0.16, 0.28, texMat("fabric", "#8a4a2a"), 0, 0.14, 0, 12));
   for(var k2 = 0; k2 < 6; k2++){
@@ -2244,29 +2350,49 @@ function initScene(){
       var rugCol3 = rugCols3[Math.floor(rugRnd() * rugCols3.length)];
       var rug = new THREE.Mesh(new THREE.PlaneGeometry(3.6 + rugRnd() * 1.2, 2.6 + rugRnd() * 0.8),
         new THREE.MeshStandardMaterial({map: texMat("carpet", rugCol3).map, roughness: 0.95}));
-      rug.rotation.x = -Math.PI / 2; rug.position.set(cx + (rugRnd() - 0.5) * 1.2, 0.02, (rugRnd() - 0.5) * 1.2); rug.receiveShadow = true; scene.add(rug);
+      rug.rotation.x = -Math.PI / 2; rug.position.set(cx + (rugRnd() - 0.5) * 1.2, 0.02, (rugRnd() - 0.5) * 1.2); rug.receiveShadow = true;
+      rug.userData = {dressKind: "rug10", room: ri};
+      // v10: rugs only in gallery-type rooms.
+      if(artKind10(r) === "gallery") scene.add(rug);
       // v8: hero wall art in EVERY room, on the north wall the viewpoint faces,
       // plus flanking panels + benches so the default view is dressed at eye level
       {
-        var heroUri = null;
-        try{ heroUri = (ri === 0 && typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
-        var heroG = new THREE.Group(); heroG.userData = {dressKind: "hero-panel", room: ri, heroW: 4.2, heroH: 2.4};
-        heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
-        var heroTex8 = heroTex9(heroUri, (c.id * 3 + ri * 2) % 6);
-        var hart = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
-          new THREE.MeshStandardMaterial({map: heroTex8, roughness: 0.8, emissive: 0xffffff, emissiveMap: heroTex8, emissiveIntensity: 0.22}));
-        hart.position.set(0, 1.9, -4.81); hart.name = "hero-art9"; heroG.add(hart);
-        var plaque = makeTextPlane(ri === 0 ? (c.title + " \u00b7 Case " + c.id) : r.n, 2.6, 0.6);
-        plaque.position.set(0, 0.45, -4.8); heroG.add(plaque);
-        heroG.position.set(cx, 0, 0); scene.add(heroG);
-        [-4.8, 4.8].forEach(function(fx8){
-          var fr8 = new THREE.Group(); fr8.userData = {dressKind: "wall-panel8", room: ri};
-          fr8.add(b2(1.3, 1.7, 0.06, texMat("woodDark"), 0, 0, 0));
-          var fp8 = new THREE.Mesh(new THREE.PlaneGeometry(1.14, 1.54),
-            new THREE.MeshStandardMaterial({map: artTex((c.id + ri + (fx8 > 0 ? 2 : 4)) % 6), roughness: 0.85}));
-          fp8.position.z = 0.045; fr8.add(fp8);
-          fr8.position.set(cx + fx8, 1.9, -4.9); scene.add(fr8);
-        });
+        var kind10 = artKind10(r);
+        if(kind10 === "gallery"){
+          var heroUri = null;
+          try{ heroUri = (ri === 0 && typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
+          var heroG = new THREE.Group(); heroG.userData = {dressKind: "hero-panel", room: ri, heroW: 4.2, heroH: 2.4};
+          heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
+          var heroTex8 = heroTex9(heroUri, (c.id * 3 + ri * 2) % 6);
+          var hart = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
+            new THREE.MeshStandardMaterial({map: heroTex8, roughness: 0.8, emissive: 0xffffff, emissiveMap: heroTex8, emissiveIntensity: 0.22}));
+          hart.position.set(0, 1.9, -4.81); hart.name = "hero-art9"; heroG.add(hart);
+          var plaque = makeTextPlane(ri === 0 ? (c.title + " \u00b7 Case " + c.id) : r.n, 2.6, 0.6);
+          plaque.position.set(0, 0.45, -4.8); heroG.add(plaque);
+          heroG.position.set(cx, 0, 0); scene.add(heroG);
+          [-4.8, 4.8].forEach(function(fx8){
+            var fr8 = new THREE.Group(); fr8.userData = {dressKind: "wall-panel8", room: ri};
+            fr8.add(b2(1.3, 1.7, 0.06, texMat("woodDark"), 0, 0, 0));
+            var fp8 = new THREE.Mesh(new THREE.PlaneGeometry(1.14, 1.54),
+              new THREE.MeshStandardMaterial({map: artTex((c.id + ri + (fx8 > 0 ? 2 : 4)) % 6), roughness: 0.85}));
+            fp8.position.z = 0.045; fr8.add(fp8);
+            fr8.position.set(cx + fx8, 1.9, -4.9); scene.add(fr8);
+          });
+        } else {
+          // v10: NO painting hero in storage/lab/prison rooms — a large
+          // kind-appropriate element fills the hero wall, and the
+          // flanking panels become kind panels (inventory board /
+          // monitor / barred metal) instead of art prints.
+          var heroK = kind10 === "storage" ? heroStorage10() : kind10 === "lab" ? heroLab10() : heroPrison10();
+          heroK.userData = {dressKind: "hero-" + kind10 + "10", room: ri, heroW: 3.6, heroH: 2.3};
+          var plaqueK = makeTextPlane(r.n, 2.6, 0.6);
+          plaqueK.position.set(0, 0.45, -4.8); heroK.add(plaqueK);
+          heroK.position.set(cx, 0, 0); scene.add(heroK);
+          [-4.8, 4.8].forEach(function(fx10){
+            var kp10 = kindPanel10(kind10); kp10.userData = {dressKind: "wall-panel10", room: ri};
+            kp10.position.set(cx + fx10, 1.9, -4.9); scene.add(kp10);
+          });
+        }
         var theme9 = dressTheme(r);
         // v9: benches belong to gallery-ish rooms only — storage/lab/prison
         // rooms no longer inherit the gallery bench set (same-template bug).
@@ -2293,6 +2419,11 @@ function initScene(){
           shelf9.userData = {dressKind: "storage-shelf9", room: ri}; stg9.add(shelf9);
           var table9 = PROP_BUILDERS.table(); table9.position.set(2.9, 0, -2.1); table9.rotation.y = 0.15;
           table9.userData = {dressKind: "storage-table9", room: ri}; stg9.add(table9);
+          // v10: crates ON the work table — it must read as a workbench.
+          var tc10a = PROP_BUILDERS.crate(); tc10a.scale.set(0.5, 0.5, 0.5); tc10a.position.set(2.55, 0.78, -2.2);
+          tc10a.userData = {dressKind: "table-crate10", room: ri}; stg9.add(tc10a);
+          var tc10b = PROP_BUILDERS.crate(); tc10b.scale.set(0.38, 0.38, 0.38); tc10b.position.set(3.25, 0.78, -1.95); tc10b.rotation.y = 0.5;
+          tc10b.userData = {dressKind: "table-crate10", room: ri}; stg9.add(tc10b);
           stg9.position.set(cx, 0, 0); scene.add(stg9);
           addCollider(cx - 4.3, cx - 2.0, -4.3, -3.0);
           addCollider(cx + 2.6, cx + 4.2, -4.6, -3.8);
@@ -2310,6 +2441,8 @@ function initScene(){
       var cx = roomCenter(ri);
       (r.p || []).forEach(function(pn, i){
         var b = PROP_BUILDERS[pn]; if(!b) return;
+        // v10: framed-art props are kind-gated — no paintings in storage/lab/prison rooms.
+        if(pn === "frame" && NOART10[dressTheme(r)]) return;
         var g = modelOrFallback(pn, b);
         var sl = furnSlots[i % furnSlots.length];
         var jr = mulberry32(S.caseId * 1000 + ri * 131 + i * 17);
@@ -2372,8 +2505,12 @@ function initScene(){
       if(key8) slot = [0.9, -0.7];
       g.position.set(cx + slot[0], 0, slot[1]);
       g.rotation.y = key8 ? Math.atan2(0 - slot[0], 2.2 - slot[1]) : Math.atan2(-slot[0], -slot[1]);
-      g.userData = {kind: "susp", key: sp2.key};
-      g.userData.face9 = {faceZ: 0.152, headR: 0.15, planeW: 0.27, planeH: 0.33};
+      // v10: MERGE into userData. v9 REPLACED this object after
+      // suspectFigure() built it, wiping userData.anim — the animate
+      // loop's suspect-life block was dead, so figures never bobbed or
+      // turned toward the player (from any non-frontal angle there was
+      // simply no face to see).
+      g.userData.kind = "susp"; g.userData.key = sp2.key;
 
       scene.add(g); suspMeshes[sp2.key] = g;
       interactables.push({group: g, kind: "susp", key: sp2.key, label: sp2.name.replace(/,\s*\d+$/, ""), labelH: 2.15});
@@ -2452,7 +2589,10 @@ function initScene(){
       // not the window — and off-layer anchors are hidden, not edge-clamped.
       var lrect9 = layer.getBoundingClientRect();
       var LW9 = lrect9.width || W, LH9 = lrect9.height || H;
-      var lox9 = rect.left - lrect9.left, loy9 = rect.top - lrect9.top;
+      var lox9 = lrect9.width ? rect.left - lrect9.left : 0, loy9 = lrect9.height ? rect.top - lrect9.top : 0;
+      // v10: placement is judged against the CANVAS rect (expressed in
+      // layer coordinates), never the layer rect itself.
+      var canvasRect10 = {left: lox9, top: loy9, width: W, height: H};
       var sheetOpen = $("sheet") && $("sheet").classList.contains("open");
       var pz2Open = $("pz2d") && $("pz2d").classList.contains("open");
       var v = new THREE.Vector3();
@@ -2490,9 +2630,10 @@ function initScene(){
         var w = el2.offsetWidth || Math.min(LW9 - 16, Math.max(48, (it.label || "").length * 8.5 + 28));
         var h = el2.offsetHeight || 26;
         el2.style.visibility = "";
-        var pl9 = placeLabel9(x + lox9, y + loy9, w, h, {width: LW9, height: LH9});
-        if(pl9.hidden){ el2.style.display = "none"; return; }
-        cand.push({x: pl9.x, y: pl9.y, w: w, h: h, d: d, el: el2});
+        var pl10 = placeLabel10(x + lox9, y + loy9, w, h, canvasRect10);
+        if(pl10.hidden){ el2.style.display = "none"; return; }
+        el2._box10 = {x: pl10.x, y: pl10.y, w: w, h: h};
+        cand.push({x: pl10.x, y: pl10.y, w: w, h: h, d: d, el: el2});
       });
       var kept = suppressLabels8(cand);
       cand.forEach(function(cd, ci){
@@ -2787,7 +2928,7 @@ function initScene(){
       },
       endInspect: function(){ inspecting = null; applyCam(); },
       isInspecting: function(){ return !!inspecting; },
-      updateLabels: updateLabels, clearLabels: clearLabels8, clampLabelBox: clampLabelBox8, suppressLabels: suppressLabels8, ceilingMat: ceilMat8, placeLabel: placeLabel9,
+      updateLabels: updateLabels, clearLabels: clearLabels8, clampLabelBox: clampLabelBox8, suppressLabels: suppressLabels8, ceilingMat: ceilMat8, placeLabel: placeLabel9, placeLabelCanvas: placeLabel10,
       evMeshes: evMeshes, suspMeshes: suspMeshes, puzzMeshes: puzzMeshes, searchMeshes: searchMeshes,
       twistMeshes: twistMeshes, stopped: false, animate: animate, fpInteract: fpInteract,
       interactables: interactables, colliders: colliders, rooms: rooms, dist: dist,
@@ -5054,10 +5195,23 @@ wireConn = function(conn){
 };
 function lg8Apply(saved){
   if(!saved) return false;
+  /* v10: a deliberate form edit wins over the saved party. PARTY10 holds
+     the form snapshot taken at click time by the capture-phase entry
+     handler (applyForm10, appended at the end of this layer). v9
+     restored the save's name/role/size unconditionally here — which is
+     exactly what silently reverted a renamed player back to the saved
+     name when they entered a case (the live "VeraTest -> ZoeTest" bug):
+     openBrief HAD read the new name, then this restore overwrote it,
+     and the wrapper's save() persisted the old name again. */
   if(saved.name) S.name = saved.name;
   if(saved.room) S.room = saved.room;
   if(saved.role) S.role = saved.role;
   if(saved.size) S.size = saved.size;
+  if(typeof PARTY10 !== "undefined" && PARTY10 && typeof CLICK10 !== "undefined" && PARTY10.at === CLICK10){
+    if(PARTY10.name) S.name = PARTY10.name;
+    if(PARTY10.role) S.role = PARTY10.role;
+    if(PARTY10.size) S.size = PARTY10.size;
+  }
   var st = saved.lg8 || saved.lg7;
   lg7Fresh();
   if(st){
@@ -5245,6 +5399,56 @@ window.__LG8__ = {
   setZoom: setZoom7, resetView: resetView7
 };
 if(window.__LG3D__) window.__LG3D__.lg8 = window.__LG8__;
+
+/* ============ v10 FIX ROUND (appended after the v9 layer) ============
+   FIX 4  Entry form edits win: every entry action (Start a new party /
+     Join / case card / brief enter) reads the CURRENT home form at
+     click time. A capture-phase listener snapshots the form into
+     PARTY10 before any other handler runs; lg8Apply (patched in the
+     v9 layer above) lets the snapshot beat the save; a trailing
+     bubble-phase listener persists the resulting party so a reload
+     keeps the player's choice. Boot prefill is unchanged — it only
+     provides the initial form values. */
+var PARTY10 = null;
+var CLICK10 = 0; // bumped by the capture listener on EVERY click; PARTY10 is
+// stamped with the click that captured it, and lg8Apply only honours a
+// snapshot stamped by the click currently being dispatched — a stale
+// snapshot from an earlier entry click can never clobber a later restore.
+function applyForm10(){
+  var snap = {at: CLICK10};
+  var ne = $("player-name"); if(ne && ne.value && ne.value.trim()) snap.name = ne.value.trim();
+  var re10 = $("player-role"); if(re10 && re10.value) snap.role = re10.value;
+  var se10 = $("team-size"); if(se10 && se10.value) snap.size = parseInt(se10.value, 10) || 3;
+  if(snap.name) S.name = snap.name;
+  if(snap.role) S.role = snap.role;
+  if(snap.size) S.size = snap.size;
+  PARTY10 = snap;
+  return snap;
+}
+function persistParty10(){
+  try{
+    var raw = {};
+    try{ raw = JSON.parse(localStorage.getItem("lg3d-save-v1") || "{}"); }catch(e){}
+    if(S.name) raw.name = S.name;
+    if(S.role) raw.role = S.role;
+    if(S.size) raw.size = S.size;
+    if(S.room) raw.room = S.room;
+    if(!raw.caseId){ raw.caseId = 0; raw.ev = raw.ev || []; raw.susp = raw.susp || []; raw.puzz = raw.puzz || []; raw.twists = raw.twists || []; }
+    localStorage.setItem("lg3d-save-v1", JSON.stringify(raw));
+  }catch(e){}
+}
+function entryAct10(e){
+  var t = e.target && e.target.closest ? e.target.closest("[data-act]") : null;
+  if(!t) return null;
+  var act = t.getAttribute("data-act");
+  return (act === "create-room" || act === "join-room" || act === "card-enter" || act === "brief-enter") ? act : null;
+}
+if(!window.__LG10_BOUND__){
+  window.__LG10_BOUND__ = true;
+  document.addEventListener("click", function(e){ CLICK10++; if(entryAct10(e)) applyForm10(); }, true);
+  document.addEventListener("click", function(e){ if(entryAct10(e)) persistParty10(); });
+}
+window.__LG10__ = {applyForm: applyForm10, persistParty: persistParty10, party: function(){ return PARTY10; }};
 
 })();
 

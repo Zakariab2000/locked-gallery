@@ -766,34 +766,11 @@ var THEMES = {
 
 /* ---------------- 3D scene (Three.js r147 UMD) ---------------- */
 var SCENE = null;
-function makeLabelSprite(text, scale){
-  try{
-    var words = String(text || "").split(/\s+/), lines = [], cur = "";
-    words.forEach(function(wd){ var t = cur ? cur + " " + wd : wd; if(t.length > 26 && cur){ lines.push(cur); cur = wd; } else cur = t; });
-    if(cur) lines.push(cur);
-    lines = lines.slice(0, 2);
-    var cv = document.createElement("canvas");
-    var ctx0 = document.createElement("canvas").getContext("2d");
-    var tw = 0;
-    if(ctx0){ ctx0.font = "bold 40px sans-serif"; lines.forEach(function(ln){ var w = ctx0.measureText(ln).width; if(w > tw) tw = w; }); }
-    var cw = Math.max(120, Math.min(512, Math.ceil(tw) + 48));
-    cv.width = cw; cv.height = lines.length > 1 ? 168 : 112;
-    var ctx = cv.getContext("2d");
-    ctx.fillStyle = "rgba(10,8,4,0.85)";
-    var bh = lines.length > 1 ? 140 : 84;
-    if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(6, 14, cw - 12, bh, 26); ctx.fill(); }
-    else { ctx.fillRect(6, 14, cw - 12, bh); }
-    ctx.strokeStyle = "#c9a227"; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = "#f5e9c8"; ctx.font = "bold 40px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    lines.forEach(function(ln, i){ ctx.fillText(ln, cw / 2, lines.length > 1 ? 52 + i * 48 : 58); });
-    var tex = new THREE.CanvasTexture(cv);
-    var mat = new THREE.SpriteMaterial({map: tex, transparent: true, depthTest: true});
-    var sp = new THREE.Sprite(mat);
-    var hh = lines.length > 1 ? 0.86 : 0.57;
-    sp.scale.set(2.6*(scale||1)*(cw / 512), hh*(scale||1), 1);
-    return sp;
-  }catch(e){ return null; }
-}
+/* v12: the legacy in-scene sprite text painter that used to live here is
+   REMOVED. It had no call sites left — every scene label is a DOM pill in
+   #labels6 placed by placeLabel11 — and keeping a second, divergent text
+   path in the file invited exactly the style/position split the v11
+   inspection chased. One label mechanism only: DOM .lbl6 pills. */
 function mat(color, emissive){
   return new THREE.MeshStandardMaterial({color: color, roughness: 0.8, metalness: 0.1,
     emissive: emissive||0x000000, emissiveIntensity: emissive?0.55:0});
@@ -2733,7 +2710,13 @@ function initScene(){
         if(!kept[ci]){ cd.el.style.display = "none"; return; }
         cd.el.style.display = "block";
         cd.el.style.left = cd.x + "px"; cd.el.style.top = cd.y + "px";
-        cd.el.style.opacity = Math.max(0.3, Math.min(1, (5.5 - cd.d) / 3));
+        // v12: the distance fade floor is 0.92, not 0.3. At 0.3 the
+        // pill's dark bg and amber border both washed out over bright
+        // dressing — the live "thin dark oval, shelf lines showing
+        // through, no border" (GFP sits 5.44 m from the Storage
+        // viewpoint -> it rendered at 0.30, while Marcus Hale at
+        // 3.04 m / 0.82 read as a solid pill in the same room).
+        cd.el.style.opacity = Math.max(0.92, Math.min(1, (5.5 - cd.d) / 3));
         cd.el.style.transform = "translate(-50%,-50%)";
       });
     }
@@ -5412,6 +5395,12 @@ if(!window.__LG7_BOUND__){
       } else if(cev){
         LG7.boardFeedback = "<span class='fb-bad'>Not examined yet \u2014 find and examine \u201C" + esc(cev.label) + "\u201D in the Scene first, then link it here.</span>";
       }
+      // v12: also surface the same message as a toast. The feedback
+      // line renders below the chip grid, so on a phone it can land
+      // below the fold and read as "nothing happened" (the v11 live
+      // miss — the handler and the DOM write were both verified fine).
+      // toast() is fixed-position and always on top: unmissable.
+      if(cev){ try{ toast(LG7.boardFeedback.replace(/<[^>]+>/g, "")); }catch(e){} }
       renderBoard7();
     }
     else if(act === "brief-play"){ playBrief7(); }

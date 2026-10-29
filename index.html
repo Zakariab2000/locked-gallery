@@ -900,12 +900,13 @@ function skyTex(mood){
     }
   });
 }
-function faceTex(skin, hair, style){
-  // v8: Procedural face for suspects WITHOUT a photo portrait (cases 13-32).
-  // BIG high-contrast features on a 512 canvas - at 3m a subtle face reads as
-  // a blank square (the v6/v7 failure), so eyes/brows/nose/mouth are drawn
-  // large and dark on the skin tone, with hair framing the top and sides.
-  return cvTex(512, 512, function(ctx, w, h){
+function paintFace9(ctx, w, h, skin, hair, style){
+  // v9: the face painter, shared by faceTex and suspectFigure. Draws in
+  // 512-space (scaled to the target canvas): big dark features on the skin
+  // tone, hair framing the top — a face that reads at 3m, from frame one.
+  ctx.save();
+  if(w !== 512 || h !== 512) ctx.scale(w / 512, h / 512);
+  w = 512; h = 512;
     ctx.fillStyle = skin; ctx.fillRect(0, 0, w, h);
     // soft cheek shading so the face is not one flat tone
     ctx.fillStyle = "rgba(0,0,0,0.08)";
@@ -943,7 +944,10 @@ function faceTex(skin, hair, style){
     ctx.arc(256, 402, 62, 0.2, Math.PI - 0.2); ctx.stroke();
     ctx.fillStyle = "rgba(140,70,60,0.55)";
     ctx.beginPath(); ctx.ellipse(256, 424, 58, 13, 0, 0, 7); ctx.fill();
-  });
+  ctx.restore();
+}
+function faceTex(skin, hair, style){
+  return cvTex(512, 512, function(ctx, w, h){ paintFace9(ctx, w, h, skin, hair, style); });
 }
 var TEXCACHE = {};
 function texMat(kind, tint){
@@ -1323,6 +1327,7 @@ function suspectFigure(sp, idx, caseId){
   g.add(b2(0.2, 0.07, 0.3, texMat("metalDark"), 0.11, 0.035, 0.05));
   // torso (0.62m) + shoulders + arms
   var torso = b2(0.56, 0.62, 0.28, topM, 0, 1.09, 0); g.add(torso);
+  var shoulder9 = c2(0.085, 0.085, 0.6, topM, 0, 1.37, 0, 10); shoulder9.rotation.z = Math.PI / 2; g.add(shoulder9);
   if(out.style === "suit" || out.style === "coat"){
     g.add(b2(0.1, 0.3, 0.02, new THREE.MeshStandardMaterial({color: 0xc9a227, roughness: 0.5}), 0, 1.2, 0.13));
   }
@@ -1346,10 +1351,38 @@ function suspectFigure(sp, idx, caseId){
   head.add(skull);
   var faceUri = null;
   try{ faceUri = (typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[caseId + ":" + (sp.key || "")] : null; }catch(e){}
-  var faceMap = faceUri ? photoTex(faceUri, "#c89878") : faceTex(skin, hair, hairStyle);
-  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.36, 0.42),
+  // v9 ROOT-CAUSE FIX (blank faces live): the v8 face for photo cases was
+  // photoTex() — an 8x8 PALE placeholder (#c89878, the same colour as the
+  // skin) swapped only if THREE.TextureLoader's load callback fired; the
+  // swap silently never landed in the live scene, and the oversized
+  // 0.36x0.42 plane covered the whole head, so the figure read as a peach
+  // square. Now the face is PAINTED SYNCHRONOUSLY (paintFace9) so a real
+  // face exists from frame one; the portrait photo, when present, is drawn
+  // INTO THE SAME CANVAS by a plain Image onload (the exact mechanism the
+  // Suspects-tab <img> uses successfully). The plane is sized to sit INSIDE
+  // the head silhouette so skull + hair stay visible around it.
+  var faceCv9 = document.createElement("canvas"); faceCv9.width = 256; faceCv9.height = 256;
+  paintFace9(faceCv9.getContext("2d"), 256, 256, skin, hair, hairStyle);
+  var faceMap = new THREE.CanvasTexture(faceCv9);
+  if(THREE.sRGBEncoding) faceMap.encoding = THREE.sRGBEncoding;
+  if(faceUri){
+    try{
+      var fimg9 = new Image();
+      fimg9.onload = function(){
+        try{
+          var fx9 = faceCv9.getContext("2d");
+          var fsc9 = Math.max(256 / fimg9.width, 256 / fimg9.height);
+          fx9.drawImage(fimg9, (256 - fimg9.width * fsc9) / 2, (256 - fimg9.height * fsc9) / 2,
+            fimg9.width * fsc9, fimg9.height * fsc9);
+          faceMap.needsUpdate = true;
+        }catch(e){}
+      };
+      fimg9.src = faceUri;
+    }catch(e){}
+  }
+  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.33),
     new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.65}));
-  facePlane.position.set(0, -0.01, 0.175); facePlane.name = "face8";
+  facePlane.position.set(0, -0.01, 0.152); facePlane.name = "face9";
   head.add(facePlane);
   if(hairStyle !== "bald"){
     var cap8 = new THREE.Mesh(geo("haircap8", function(){ return new THREE.SphereGeometry(0.158, 20, 12, 0, Math.PI * 2, 0, 1.85); }), hairM);
@@ -1486,6 +1519,18 @@ function suppressLabels8(items){
 function clearLabelLayer8(){
   var layer = $("labels6"); if(layer) layer.innerHTML = "";
 }
+/* ---- v9 label placement ----------------------------------------------------
+   placeLabel9(px, py, w, h, rect): px/py are the anchor point in LABEL-LAYER
+   coordinates, rect = {width, height} of the layer itself. An anchor that
+   projects OUTSIDE the layer rect returns {hidden:true} (the v8 code clamped
+   such anchors to the window edge, where the layer's overflow:hidden cut the
+   label in half — the live "Gallery Floor Plan" clip). An inside anchor gets
+   its box centre clamped so the WHOLE box sits inside the layer, 8px margin. */
+function placeLabel9(px, py, w, h, rect){
+  if(px < 0 || py < 0 || px > rect.width || py > rect.height) return {hidden: true};
+  var c = clampLabelBox8(px, py, w, h, rect.width, rect.height);
+  return {hidden: false, x: c.x, y: c.y};
+}
 var MOODLIGHT = {
   night: {amb: 0.95, dir: 1.0, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
   day: {amb: 1.05, dir: 1.15, dirCol: 0xfff2d0, fog: 0x8aa8c8, bg: 0x8aa8c8},
@@ -1548,6 +1593,73 @@ function wallTint(hex){
   return "#" + ((r << 16) | (g << 8) | b).toString(16).padStart(6, "0");
 }
 var ARTCACHE = {};
+/* ---- v9 hero art: a PAINTED canvas, never a pattern ------------------------
+   paintArt9 composes an actual little scene (sky gradient, sun/moon disc,
+   hill/skyline band, water/ground band, building silhouettes, foreground
+   figures, matting border) with many distinct colour regions. heroTex9
+   paints it synchronously as the base texture and, when the case has a
+   hero photo, draws the photo INTO the same canvas on Image load — the
+   same synchronous-base technique as the v9 faces. (The v8 hero fell back
+   to artTex((id*3+ri*2)%6) whenever TEX3D.heroes had no entry — heroes only
+   exist for cases 3-12 — and variant 3 of artTex is a GREEN STRIPED
+   pattern: exactly the "hero panel" the live inspection saw in Case 1.) */
+function paintArt9(ctx, w, h, seed){
+  var rnd = mulberry32(seed * 977 + 131);
+  var pals = [["#1d2b4a", "#7a86b8", "#e8c98f"], ["#2a1e3f", "#8a5a7a", "#f0b26a"],
+    ["#12333a", "#4a8a8a", "#e8e0b0"], ["#3a1d1d", "#a05a3a", "#f0d090"],
+    ["#1d3a1d", "#6a9a5a", "#eef0c0"], ["#23233a", "#5a6aa0", "#d8d8f0"]];
+  var pal = pals[seed % pals.length];
+  var gr = ctx.createLinearGradient(0, 0, 0, h);
+  gr.addColorStop(0, pal[0]); gr.addColorStop(0.62, pal[1]); gr.addColorStop(1, pal[2]);
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = pal[2];
+  ctx.beginPath(); ctx.arc(w * (0.24 + rnd() * 0.5), h * 0.3, h * 0.09, 0, 7); ctx.fill();
+  ctx.fillStyle = pal[0];
+  ctx.beginPath(); ctx.moveTo(0, h * 0.62);
+  for(var hi9 = 0; hi9 <= 6; hi9++) ctx.lineTo(w * hi9 / 6, h * (0.5 + rnd() * 0.14));
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+  ctx.fillStyle = pal[1]; ctx.fillRect(0, h * 0.74, w, h * 0.26);
+  ctx.strokeStyle = pal[2]; ctx.lineWidth = 2; ctx.globalAlpha = 0.5;
+  for(var ws9 = 0; ws9 < 7; ws9++){
+    var wy9 = h * (0.78 + rnd() * 0.18);
+    ctx.beginPath(); ctx.moveTo(w * rnd() * 0.5, wy9); ctx.lineTo(w * (0.5 + rnd() * 0.5), wy9); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = pal[0];
+  for(var bd9 = 0; bd9 < 4; bd9++){
+    var bh9 = h * (0.2 + rnd() * 0.22);
+    ctx.fillRect(w * (0.08 + bd9 * 0.24), h * 0.74 - bh9, w * 0.1, bh9);
+  }
+  ctx.fillStyle = "rgba(10,8,14,0.85)";
+  [0.36, 0.58].forEach(function(fx9){
+    ctx.beginPath(); ctx.arc(w * fx9, h * 0.8, h * 0.045, 0, 7); ctx.fill();
+    ctx.fillRect(w * fx9 - h * 0.035, h * 0.8, h * 0.07, h * 0.16);
+  });
+  ctx.strokeStyle = "rgba(240,220,170,0.55)"; ctx.lineWidth = 3;
+  ctx.strokeRect(6, 6, w - 12, h - 12);
+}
+function heroTex9(uri, seed){
+  var cv = document.createElement("canvas"); cv.width = 512; cv.height = 288;
+  paintArt9(cv.getContext("2d"), 512, 288, seed);
+  var tx = new THREE.CanvasTexture(cv);
+  if(THREE.sRGBEncoding) tx.encoding = THREE.sRGBEncoding;
+  if(uri){
+    try{
+      var him9 = new Image();
+      him9.onload = function(){
+        try{
+          var hx9 = cv.getContext("2d");
+          var hsc9 = Math.max(512 / him9.width, 288 / him9.height);
+          hx9.drawImage(him9, (512 - him9.width * hsc9) / 2, (288 - him9.height * hsc9) / 2,
+            him9.width * hsc9, him9.height * hsc9);
+          tx.needsUpdate = true;
+        }catch(e){}
+      };
+      him9.src = uri;
+    }catch(e){}
+  }
+  return tx;
+}
 function artTex(i){
   if(ARTCACHE[i]) return ARTCACHE[i];
   var pats = [
@@ -2140,10 +2252,10 @@ function initScene(){
         try{ heroUri = (ri === 0 && typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
         var heroG = new THREE.Group(); heroG.userData = {dressKind: "hero-panel", room: ri, heroW: 4.2, heroH: 2.4};
         heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
-        var heroTex8 = heroUri ? photoTex(heroUri, "#2a2a4a") : artTex((c.id * 3 + ri * 2) % 6);
+        var heroTex8 = heroTex9(heroUri, (c.id * 3 + ri * 2) % 6);
         var hart = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
           new THREE.MeshStandardMaterial({map: heroTex8, roughness: 0.8, emissive: 0xffffff, emissiveMap: heroTex8, emissiveIntensity: 0.22}));
-        hart.position.set(0, 1.9, -4.81); hart.name = "hero-art8"; heroG.add(hart);
+        hart.position.set(0, 1.9, -4.81); hart.name = "hero-art9"; heroG.add(hart);
         var plaque = makeTextPlane(ri === 0 ? (c.title + " \u00b7 Case " + c.id) : r.n, 2.6, 0.6);
         plaque.position.set(0, 0.45, -4.8); heroG.add(plaque);
         heroG.position.set(cx, 0, 0); scene.add(heroG);
@@ -2155,7 +2267,10 @@ function initScene(){
           fp8.position.z = 0.045; fr8.add(fp8);
           fr8.position.set(cx + fx8, 1.9, -4.9); scene.add(fr8);
         });
-        [-1.9, 1.9].forEach(function(bx8){
+        var theme9 = dressTheme(r);
+        // v9: benches belong to gallery-ish rooms only — storage/lab/prison
+        // rooms no longer inherit the gallery bench set (same-template bug).
+        if(theme9 !== "storage" && theme9 !== "lab" && theme9 !== "prison") [-1.9, 1.9].forEach(function(bx8){
           var bn8 = new THREE.Group(); bn8.userData = {dressKind: "bench8", room: ri};
           bn8.add(b2(1.8, 0.1, 0.46, texMat("wood"), 0, 0.46, 0));
           bn8.add(b2(0.08, 0.42, 0.4, texMat("woodDark"), -0.8, 0.21, 0));
@@ -2164,6 +2279,24 @@ function initScene(){
           bn8.position.set(cx + bx8, 0, -2.5); scene.add(bn8);
           addCollider(cx + bx8 - 0.95, cx + bx8 + 0.95, -2.75, -2.25);
         });
+        // v9: storage rooms get a real storage set instead — crate stacks, a
+        // stocked shelf unit and a work table along the viewpoint wall.
+        if(theme9 === "storage"){
+          var stg9 = new THREE.Group(); stg9.userData = {dressKind: "storage-set9", room: ri};
+          var crate9a = PROP_BUILDERS.crate(); crate9a.position.set(-3.6, 0, -3.6);
+          crate9a.userData = {dressKind: "storage-crates9", room: ri}; stg9.add(crate9a);
+          var crate9b = PROP_BUILDERS.crate(); crate9b.position.set(-2.65, 0, -3.7); crate9b.rotation.y = 0.4;
+          crate9b.userData = {dressKind: "storage-crates9", room: ri}; stg9.add(crate9b);
+          var crate9c = PROP_BUILDERS.crate(); crate9c.position.set(-3.15, 0.72, -3.65); crate9c.rotation.y = -0.2;
+          crate9c.userData = {dressKind: "storage-crates9", room: ri}; stg9.add(crate9c);
+          var shelf9 = PROP_BUILDERS.shelf(); shelf9.position.set(3.4, 0, -4.2);
+          shelf9.userData = {dressKind: "storage-shelf9", room: ri}; stg9.add(shelf9);
+          var table9 = PROP_BUILDERS.table(); table9.position.set(2.9, 0, -2.1); table9.rotation.y = 0.15;
+          table9.userData = {dressKind: "storage-table9", room: ri}; stg9.add(table9);
+          stg9.position.set(cx, 0, 0); scene.add(stg9);
+          addCollider(cx - 4.3, cx - 2.0, -4.3, -3.0);
+          addCollider(cx + 2.6, cx + 4.2, -4.6, -3.8);
+        }
       }
       // room lamp light (one real point light per room) + lamp props
       var pl = new THREE.PointLight(0xffc880, mood === "day" ? 0.6 : 1.0, 14);
@@ -2240,7 +2373,7 @@ function initScene(){
       g.position.set(cx + slot[0], 0, slot[1]);
       g.rotation.y = key8 ? Math.atan2(0 - slot[0], 2.2 - slot[1]) : Math.atan2(-slot[0], -slot[1]);
       g.userData = {kind: "susp", key: sp2.key};
-      g.userData.face8 = {faceZ: 0.175, headR: 0.15};
+      g.userData.face9 = {faceZ: 0.152, headR: 0.15, planeW: 0.27, planeH: 0.33};
 
       scene.add(g); suspMeshes[sp2.key] = g;
       interactables.push({group: g, kind: "susp", key: sp2.key, label: sp2.name.replace(/,\s*\d+$/, ""), labelH: 2.15});
@@ -2314,6 +2447,12 @@ function initScene(){
       if(PL.room !== lastLabelRoom8){ clearLabels8(); lastLabelRoom8 = PL.room; }
       var rect = canvas.getBoundingClientRect();
       var W = rect.width || 900, H = rect.height || 600;
+      // v9: labels live in #labels6, so placement is computed against the
+      // LAYER's rect (converting the canvas-space point into layer space),
+      // not the window — and off-layer anchors are hidden, not edge-clamped.
+      var lrect9 = layer.getBoundingClientRect();
+      var LW9 = lrect9.width || W, LH9 = lrect9.height || H;
+      var lox9 = rect.left - lrect9.left, loy9 = rect.top - lrect9.top;
       var sheetOpen = $("sheet") && $("sheet").classList.contains("open");
       var pz2Open = $("pz2d") && $("pz2d").classList.contains("open");
       var v = new THREE.Vector3();
@@ -2343,14 +2482,21 @@ function initScene(){
         v.set(p.x, (it.labelH || 1.8) + p.y, p.z).project(camera);
         if(v.z > 1 || v.z < -1) return;
         var x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H;
-        var w = el2.offsetWidth || Math.min(W - 16, Math.max(40, (it.label || "").length * 7 + 24));
+        // v9: measure the REAL box — the element was display:none, whose
+        // offsetWidth is 0, so v8 always used a char-count estimate that
+        // UNDER-measured wide labels (7px/char) and the true box overflowed
+        // the clamp, getting clipped by the layer's overflow:hidden.
+        el2.style.display = "block"; el2.style.visibility = "hidden";
+        var w = el2.offsetWidth || Math.min(LW9 - 16, Math.max(48, (it.label || "").length * 8.5 + 28));
         var h = el2.offsetHeight || 26;
-        var cl = clampLabelBox8(x, y, w, h, W, H);
-        cand.push({x: cl.x, y: cl.y, w: w, h: h, d: d, el: el2});
+        el2.style.visibility = "";
+        var pl9 = placeLabel9(x + lox9, y + loy9, w, h, {width: LW9, height: LH9});
+        if(pl9.hidden){ el2.style.display = "none"; return; }
+        cand.push({x: pl9.x, y: pl9.y, w: w, h: h, d: d, el: el2});
       });
       var kept = suppressLabels8(cand);
       cand.forEach(function(cd, ci){
-        if(!kept[ci]) return;
+        if(!kept[ci]){ cd.el.style.display = "none"; return; }
         cd.el.style.display = "block";
         cd.el.style.left = cd.x + "px"; cd.el.style.top = cd.y + "px";
         cd.el.style.opacity = Math.max(0.3, Math.min(1, (5.5 - cd.d) / 3));
@@ -2641,7 +2787,7 @@ function initScene(){
       },
       endInspect: function(){ inspecting = null; applyCam(); },
       isInspecting: function(){ return !!inspecting; },
-      updateLabels: updateLabels, clearLabels: clearLabels8, clampLabelBox: clampLabelBox8, suppressLabels: suppressLabels8, ceilingMat: ceilMat8,
+      updateLabels: updateLabels, clearLabels: clearLabels8, clampLabelBox: clampLabelBox8, suppressLabels: suppressLabels8, ceilingMat: ceilMat8, placeLabel: placeLabel9,
       evMeshes: evMeshes, suspMeshes: suspMeshes, puzzMeshes: puzzMeshes, searchMeshes: searchMeshes,
       twistMeshes: twistMeshes, stopped: false, animate: animate, fpInteract: fpInteract,
       interactables: interactables, colliders: colliders, rooms: rooms, dist: dist,
@@ -4487,7 +4633,17 @@ if(window.__LG3D__){
   window.__LG3D__.pzFlash = pzFlash; window.__LG3D__.evSub = evSub;
 }
 
-/* ============ v8 ROOM-FIX (layered on the v7 STYLE REBUILD below) ============
+/* ============ v9 FIX ROUND (layered on the v8 ROOM-FIX below) ============
+   1 Board links lost on reload — ROOT CAUSE FOUND: base enterCase() calls
+     updateHUD(), whose last line is save(); on a cold boot that save fired
+     BEFORE lg8Apply restored LG7, so the wrapped save serialized the blank
+     initial LG7 over the stored lg8 block (proved links + chapter report).
+     v8's probe never ran enterCase, so it never saw the clobber. Fix: the
+     lg8 restore/fresh-init now runs BEFORE enterCase0(), and the save
+     wrapper only writes the lg7/lg8 blocks when LG7 is owned by the
+     current case (LG7._tok, set by lg7Fresh/lg8Apply) — otherwise it
+     preserves the stored blocks untouched.
+   ============ v8 ROOM-FIX (layered on the v7 STYLE REBUILD below) ============
    Zoom = camera FOV only (the canvas element NEVER scales/moves, controls stay
    clickable at every zoom); full-session persistence (party config + chapter +
    proved links + report + viewRoom survive a reload); Board shows locked chips
@@ -4801,6 +4957,7 @@ function lg7Fresh(){
   LG7.chapter = 1; LG7.proved = {}; LG7.links = []; LG7.chat = [];
   LG7.hintsUsed = 0; LG7.report = null; LG7.tab = "scene"; LG7.viewRoom = 0;
   LG7.zoom = 1; LG7.slotA = null; LG7.slotB = null; LG7.epilogue = ""; LG7.boardFeedback = "";
+  LG7._tok = S.caseId; /* v9: this LG7 state is owned by the current case */
 }
 function lg7BeginCase(id, size, role){
   S.caseId = id; S.size = size || 3; S.role = role || "detective";
@@ -4840,9 +4997,16 @@ save = function(){
   if(!S.entered) return;
   try{
     var raw = JSON.parse(localStorage.getItem("lg3d-save-v1") || "{}");
-    raw.lg7 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat};
-    raw.lg8 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat,
-      hintsUsed: LG7.hintsUsed, report: LG7.report, epilogue: LG7.epilogue, viewRoom: LG7.viewRoom};
+    /* v9: only serialize LG7 when it is owned by the current case (restored
+       from this case's save, or freshly begun for it). In the cold-boot
+       window — enterCase0's updateHUD()->save() firing before the restore —
+       the in-memory LG7 is still the blank initial object; writing it here
+       is what erased proved links + the report in v8. Preserve instead. */
+    if(LG7._tok === S.caseId){
+      raw.lg7 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat};
+      raw.lg8 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat,
+        hintsUsed: LG7.hintsUsed, report: LG7.report, epilogue: LG7.epilogue, viewRoom: LG7.viewRoom};
+    }
     localStorage.setItem("lg3d-save-v1", JSON.stringify(raw));
   }catch(e){}
 };
@@ -4946,13 +5110,17 @@ try{ lg8BootParty(); }catch(e){}
 document.addEventListener("DOMContentLoaded", function(){ try{ lg8BootParty(); }catch(e){} });
 var enterCase0 = enterCase;
 enterCase = function(){
-  enterCase0();
+  /* v9: restore (or fresh-init) LG7 BEFORE enterCase0() runs — v8 restored
+     after, but enterCase0's updateHUD() -> save() fired in between and
+     overwrote the stored lg8 block with the blank initial LG7, so the
+     restore read back empty proved links and no report. */
   var restored = false;
   try{
     var saved = loadSave();
     if(saved && saved.caseId === S.caseId && (saved.lg8 || saved.lg7)) restored = lg8Apply(saved);
   }catch(e){}
   if(!restored) lg7Fresh();
+  enterCase0();
   var st = $("stage"); if(st) st.classList.add("vp-mode");
   var jw = $("joywrap"); if(jw) jw.classList.add("hidden");
   setZoom7(1);

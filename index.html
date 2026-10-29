@@ -246,6 +246,38 @@ video{width:100%;border-radius:12px;background:#000}
 .pz5-takeaway-head{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.8rem;letter-spacing:.15em;color:#d4a853;margin-bottom:6px}
 .pz5-continue{margin-top:16px;padding:14px 20px;border-radius:10px;border:1px solid #10b981;background:#10b981;color:#0a0b0e;font-weight:700;cursor:pointer;min-height:48px}
 
+
+/* ============ v7 STYLE: phone-first dark noir (reference-game look) ============ */
+:root{--bg:#0e0f13;--panel:#161821;--panel2:#1f222d;--paper:#ece7dc;--dim:#9a9aa6;--brass:#e0a458;--blue:#6ba6d6;--line:#2a2d3a;--ok:#22c55e;--bad:#ef4444}
+html,body{background:var(--bg);color:var(--paper);font-family:Georgia,"Palatino Linotype",Palatino,serif}
+h1,h2,h3{font-family:Georgia,"Palatino Linotype",Palatino,serif}
+.kicker{display:inline-block;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.btn{background:linear-gradient(180deg,#e0a458,#b57e2e);color:#161821;border:0;border-radius:14px;padding:12px 16px;min-height:44px}
+.btn.ghost{background:var(--panel2);color:var(--paper);border:1px solid var(--line)}
+.card,.casecard{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+input[type="text"],select{background:#1f222d;color:var(--paper);border:1px solid var(--line);border-radius:14px;min-height:44px}
+#gl{border-radius:14px}
+#topbar7{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.top-kicker{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.top-q{font-size:1.05rem;line-height:1.5;margin:4px 0 8px}
+#sub-bar{background:var(--panel);border:1px solid var(--brass);border-radius:14px;padding:12px;margin:10px 0}
+#vp-bar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;align-items:center}
+.vpbtn{min-height:44px}
+.vpbtn:disabled{opacity:.45;cursor:not-allowed}
+#stage.vp-mode #joywrap{display:none!important}
+#tabbar7{position:sticky;bottom:0;z-index:40;display:flex;gap:6px;background:#0e0f13;border-top:1px solid var(--line);padding:10px 6px calc(10px + env(safe-area-inset-bottom));margin:12px -16px -16px}
+.tabbtn{flex:1;min-height:44px;border-radius:12px;background:var(--panel2);color:var(--dim);border:1px solid var(--line);font-weight:700;cursor:pointer;font-size:.85rem}
+.tabbtn[aria-pressed="true"]{background:var(--brass);color:#161821;border-color:var(--brass)}
+.board-chip{display:inline-block;min-height:44px;padding:10px 14px;margin:4px 4px 4px 0;border-radius:12px;background:var(--panel2);color:var(--paper);border:1px solid var(--line);cursor:pointer;font-weight:600}
+.board-chip.sel{border-color:var(--brass);outline:2px solid var(--brass)}
+.board-chip.done{border-color:var(--ok)}
+.goal{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+.goal.ok{border-color:var(--ok)}
+.fb-ok{color:var(--ok);font-weight:700}
+.fb-bad{color:var(--bad);font-weight:700}
+.locked-row{border:1px dashed var(--line);border-radius:12px;padding:12px;margin:8px 0;color:var(--dim)}
+.chat-msg{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0;background:var(--panel2)}
+.chat-msg b{color:var(--blue)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -255,7 +287,7 @@ video{width:100%;border-radius:12px;background:#000}
 <!-- ============ HOME ============ -->
 <div id="view-home"><div class="wrap">
   <h1>🔒 The Locked Gallery <small style="font-size:.9rem;color:var(--brass)">3D</small></h1>
-  <p class="lede">Walk real rooms. Open doors. Tap the glowing clues. Talk to the suspects face to face. The case is in the rooms — go find it.</p>
+  <p class="lede">A co-op mystery for 1–4 detectives. Look around real rooms, find the clues, and link them on the Board to prove each chapter.</p>
   <div class="card">
     <span class="kicker">🎬 Trailer</span>
     <video id="trailer" src="videos/trailer.mp4" preload="metadata" playsinline controls poster="data:image/jpeg;base64,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" style="margin-top:8px"></video>
@@ -265,32 +297,33 @@ video{width:100%;border-radius:12px;background:#000}
     <label>Your name <input type="text" id="player-name" placeholder="e.g. Zack" maxlength="24"/></label>
     <label>Your role
       <select id="player-role">
-        <option value="detective">Detective</option>
-        <option value="forensics">Forensics</option>
-        <option value="profiler">Profiler</option>
+        <option value="detective">Field Agent</option>
+        <option value="forensics">Analyst</option>
+        <option value="profiler">Interrogator</option>
         <option value="archivist">Archivist</option>
       </select>
     </label>
     <label>Team size
       <select id="team-size">
+        <option value="1">1 player · Solo (all roles)</option>
         <option value="2">2 players</option>
         <option value="3" selected>3 players</option>
         <option value="4">4 players</option>
       </select>
     </label>
     <p>Room code: <b id="room-code" style="color:var(--brass);font-size:1.2rem">—</b></p>
-    <button class="btn" data-act="create-room">＋ Create room</button>
+    <button class="btn" data-act="create-room">＋ Start a new party</button>
     <button class="btn ghost" data-act="copy-link">🔗 Copy link</button>
     <div style="display:flex;gap:8px;margin-top:8px">
       <input type="text" id="join-code" placeholder="Join with a code, e.g. BLUE-4821" style="margin:0"/>
       <button class="btn ghost" data-act="join-room" style="margin:0;white-space:nowrap">Join</button>
     </div>
-    <p class="sheet-note">Friends join by link — no install. Talk outside the app, agree, and submit one answer together.</p>
+    <p class="sheet-note">Friends join by link — no install. Share clues on the Board, talk in the party Chat tab, and submit one accusation together.</p>
     <p id="save-note" class="notice hidden"></p>
   </div>
   <div id="mode-tabs" style="display:flex;flex-wrap:wrap;gap:6px"></div>
   <div id="casecards"></div>
-  <p class="foot">The Locked Gallery · 32 cases · 2–4 players · Co-op mystery — walk the rooms, don't just read about them.</p>
+  <p class="foot">The Locked Gallery · 32 cases · 1–4 players · Co-op mystery — look, link, accuse.</p>
 </div></div>
 
 <!-- ============ BRIEF ============ -->
@@ -306,7 +339,7 @@ video{width:100%;border-radius:12px;background:#000}
     <video id="brief-video" preload="metadata" playsinline controls></video>
   </div>
   <button class="btn" data-act="brief-enter" style="width:100%;font-size:1.15rem">🚪 Enter the rooms</button>
-  <p class="sheet-note">Walk with the joystick (bottom-left) — drag the room to look around. Walk through doors to reach the next room. Tap a glowing object to examine it, tap a figure to talk.</p>
+  <p class="sheet-note">Look around each location — drag to look, pinch to zoom. Tap a glowing object to examine it, tap a figure to talk. Locations unlock chapter by chapter.</p>
 </div></div>
 
 <!-- ============ 3D GAME ============ -->
@@ -316,13 +349,16 @@ video{width:100%;border-radius:12px;background:#000}
     <span class="chip" id="hud-room"></span>
     <span class="chip">🔍 <span id="hud-ev">0/12</span></span>
     <span class="chip">👥 <span id="hud-int">0/4</span></span>
-    <span class="chip">🧩 <span id="hud-pz">0/3</span></span>
+    <span class="chip">🔗 <span id="hud-pz">0/3</span></span>
     <span class="chip">⏱ <span id="hud-timer">00:00</span></span>
     <span class="chip">💡 <span id="hud-hints">3</span></span>
   </div>
   <div class="bar" style="margin:10px 0"><i id="hud-fill"></i></div>
+  <div id="topbar7"><div class="top-kicker" id="topbar-chapter">Chapter 1</div><div class="top-q" id="topbar-question"></div><div class="bar"><i id="topbar-fill"></i></div><p class="sheet-note" id="topbar-count" style="margin:6px 0 0"></p></div>
+  <div id="sub-bar" class="hidden"><span class="kicker">🎙 Briefing</span><p id="sub-text" class="sheet-line" style="margin:6px 0 0"></p></div>
   <div id="live-members" style="margin:4px 0 10px"></div>
   <div id="mode-notice" class="notice hidden"></div>
+  <div id="vp-bar"><button class="btn ghost vpbtn" data-act="vp" data-room="0">📍 Location 1</button><button class="btn ghost vpbtn" data-act="vp" data-room="1">📍 Location 2</button><button class="btn ghost vpbtn" data-act="vp" data-room="2">📍 Location 3</button><button class="btn ghost vpbtn" data-act="vp-zoom-out">− Zoom out</button><button class="btn ghost vpbtn" data-act="vp-zoom-in">＋ Zoom in</button><button class="btn ghost vpbtn" data-act="vp-zoom-reset">Reset view</button><span class="sheet-note">Drag to look · Pinch to zoom · Locations unlock chapter by chapter.</span></div>
   <div id="stage">
     <canvas id="gl"></canvas>
     <div id="crosshair"></div>
@@ -348,7 +384,19 @@ video{width:100%;border-radius:12px;background:#000}
     <button class="btn ghost" data-mute data-act="mute">🔊 Sound</button>
     <button class="btn ghost" data-act="copy-link">🔗 Copy link</button>
   </div>
-  <p class="sheet-note">Left thumb: joystick to walk · Right thumb: drag to look · Center an object and tap INTERACT, or tap it directly · Walk through doors to the next room · Desktop: WASD + mouse-drag.</p>
+  <p class="sheet-note">Drag to look · Pinch to zoom · Tap a glowing object to examine it, tap a figure to talk · Switch locations with the viewpoint buttons · Desktop: WASD still walks as a fallback.</p>
+
+  <div id="tabbar7">
+    <button class="tabbtn" data-act="tab7" data-tab="scene" aria-pressed="true">🎬 Scene</button>
+    <button class="tabbtn" data-act="tab7" data-tab="evidence" aria-pressed="false">🔍 Evidence</button>
+    <button class="tabbtn" data-act="tab7" data-tab="suspects" aria-pressed="false">👥 Suspects</button>
+    <button class="tabbtn" data-act="tab7" data-tab="board" aria-pressed="false">🔗 Board</button>
+    <button class="tabbtn" data-act="tab7" data-tab="chat" aria-pressed="false">💬 Chat</button>
+  </div>
+  <div id="panel-evidence" class="hidden"><div class="card"><span class="kicker">Evidence · Case file</span><h3 style="margin:6px 0">What you have found</h3><div id="ev-list"></div></div></div>
+  <div id="panel-suspects" class="hidden"><div class="card"><span class="kicker">Suspects · Testimony</span><h3 style="margin:6px 0">Who to talk to</h3><div id="susp-list"></div><div id="panel-ask-out"></div></div></div>
+  <div id="panel-board" class="hidden"><div class="card"><span class="kicker">Board · Deduction</span><h3 id="board-chapter" style="margin:6px 0">Chapter 1</h3><p id="board-question" class="sheet-line"></p><div class="bar"><i id="board-fill"></i></div><p id="board-count" class="sheet-note"></p><div id="board-goals"></div><div id="board-pick"></div><div id="board-feedback"></div><button class="btn" data-act="board-link">🔗 Link these two findings</button> <button class="btn ghost" data-act="board-clear">Clear selection</button><div id="board-report"></div><button class="btn hidden" data-act="board-next">Next chapter →</button> <button class="btn" data-act="board-accuse">🔒 Final accusation</button><div id="board-epilogue"></div></div></div>
+  <div id="panel-chat" class="hidden"><div class="card"><span class="kicker">Chat · Party</span><h3 style="margin:6px 0">Talk to your party</h3><div id="chat-list"></div><div style="display:flex;gap:8px;margin-top:8px"><input type="text" id="chat-input" placeholder="Message your party…" maxlength="240" style="margin:0"/><button class="btn" data-act="chat-send" style="margin:0;white-space:nowrap">Send</button></div><p class="sheet-note">Party chat — shared with your room when connected; otherwise kept on this device.</p></div></div>
 </div></div>
 
 <div id="sheet"></div>
@@ -4343,6 +4391,466 @@ if(window.__LG3D__){
   window.__LG3D__.dressRoom = dressRoom; window.__LG3D__.dressTheme = dressTheme;
   window.__LG3D__.pzFlash = pzFlash; window.__LG3D__.evSub = evSub;
 }
+
+/* ============ v7 STYLE REBUILD: reference-game structure, same cases ============
+   Phone-first dark noir, bottom tab bar (Scene / Evidence / Suspects / Board /
+   Chat), chapter framework + board-link deduction, role renaming + gating,
+   viewpoint rooms (drag to look, pinch to zoom), briefing voice + subtitles.
+   The old puzzle panels are superseded: tapping a puzzle station opens the
+   Board instead. This layer is injected INSIDE the game IIFE (assemble7.py),
+   so it shares the engine scope (S, CASES, examine, openPuzzle, ...).
+   Deduction rule (user order): the instrument reveals, the player deduces,
+   the game NEVER highlights or hands over the answer. Board goals are pairs
+   of the case's own evidence labels; conclusions are generic ("these two
+   findings belong together") — no invented story facts, no solution text
+   before the final accusation. The final accusation keeps the existing
+   who/how/where 3/3 solve + epilogue.
+   HONEST LIMITS (kept in the report, never hidden):
+   - No true authoritative server exists on static GitHub Pages: per-player
+     role views are emulated client-side and the shared board/chat sync only
+     over the existing PeerJS connections when connected, else local.
+   - Briefing voice reuses the existing recorded Aria/Helio hint lines
+     (audio/hint-cXX-1), subtitled verbatim — NOT recorded actors. */
+
+var ROLE7 = {detective: "Field Agent", forensics: "Analyst", profiler: "Interrogator", archivist: "Archivist"};
+ROLE_NAMES.detective = "Field Agent";
+ROLE_NAMES.forensics = "Analyst";
+ROLE_NAMES.profiler = "Interrogator";
+ROLE_NAMES.archivist = "Archivist";
+
+var LG7 = {
+  chapter: 1, proved: {}, links: [], chat: [], hintsUsed: 0, report: null,
+  tab: "scene", viewRoom: 0, zoom: 1, slotA: null, slotB: null,
+  epilogue: "", boardFeedback: "", lastBlock: "", briefing: {text: "", src: ""}
+};
+var LG7_CHAT_ENABLED = true;
+
+/* ---- chapter framework (derived from the case's own data, never invented) ---- */
+var LG7_QUESTIONS = ["What happened here?", "How was it done?", "Who had the means, the motive, and the moment?"];
+var LG7_PAIRS = [[0, 1], [4, 5], [8, 9], [10, 11]]; /* evidence indices per goal */
+function lg7Chapters(){
+  var c = C(); if(!c) return [];
+  var rooms = (typeof ROOM_MAPS !== "undefined" && (ROOM_MAPS[c.id] || ROOM_MAPS[1])) || [];
+  var out = [];
+  for(var i = 0; i < 3; i++){
+    var roomName = (rooms[i] && rooms[i].n) || ("Location " + (i + 1));
+    var pairIdx = (i === 2) ? [2, 3] : [i];
+    var goals = pairIdx.map(function(pi, gi){
+      var a = c.ev[LG7_PAIRS[pi][0]], b = c.ev[LG7_PAIRS[pi][1]];
+      return {key: "c" + (i + 1) + "g" + gi, pair: [a.id, b.id],
+        label: "Link \u201C" + a.label + "\u201D \u2194 \u201C" + b.label + "\u201D",
+        conclusion: "Linked \u2014 these two findings belong together on the board."};
+    });
+    out.push({n: i + 1, room: roomName, question: LG7_QUESTIONS[i] + " \u2014 " + c.title, goals: goals});
+  }
+  return out;
+}
+function lg7ChapterGoals(){ var ch = lg7Chapters(); return ch[LG7.chapter - 1] || null; }
+function lg7GoalsAll(){ var all = []; lg7Chapters().forEach(function(ch){ ch.goals.forEach(function(g){ all.push(g); }); }); return all; }
+function lg7TotalGoals(){ return lg7GoalsAll().length; }
+function lg7ProvedCount(){ var n = 0; lg7GoalsAll().forEach(function(g){ if(LG7.proved[g.key]) n++; }); return n; }
+function lg7ChapterComplete(){ var ch = lg7ChapterGoals(); if(!ch) return false; return ch.goals.every(function(g){ return !!LG7.proved[g.key]; }); }
+function lg7Stars(){ return LG7.hintsUsed <= 1 ? 3 : (LG7.hintsUsed === 2 ? 2 : 1); }
+function lg7Solo(){ return S.size === 1; }
+function lg7RoleOf(evId){
+  var c = C(); if(!c) return null;
+  for(var i = 0; i < c.ev.length; i++){ if(c.ev[i].id === evId) return ROLES[i % 4]; }
+  return null;
+}
+function lg7RoleCan(evId){ if(lg7Solo()) return true; return lg7RoleOf(evId) === S.role; }
+function lg7VisibleEv(){
+  var c = C(); if(!c) return [];
+  return c.ev.map(function(e, i){
+    var role = ROLES[i % 4];
+    var locked = !lg7Solo() && S.role !== role;
+    return {id: e.id, label: locked ? null : e.label, role: role, locked: locked, examined: !!S.ev[e.id]};
+  });
+}
+
+/* ---- renders ---- */
+function renderTopbar7(){
+  var ch = lg7ChapterGoals(); if(!ch) return;
+  var tc = $("topbar-chapter"); if(tc) tc.textContent = "Chapter " + ch.n + " · " + ch.room;
+  var tq = $("topbar-question"); if(tq) tq.textContent = ch.question;
+  var tf = $("topbar-fill"); if(tf) tf.style.width = Math.round(lg7ProvedCount() / lg7TotalGoals() * 100) + "%";
+  var tct = $("topbar-count"); if(tct) tct.textContent = lg7ProvedCount() + " / " + lg7TotalGoals() + " board links proved";
+}
+function renderBoard7(){
+  var ch = lg7ChapterGoals(); if(!ch) return;
+  var bc = $("board-chapter"); if(bc) bc.textContent = "Chapter " + ch.n + " · " + ch.room;
+  var bq = $("board-question"); if(bq) bq.textContent = ch.question;
+  var bf = $("board-fill"); if(bf) bf.style.width = Math.round(lg7ProvedCount() / lg7TotalGoals() * 100) + "%";
+  var bct = $("board-count"); if(bct) bct.textContent = lg7ProvedCount() + " / " + lg7TotalGoals() + " board links proved";
+  var bg = $("board-goals");
+  if(bg) bg.innerHTML = ch.goals.map(function(g){
+    return "<div class='goal" + (LG7.proved[g.key] ? " ok" : "") + "'><b>" + (LG7.proved[g.key] ? "\u2713 " : "\u25CB ") + esc(g.label) + "</b>" +
+      (LG7.proved[g.key] ? "<p class='sheet-note' style='margin:6px 0 0'>" + esc(g.conclusion) + "</p>" : "") + "</div>";
+  }).join("");
+  var bp = $("board-pick");
+  if(bp){
+    var c = C();
+    var chips = c.ev.filter(function(e){ return !!S.ev[e.id]; }).map(function(e){
+      var cls = "board-chip" + (LG7.slotA === e.id || LG7.slotB === e.id ? " sel" : "");
+      return "<button class='" + cls + "' data-act='board-pick' data-id='" + esc(e.id) + "'>" + esc(e.label) + "</button>";
+    }).join("") || "<p class='sheet-note'>No findings yet — examine glowing objects in the Scene, or open the Evidence tab.</p>";
+    bp.innerHTML = "<p class='sheet-note'>Picked: <b>" + esc(LG7.slotA || "—") + "</b> + <b>" + esc(LG7.slotB || "—") + "</b></p>" + chips;
+  }
+  var fb = $("board-feedback");
+  if(fb) fb.innerHTML = LG7.boardFeedback ? "<p class='sheet-line'>" + LG7.boardFeedback + "</p>" : "";
+  var rp = $("board-report");
+  if(rp) rp.innerHTML = LG7.report
+    ? "<div class='goal ok'><b>Chapter " + LG7.report.chapter + " report \u2014 " + "★".repeat(LG7.report.stars) + "☆".repeat(3 - LG7.report.stars) + "</b><p class='sheet-note' style='margin:6px 0 0'>" + LG7.report.goals + " goals proved · " + LG7.report.hintsUsed + " hints used in this chapter.</p></div>"
+    : "";
+  var nx = document.querySelector('[data-act="board-next"]');
+  if(nx) nx.classList.toggle("hidden", !(LG7.report && LG7.chapter < 3));
+  var ep = $("board-epilogue");
+  if(ep) ep.innerHTML = LG7.epilogue ? "<div class='goal ok'><b>Epilogue</b><p class='sheet-line'>" + LG7.epilogue + "</p></div>" : "";
+  var hp = $("hud-pz"); if(hp) hp.textContent = lg7ProvedCount() + "/" + lg7TotalGoals();
+}
+function renderEvidence7(){
+  var el = $("ev-list"); if(!el) return;
+  el.innerHTML = lg7VisibleEv().map(function(v){
+    if(v.locked) return "<div class='locked-row'>🔒 Sealed clue · " + esc(ROLE7[v.role]) + " only — ask them to share it on the Board.</div>";
+    var c = C(), e = null; c.ev.forEach(function(x){ if(x.id === v.id) e = x; });
+    return "<button class='btn ghost qbtn' data-act='exam' data-id='" + esc(v.id) + "'>" + (v.examined ? "✓ " : "🔍 ") + esc(e ? e.label : v.id) + "</button>";
+  }).join("");
+}
+function renderSuspects7(){
+  var el = $("susp-list"); if(!el) return;
+  var c = C(); if(!c) return;
+  el.innerHTML = c.susp.map(function(sp){
+    var topics = sp.qa.map(function(q, i){
+      return "<button class='btn ghost qbtn' data-act='ask' data-key='" + esc(sp.key) + "' data-qi='" + i + "'>\u201C" + esc(q.q) + "\u201D</button>";
+    }).join("");
+    return "<div class='goal'><b>👤 " + esc(sp.name) + "</b> <small>· " + esc(sp.role) + "</small>" +
+      "<p class='sheet-line'>\u201C" + esc(sp.intro) + "\u201D</p>" +
+      "<button class='btn ghost' data-act='susp' data-key='" + esc(sp.key) + "'>Talk</button>" + topics + "</div>";
+  }).join("");
+}
+function renderChat7(){
+  var el = $("chat-list"); if(!el) return;
+  if(!LG7_CHAT_ENABLED){ el.innerHTML = "<p class='sheet-note'>Party chat is off.</p>"; return; }
+  el.innerHTML = LG7.chat.length ? LG7.chat.map(function(m){
+    return "<div class='chat-msg'><b>" + esc(m.name) + "</b> <small>· " + esc(m.text) + "</small></div>";
+  }).join("") : "<p class='sheet-note'>No messages yet — say hello to your party.</p>";
+}
+function renderVp7(){
+  var c = C(); if(!c) return;
+  var rooms = (typeof ROOM_MAPS !== "undefined" && (ROOM_MAPS[c.id] || ROOM_MAPS[1])) || [];
+  document.querySelectorAll('[data-act="vp"]').forEach(function(b){
+    var ri = parseInt(b.getAttribute("data-room"), 10);
+    var rn = (rooms[ri] && rooms[ri].n) || ("Location " + (ri + 1));
+    b.textContent = "📍 " + rn + (ri === LG7.viewRoom ? " ✓" : "");
+    b.disabled = ri >= LG7.chapter;
+  });
+}
+function renderAll7(){ renderTopbar7(); renderBoard7(); renderEvidence7(); renderSuspects7(); renderChat7(); renderVp7(); }
+
+/* ---- tabs: one screen at a time ---- */
+function tab7(name){
+  LG7.tab = name;
+  var sceneEls = [$("stage"), $("objective")];
+  document.querySelectorAll("#view-3d .actionbar").forEach(function(a){ sceneEls.push(a); });
+  var listMode = (window.__LG3D_MODE__ === "list");
+  sceneEls.forEach(function(el){ if(el) el.classList.toggle("hidden", name !== "scene"); });
+  var lv = $("listview");
+  if(lv) lv.classList.toggle("hidden", !(name === "scene" && listMode));
+  if(name === "scene" && !listMode){ var st = $("stage"); if(st) st.classList.remove("hidden"); }
+  ["evidence", "suspects", "board", "chat"].forEach(function(p){
+    var el = $("panel-" + p); if(el) el.classList.toggle("hidden", p !== name);
+  });
+  document.querySelectorAll('[data-act="tab7"]').forEach(function(b){
+    b.setAttribute("aria-pressed", String(b.getAttribute("data-tab") === name));
+  });
+  if(name === "evidence") renderEvidence7();
+  if(name === "suspects") renderSuspects7();
+  if(name === "board") renderBoard7();
+  if(name === "chat") renderChat7();
+  return name;
+}
+
+/* ---- board-link deduction ---- */
+function link7(a, b){
+  var ch = lg7ChapterGoals();
+  if(!a || !b){ LG7.boardFeedback = "<span class='fb-bad'>Pick two findings first.</span>"; renderBoard7(); return false; }
+  if(a === b){ LG7.boardFeedback = "<span class='fb-bad'>Pick two different findings.</span>"; renderBoard7(); return false; }
+  var goal = null;
+  if(ch) ch.goals.forEach(function(g){ if((g.pair[0] === a && g.pair[1] === b) || (g.pair[0] === b && g.pair[1] === a)) goal = g; });
+  if(!goal){
+    LG7.boardFeedback = "<span class='fb-bad'>That link doesn\u2019t hold \u2014 those findings don\u2019t prove this conclusion. Try another pair.</span>";
+    LG7.links.push({a: a, b: b, ok: false});
+    try{ peerConns.forEach(function(cn){ if(cn.open) cn.send({type: "link", a: a, b: b, ok: false}); }); }catch(e){}
+    renderBoard7(); return false;
+  }
+  if(LG7.proved[goal.key]){
+    LG7.boardFeedback = "<span class='fb-bad'>Already on the board.</span>"; renderBoard7(); return false;
+  }
+  if(!S.ev[a] || !S.ev[b]){
+    LG7.boardFeedback = "<span class='fb-bad'>Find both clues first \u2014 examine them in the Scene or the Evidence tab.</span>"; renderBoard7(); return false;
+  }
+  LG7.proved[goal.key] = true;
+  LG7.links.push({a: a, b: b, ok: true, chapter: LG7.chapter});
+  try{ peerConns.forEach(function(cn){ if(cn.open) cn.send({type: "link", a: a, b: b, ok: true}); }); }catch(e){}
+  try{ sfxSolve(); }catch(e){}
+  LG7.boardFeedback = "<span class='fb-ok'>✓ Link holds \u2014 " + esc(goal.conclusion) + "</span>";
+  LG7.slotA = null; LG7.slotB = null;
+  if(lg7ChapterComplete()){
+    LG7.report = {chapter: LG7.chapter, stars: lg7Stars(), goals: ch.goals.length, hintsUsed: LG7.hintsUsed};
+    if(LG7.chapter === 3) LG7.boardFeedback += "<p class='sheet-line'><b>All chapters complete \u2014 make the Final Accusation.</b></p>";
+  }
+  renderAll7(); return true;
+}
+function nextChapter7(){
+  if(!lg7ChapterComplete()){
+    LG7.boardFeedback = "<span class='fb-bad'>Prove every goal in this chapter first.</span>"; renderBoard7(); return false;
+  }
+  if(LG7.chapter >= 3) return "done";
+  LG7.chapter++; LG7.hintsUsed = 0; LG7.report = null; LG7.slotA = null; LG7.slotB = null;
+  brief7(); renderAll7(); return true;
+}
+
+/* ---- viewpoints: drag to look (engine), pinch to zoom (canvas magnify) ---- */
+function vp7(ri){
+  if(ri >= LG7.chapter){
+    try{ toast("Location locked \u2014 it opens in Chapter " + (ri + 1) + "."); }catch(e){}
+    return false;
+  }
+  LG7.viewRoom = ri;
+  try{
+    var fp = (window.__LG3D__ && window.__LG3D__.fp) || null;
+    if(fp && fp.moveTo) fp.moveTo(roomCenter(ri), 0);
+  }catch(e){}
+  renderVp7(); return true;
+}
+function setZoom7(z){
+  LG7.zoom = Math.max(1, Math.min(2.5, z));
+  var cv = $("gl");
+  if(cv){ cv.style.transform = "scale(" + LG7.zoom + ")"; cv.style.transformOrigin = "center center"; }
+  return LG7.zoom;
+}
+
+/* ---- chat (separable block: everything chat lives here + renderChat7) ---- */
+function sendChat7(text){
+  if(!LG7_CHAT_ENABLED) return false;
+  var t = String(text || "").trim().slice(0, 240);
+  if(!t) return false;
+  var m = {name: S.name || "You", text: t};
+  LG7.chat.push(m);
+  try{ peerConns.forEach(function(cn){ if(cn.open) cn.send({type: "chat", name: m.name, text: t}); }); }catch(e){}
+  renderChat7(); return true;
+}
+
+/* ---- briefing voice + subtitles (existing recorded hint lines, NOT actors) ---- */
+function brief7(){
+  var c = C(); if(!c) return;
+  var hint = (c.hints && c.hints[0]) || "";
+  var sb = $("sub-bar"), st = $("sub-text");
+  if(st) st.textContent = hint ? "🎙 " + hint : "";
+  if(sb) sb.classList.toggle("hidden", !hint);
+  LG7.briefing = {text: hint, src: ""};
+  if(hint){
+    try{ speak(hint); }catch(e){}
+    try{ if(audioEl) LG7.briefing.src = audioEl.src || ""; }catch(e){}
+  }
+}
+
+/* ---- state lifecycle ---- */
+function lg7Fresh(){
+  LG7.chapter = 1; LG7.proved = {}; LG7.links = []; LG7.chat = [];
+  LG7.hintsUsed = 0; LG7.report = null; LG7.tab = "scene"; LG7.viewRoom = 0;
+  LG7.zoom = 1; LG7.slotA = null; LG7.slotB = null; LG7.epilogue = ""; LG7.boardFeedback = "";
+}
+function lg7BeginCase(id, size, role){
+  S.caseId = id; S.size = size || 3; S.role = role || "detective";
+  S.ev = {}; S.susp = {}; S.puzz = {}; S.twists = {}; S.clues = {};
+  S.hintsLeft = 3; S.hintIdx = 0; S.elapsed = 0; S.twistStage = 0;
+  S.solved = false; S.verdict = null; S.entered = true; S.solveMode = false;
+  S.picks = {who: null, how: null, where: null};
+  lg7Fresh(); brief7(); renderAll7(); return true;
+}
+
+/* ---- wraps: role gating, hint counting, HUD goals, saves, entry, clues ---- */
+var examine0 = examine;
+examine = function(evId){
+  if(!lg7RoleCan(evId)){
+    var role = lg7RoleOf(evId);
+    LG7.lastBlock = role;
+    openSheet("<div class='sheet-head'>🔒 Sealed clue</div><p class='sheet-line'>Only the " + esc(ROLE7[role]) + " can examine this one \u2014 ask them to share it on the Board.</p><button class='btn' data-act='sheet-close'>Close</button>");
+    return false;
+  }
+  examine0(evId); return true;
+};
+var doHint0 = doHint;
+doHint = function(){
+  var had = S.hintsLeft > 0;
+  var r = doHint0();
+  if(had) LG7.hintsUsed++;
+  return r;
+};
+var updateHUD0 = updateHUD;
+updateHUD = function(){
+  updateHUD0();
+  var hp = $("hud-pz"); if(hp) hp.textContent = lg7ProvedCount() + "/" + lg7TotalGoals();
+};
+var save0 = save;
+save = function(){
+  save0();
+  if(!S.entered) return;
+  try{
+    var raw = JSON.parse(localStorage.getItem("lg3d-save-v1") || "{}");
+    raw.lg7 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat};
+    localStorage.setItem("lg3d-save-v1", JSON.stringify(raw));
+  }catch(e){}
+};
+var myClue0 = myClue;
+myClue = function(){
+  if(!lg7Solo()){ myClue0(); return; }
+  var c = C(); if(!c) return;
+  var html = "<div class='sheet-head'>📁 Your secret files · Solo (all roles)</div>" +
+    "<p class='sheet-note'>Playing solo, you hold every role's file.</p>";
+  ROLES.forEach(function(r){
+    var cl = c.clues[r];
+    if(cl) html += "<h3>" + esc(cl.title) + " <small>· " + esc(ROLE7[r]) + "</small></h3><p class='sheet-line'>" + esc(cl.body) + "</p>";
+  });
+  html += "<button class='btn' data-act='sheet-close'>Close</button>";
+  openSheet(html);
+};
+var askQuestion0 = askQuestion;
+askQuestion = function(key, qi){
+  askQuestion0(key, qi);
+  var c = C(); if(!c) return;
+  var sp = null; c.susp.forEach(function(x){ if(x.key === key) sp = x; });
+  var out = $("panel-ask-out");
+  if(out && sp && sp.qa[qi]) out.innerHTML = "<p class='sheet-line'>\u201C" + esc(sp.qa[qi].a) + "\u201D</p>";
+};
+var submitSolve0 = submitSolve;
+submitSolve = function(){
+  submitSolve0();
+  if(!S.solved) return;
+  var c = C(); if(!c) return;
+  LG7.epilogue = "Case " + (S.caseId < 10 ? "0" : "") + S.caseId + " · " + c.title + " \u2014 " +
+    (c.answerText ? (c.answerText.who + " " + c.answerText.how + " " + c.answerText.where) : "") +
+    " " + (c.solveLines ? c.solveLines.closed : "");
+  var ep = $("board-epilogue");
+  if(ep) ep.innerHTML = "<div class='goal ok'><b>Epilogue</b><p class='sheet-line'>" + esc(LG7.epilogue) + "</p></div>";
+};
+var wireConn0 = wireConn;
+wireConn = function(conn){
+  wireConn0(conn);
+  try{
+    conn.on("data", function(d){
+      if(d && d.type === "link"){ LG7.links.push(d); renderBoard7(); }
+      else if(d && d.type === "chat" && d.text){ LG7.chat.push({name: d.name || "Teammate", text: d.text}); renderChat7(); }
+    });
+  }catch(e){}
+};
+var enterCase0 = enterCase;
+enterCase = function(){
+  enterCase0();
+  var saved = null;
+  try{ saved = loadSave(); }catch(e){}
+  if(saved && saved.caseId === S.caseId && saved.lg7){
+    lg7Fresh();
+    LG7.chapter = saved.lg7.chapter || 1; LG7.proved = saved.lg7.proved || {};
+    LG7.links = saved.lg7.links || []; LG7.chat = saved.lg7.chat || [];
+  } else {
+    lg7Fresh();
+  }
+  var st = $("stage"); if(st) st.classList.add("vp-mode");
+  var jw = $("joywrap"); if(jw) jw.classList.add("hidden");
+  setZoom7(1);
+  tab7("scene"); renderAll7(); brief7();
+};
+
+/* ---- puzzle panels superseded: stations open the Board instead ---- */
+openPuzzle = function(idx){
+  try{ toast("Puzzles now live on the Board \u2014 link two clues to prove a conclusion."); }catch(e){}
+  tab7("board"); renderBoard7(); return false;
+};
+openPuzzle5 = openPuzzle;
+
+/* ---- v7 delegated clicks + pinch zoom + chat Enter (bound once) ---- */
+if(!window.__LG7_BOUND__){
+  window.__LG7_BOUND__ = true;
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-act]");
+    if(!t) return;
+    var act = t.getAttribute("data-act");
+    if(act === "tab7"){ tab7(t.getAttribute("data-tab")); }
+    else if(act === "board-pick"){
+      var id = t.getAttribute("data-id");
+      if(!LG7.slotA) LG7.slotA = id;
+      else if(!LG7.slotB && id !== LG7.slotA) LG7.slotB = id;
+      else { LG7.slotA = id; LG7.slotB = null; }
+      renderBoard7();
+    }
+    else if(act === "board-link"){ link7(LG7.slotA, LG7.slotB); }
+    else if(act === "board-clear"){ LG7.slotA = null; LG7.slotB = null; renderBoard7(); }
+    else if(act === "board-next"){ nextChapter7(); }
+    else if(act === "board-accuse"){ startSolve(); }
+    else if(act === "chat-send"){
+      var inp = $("chat-input");
+      if(inp){ if(sendChat7(inp.value)) inp.value = ""; }
+    }
+    else if(act === "vp"){ vp7(parseInt(t.getAttribute("data-room"), 10) || 0); }
+    else if(act === "vp-zoom-in"){ setZoom7(LG7.zoom + 0.25); }
+    else if(act === "vp-zoom-out"){ setZoom7(LG7.zoom - 0.25); }
+    else if(act === "vp-zoom-reset"){ setZoom7(1); }
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && document.activeElement && document.activeElement.id === "chat-input"){
+      var inp = $("chat-input");
+      if(inp && sendChat7(inp.value)) inp.value = "";
+    }
+  });
+  (function(){
+    var cv = $("gl"); if(!cv) return;
+    var pts = {}, startDist = 0, startZoom = 1;
+    function dist(){
+      var k = Object.keys(pts);
+      if(k.length < 2) return 0;
+      var a = pts[k[0]], b = pts[k[1]];
+      return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    }
+    cv.addEventListener("pointerdown", function(e){
+      pts[e.pointerId] = {x: e.clientX, y: e.clientY};
+      if(Object.keys(pts).length === 2){ startDist = dist(); startZoom = LG7.zoom; }
+    });
+    cv.addEventListener("pointermove", function(e){
+      if(!pts[e.pointerId]) return;
+      pts[e.pointerId] = {x: e.clientX, y: e.clientY};
+      if(Object.keys(pts).length === 2 && startDist > 0) setZoom7(startZoom * dist() / startDist);
+    });
+    ["pointerup", "pointercancel"].forEach(function(ev){
+      cv.addEventListener(ev, function(e){ delete pts[e.pointerId]; startDist = 0; });
+    });
+  })();
+}
+
+/* ---- role option labels (defensive: shell7 already renames them) ---- */
+(function(){
+  var sel = $("player-role"); if(!sel) return;
+  for(var i = 0; i < sel.options.length; i++){
+    var o = sel.options[i];
+    if(ROLE7[o.value]) o.textContent = ROLE7[o.value];
+  }
+})();
+
+/* ---- v7 probe API ---- */
+window.__LG7__ = {
+  S: S, CASES: CASES, LG7: LG7, CHAT_ENABLED: LG7_CHAT_ENABLED,
+  chapters: lg7Chapters, chapter: function(){ return LG7.chapter; },
+  goalsAll: lg7GoalsAll, provedCount: lg7ProvedCount, totalGoals: lg7TotalGoals,
+  beginCase: lg7BeginCase, examine7: examine, link7: link7, nextChapter: nextChapter7,
+  report: function(){ return LG7.report; }, tab: tab7, vp: vp7, setZoom: setZoom7,
+  chatSend: sendChat7, chat: function(){ return LG7.chat; },
+  briefing: function(){ return LG7.briefing; }, hint: doHint,
+  submit: submitSolve, startAccuse: startSolve,
+  epilogue: function(){ return LG7.epilogue; }, save7: save,
+  roleOf: lg7RoleOf, visibleEv: lg7VisibleEv, feedback: function(){ return LG7.boardFeedback; },
+  viewRoom: function(){ return LG7.viewRoom; }, zoom: function(){ return LG7.zoom; }
+};
+if(window.__LG3D__) window.__LG3D__.lg7 = window.__LG7__;
 
 })();
 

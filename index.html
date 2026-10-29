@@ -51,7 +51,11 @@ video{width:100%;border-radius:12px;background:#000}
 .actionbar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .member{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font-size:.85rem;margin:2px}
 .member .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:6px}
-#sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#171208;border-top:2px solid var(--brass);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:62vh;overflow:auto;transform:translateY(105%);transition:transform .25s ease;box-shadow:0 -8px 30px rgba(0,0,0,.6)}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#171208;border-top:2px solid var(--brass);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:46vh;overflow:auto;transform:translateY(105%);transition:transform .25s ease;box-shadow:0 -8px 30px rgba(0,0,0,.6)}
+#sheet.collapsed{max-height:64px;overflow:hidden}
+.sheet-collapse{float:right;margin:0 0 8px 8px;min-height:36px;padding:6px 12px}
+#labels6{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.lbl6{position:absolute;transform:translate(-50%,-50%);background:rgba(10,8,4,.85);border:1px solid #c9a227;color:#f5e9c8;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;pointer-events:none;max-width:70vw;overflow:hidden;text-overflow:ellipsis}
 #sheet.open{transform:translateY(0)}
 .sheet-head{font-size:1.15rem;font-weight:800;margin-bottom:8px}
 .sheet-line{font-size:1.02rem;line-height:1.55}
@@ -322,6 +326,7 @@ video{width:100%;border-radius:12px;background:#000}
   <div id="stage">
     <canvas id="gl"></canvas>
     <div id="crosshair"></div>
+    <div id="labels6"></div>
     <div id="roomcard"></div>
     <div id="prompt" class="hidden"><span id="prompt-label"></span><button class="btn" data-act="fp-interact">INTERACT</button></div>
     <div id="joywrap" class="hidden"><div id="joy"><div id="joy-knob"></div></div></div>
@@ -529,7 +534,9 @@ function toast(msg){
 }
 function openSheet(html, keepPuzzle){
   if(!keepPuzzle){ try{ closePuzzle5(); }catch(e){} }
-  var sh = $("sheet"); sh.innerHTML = html; sh.classList.add("open");
+  var sh = $("sheet");
+  sh.innerHTML = "<button class='btn ghost sheet-collapse' data-act='sheet-toggle'>▾ Collapse</button>" + html;
+  sh.classList.add("open"); sh.classList.remove("collapsed");
 }
 function closeSheet(){ var sh = $("sheet"); sh.innerHTML = ""; sh.classList.remove("open"); }
 
@@ -844,13 +851,18 @@ function faceTex(skin, hair, style){
     if(style === "long"){ ctx.fillRect(0, 0, w, 78); ctx.fillRect(0, 0, 34, h); ctx.fillRect(w - 34, 0, 34, h); }
     else if(style === "bald"){ ctx.beginPath(); ctx.arc(w / 2, 30, 60, Math.PI, 0); ctx.fill(); }
     else { ctx.fillRect(0, 0, w, 62); ctx.beginPath(); ctx.arc(w / 2, 62, 90, Math.PI, 0); ctx.fill(); }
-    ctx.fillStyle = "rgba(40,26,18,0.85)";
-    ctx.beginPath(); ctx.ellipse(82, 118, 13, 7, 0, 0, 7); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(174, 118, 13, 7, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = "rgba(120,80,60,0.5)";
-    ctx.beginPath(); ctx.ellipse(128, 152, 8, 12, 0, 0, 7); ctx.fill();
-    ctx.strokeStyle = "rgba(90,50,40,0.7)"; ctx.lineWidth = 4; ctx.beginPath();
-    ctx.arc(128, 188, 26, 0.25, Math.PI - 0.25); ctx.stroke();
+    ctx.fillStyle = "rgba(30,18,12,0.95)";
+    ctx.fillRect(52, 96, 58, 10); ctx.fillRect(146, 96, 58, 10);
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.beginPath(); ctx.ellipse(82, 122, 20, 12, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(174, 122, 20, 12, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "rgba(25,15,10,0.95)";
+    ctx.beginPath(); ctx.ellipse(82, 122, 10, 11, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(174, 122, 10, 11, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "rgba(120,80,60,0.6)";
+    ctx.beginPath(); ctx.ellipse(128, 152, 10, 14, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = "rgba(90,50,40,0.85)"; ctx.lineWidth = 6; ctx.beginPath();
+    ctx.arc(128, 188, 30, 0.25, Math.PI - 0.25); ctx.stroke();
   });
 }
 var TEXCACHE = {};
@@ -1230,19 +1242,19 @@ function suspectFigure(sp, idx, caseId){
   g.add(b2(0.2, 0.07, 0.3, texMat("metalDark"), -0.11, 0.035, 0.05));
   g.add(b2(0.2, 0.07, 0.3, texMat("metalDark"), 0.11, 0.035, 0.05));
   // torso (0.62m) + shoulders + arms
-  var torso = b2(0.5, 0.62, 0.26, topM, 0, 1.09, 0); g.add(torso);
+  var torso = b2(0.56, 0.62, 0.28, topM, 0, 1.09, 0); g.add(torso);
   if(out.style === "suit" || out.style === "coat"){
     g.add(b2(0.1, 0.3, 0.02, new THREE.MeshStandardMaterial({color: 0xc9a227, roughness: 0.5}), 0, 1.2, 0.13));
   }
   if(out.style === "dress"){
     var skirt = c2(0.3, 0.24, 0.35, topM, 0, 0.82, 0, 14); g.add(skirt);
   }
-  var armL = new THREE.Group(); armL.position.set(-0.27, 1.36, 0);
+  var armL = new THREE.Group(); armL.position.set(-0.30, 1.36, 0);
   armL.add(c2(0.07, 0.06, 0.6, topM, 0, -0.28, 0, 10));
   armL.add(new THREE.Mesh(geo("hand", function(){ return new THREE.SphereGeometry(0.06, 10, 8); }), skinM));
   armL.children[1].position.y = -0.6;
   g.add(armL);
-  var armR = new THREE.Group(); armR.position.set(0.27, 1.36, 0);
+  var armR = new THREE.Group(); armR.position.set(0.30, 1.36, 0);
   armR.add(c2(0.07, 0.06, 0.6, topM, 0, -0.28, 0, 10));
   armR.add(new THREE.Mesh(geo("hand2", function(){ return new THREE.SphereGeometry(0.06, 10, 8); }), skinM));
   armR.children[1].position.y = -0.6;
@@ -1250,14 +1262,14 @@ function suspectFigure(sp, idx, caseId){
   // neck + head (0.24m) with face texture
   g.add(c2(0.06, 0.07, 0.12, skinM, 0, 1.44, 0, 10));
   var head = new THREE.Group(); head.position.set(0, 1.62, 0);
-  var skull = new THREE.Mesh(geo("skull", function(){ return new THREE.SphereGeometry(0.14, 20, 16); }), skinM);
+  var skull = new THREE.Mesh(geo("skull", function(){ return new THREE.SphereGeometry(0.15, 20, 16); }), skinM);
   head.add(skull);
   var faceUri = null;
   try{ faceUri = (typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[caseId + ":" + (sp.key || "")] : null; }catch(e){}
   var faceMap = faceUri ? photoTex(faceUri, "#c89878") : faceTex(skin, hair, hairStyle);
-  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.27, 0.31),
-    new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.35}));
-  facePlane.position.set(0, -0.01, 0.135);
+  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.36),
+    new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.5}));
+  facePlane.position.set(0, -0.01, 0.155);
   head.add(facePlane);
   var hairMesh;
   if(hairStyle === "long"){
@@ -1265,14 +1277,14 @@ function suspectFigure(sp, idx, caseId){
     head.add(hairMesh);
     head.add(b2(0.3, 0.1, 0.26, hairM, 0, 0.13, 0));
   } else if(hairStyle === "bald"){
-    head.add(new THREE.Mesh(geo("baldcap", function(){ return new THREE.SphereGeometry(0.142, 20, 12, 0, Math.PI * 2, 0, 1.1); }), skinM));
+    head.add(new THREE.Mesh(geo("baldcap", function(){ return new THREE.SphereGeometry(0.152, 20, 12, 0, Math.PI * 2, 0, 1.1); }), skinM));
   } else {
-    head.add(b2(0.28, 0.08, 0.26, hairM, 0, 0.12, 0));
-    head.add(b2(0.28, 0.12, 0.05, hairM, 0, 0.05, -0.11));
+    head.add(b2(0.30, 0.08, 0.28, hairM, 0, 0.12, 0));
+    head.add(b2(0.30, 0.12, 0.05, hairM, 0, 0.05, -0.11));
   }
   g.add(head);
   g.userData.anim = {torso: torso, head: head, armL: armL, armR: armR, phase: Math.random() * 6, baseY: 0};
-  g.scale.set(1.12, 1.12, 1.12);
+  g.scale.set(1.18, 1.18, 1.18);
   return shadowed(g);
 }
 
@@ -1364,10 +1376,10 @@ function roomAt(x, nRooms){
   return 2;
 }
 var MOODLIGHT = {
-  night: {amb: 0.5, dir: 0.8, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
+  night: {amb: 0.72, dir: 1.0, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
   day: {amb: 0.9, dir: 1.15, dirCol: 0xfff2d0, fog: 0x8aa8c8, bg: 0x8aa8c8},
-  dusk: {amb: 0.6, dir: 0.85, dirCol: 0xffa060, fog: 0x2a1a2a, bg: 0x2a1a2a},
-  dawn: {amb: 0.65, dir: 0.9, dirCol: 0xffc0a0, fog: 0x3a3a5a, bg: 0x3a3a5a}
+  dusk: {amb: 0.75, dir: 1.0, dirCol: 0xffa060, fog: 0x2a1a2a, bg: 0x2a1a2a},
+  dawn: {amb: 0.8, dir: 1.0, dirCol: 0xffc0a0, fog: 0x3a3a5a, bg: 0x3a3a5a}
 };
 /* ---- optional free-model hook: GLB files in models/ override procedural
    furniture ONLY when the loader + file are present; otherwise procedural.
@@ -1421,7 +1433,7 @@ function wallTint(hex){
   var h = hex || 0x3a3a52;
   var r = (h >> 16) & 255, g = (h >> 8) & 255, b = h & 255;
   var lum = 0.3 * r + 0.59 * g + 0.11 * b;
-  if(lum < 70){ r = Math.round(r * 0.6 + 110 * 0.4); g = Math.round(g * 0.6 + 110 * 0.4); b = Math.round(b * 0.6 + 130 * 0.4); }
+  if(lum < 90){ r = Math.round(r * 0.45 + 130 * 0.55); g = Math.round(g * 0.45 + 130 * 0.55); b = Math.round(b * 0.45 + 150 * 0.55); }
   return "#" + ((r << 16) | (g << 8) | b).toString(16).padStart(6, "0");
 }
 var ARTCACHE = {};
@@ -1602,10 +1614,16 @@ function dressRoom(scene, c, room, ri, th){
       var face = c2(0.14, 0.14, 0.04, texMat("fabric", "#f2ead8"), 0, 0.14, 0, 20);
       face.rotation.x = Math.PI / 2; g.add(face);
       g.add(box(0.02, 0.1, 0.01, texMat("metalDark"), 0, 0.16, 0.03));
+    } else if(kind === "lamp"){
+      g.add(c2(0.06, 0.05, 0.03, texMat("metalDark"), 0, 0.015, 0, 10));
+      var shade = c2(0.09, 0.13, 0.14, new THREE.MeshStandardMaterial({color: 0x3a2a1a, emissive: 0xffd880, emissiveIntensity: 1.4, roughness: 0.6}), 0, 0.12, 0, 12);
+      g.add(shade);
+      var glow = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.1), new THREE.MeshBasicMaterial({color: 0xffd880, transparent: true, opacity: 0.55, side: THREE.DoubleSide}));
+      glow.position.set(0, 0.05, 0.08); g.add(glow);
     }
     put(g, x, y, z, kind, R(-0.4, 0.4));
   }
-  var clusterKinds = ["books", "papers", "cup", "bottle", "box", "vase", "keys", "glasses", "tools"];
+  var clusterKinds = ["books", "papers", "cup", "bottle", "box", "vase", "keys", "glasses", "tools", "lamp"];
   (room.p || []).forEach(function(pn, i){
     var sl = furnSlots[i % furnSlots.length];
     var top = flatTop[pn];
@@ -1781,7 +1799,143 @@ function dressRoom(scene, c, room, ri, th){
     var tx2 = [-4.8, 4.8, -2.5, 2.5][ti % 4];
     put(g, cx + tx2 + R(-0.3, 0.3), 0.02, (ti % 2 ? -4.3 : 4.3) + R(-0.2, 0.2), kind);
   });
+  dressWalls6(scene, c, room, ri, th);
   return {count: count, kinds: kinds};
+}
+
+/* ============ v6 DENSE WALLS: every wall covered, visible from play positions ============
+   Second dressing pass per room: wainscot panelling, large feature art, a hero
+   panel per room, wall shelves with books, notice board, second window, ceiling
+   cross-beams, second pendant, runner rug, extra plants. All pieces are LARGE
+   (>=1m) and at eye level (y 1.0-2.5) — judged by visibility from spawn/room
+   centers, never by scene-graph counts. Shared cached geometries/materials. */
+function dressWalls6(scene, c, room, ri, th){
+  var cx = roomCenter(ri);
+  var rnd = mulberry32((c.id || 1) * 1000 + ri * 131 + 777);
+  var R = function(a, b){ return a + rnd() * (b - a); };
+  var pick = function(arr){ return arr[Math.floor(rnd() * arr.length)]; };
+  var woodD = texMat("woodDark"), wood = texMat("wood");
+  function add(g, x, y, z, kind, ry){
+    g.position.set(x, y, z); if(ry) g.rotation.y = ry;
+    g.userData.dressKind = kind; scene.add(g); return g;
+  }
+  function wbox(w, h, d, m, x, y, z, kind){
+    var ms = new THREE.Mesh(geo("w6-" + w + "x" + h + "x" + d, function(){ return new THREE.BoxGeometry(w, h, d); }), m);
+    return add(ms, x, y, z, kind);
+  }
+  // ---- wainscot panelling: rails + stiles on all four walls ----
+  wbox(11.6, 0.14, 0.07, woodD, cx, 1.08, -4.90, "wall-rail");
+  wbox(11.6, 0.14, 0.07, woodD, cx, 1.08, 4.90, "wall-rail");
+  for(var s = 0; s < 8; s++){
+    var sx = cx - 5.1 + s * 1.45;
+    wbox(0.12, 1.0, 0.06, woodD, sx, 0.55, -4.90, "wall-stile");
+    wbox(0.12, 1.0, 0.06, woodD, sx, 0.55, 4.90, "wall-stile");
+  }
+  wbox(0.07, 0.14, 9.6, woodD, cx - 5.88, 1.08, 0, "wall-rail");
+  wbox(0.07, 0.14, 9.6, woodD, cx + 5.88, 1.08, 0, "wall-rail");
+  for(var s2 = 0; s2 < 6; s2++){
+    var sz = -4.0 + s2 * 1.6;
+    wbox(0.06, 1.0, 0.12, woodD, cx - 5.88, 0.55, sz, "wall-stile");
+    wbox(0.06, 1.0, 0.12, woodD, cx + 5.88, 0.55, sz, "wall-stile");
+  }
+  // ---- room 0: drop the small dressRoom frame the big hero would cover ----
+  if(ri === 0){
+    var doomed = [];
+    scene.children.forEach(function(o){
+      if(o.userData && o.userData.dressKind === "frame" && o.position.z < -4.8 &&
+        Math.abs(o.position.x - (cx + 1.6)) < 0.6) doomed.push(o);
+    });
+    doomed.forEach(function(o){ scene.remove(o); });
+  }
+  // ---- hero panel (rooms 1-2): first evidence photo of this room, else big art ----
+  if(ri > 0){
+    var dist = fpDistribution(c.id);
+    var heroUri = null;
+    (c.ev || []).forEach(function(e){
+      if(!heroUri && dist.ev[e.id] === ri){
+        try{ heroUri = (typeof TEX3D !== "undefined" && TEX3D.evidence) ? TEX3D.evidence[c.id + ":" + e.id] : null; }catch(err){}
+      }
+    });
+    var hg = new THREE.Group(); hg.userData.dressKind = "hero-panel";
+    hg.add(b2(2.8, 1.8, 0.08, texMat("metal"), 0, 0, 0));
+    var hp2 = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.6),
+      heroUri
+        ? new THREE.MeshStandardMaterial({map: photoTex(heroUri, "#2a2a4a"), roughness: 0.8})
+        : new THREE.MeshStandardMaterial({map: artTex((c.id * 5 + ri) % 6), roughness: 0.85}));
+    hp2.position.z = 0.05; hg.add(hp2);
+    add(hg, cx - 1.2, 1.95, -4.84, "hero-panel");
+  }
+  // ---- back-wall feature art (rooms 1-2; room 0 has the big hero) ----
+  if(ri > 0){
+    var fx = ri % 2 ? 5.0 : 3.6;
+    var fg = new THREE.Group(); fg.userData.dressKind = "feature-art";
+    fg.add(b2(1.9, 1.4, 0.07, texMat("metal"), 0, 0, 0));
+    var fa = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.2),
+      new THREE.MeshStandardMaterial({map: artTex((c.id * 7 + ri * 3) % 6), roughness: 0.85}));
+    fa.position.z = 0.045; fg.add(fa);
+    add(fg, cx + fx, 1.9, -4.84, "feature-art");
+  }
+  // ---- front-wall window (mirrors the back window, glowing sky) ----
+  var fwx = cx + (ri % 2 ? -2.6 : 2.6);
+  var fw = new THREE.Group(); fw.userData.dressKind = "front-window";
+  fw.add(b2(1.9, 1.5, 0.08, woodD, 0, 0, 0));
+  var fskyT = skyTex(room.m);
+  var fsky = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.3),
+    new THREE.MeshStandardMaterial({map: fskyT, roughness: 0.9, emissive: 0xffffff, emissiveMap: fskyT, emissiveIntensity: 0.6}));
+  fsky.position.z = 0.05; fw.add(fsky);
+  add(fw, fwx, 2.0, 4.88, "front-window");
+  fw.rotation.y = Math.PI;
+  // ---- west wall shelves with books + jars ----
+  [1.5, 2.1].forEach(function(sy){
+    var sh = new THREE.Group(); sh.userData.dressKind = "wall-shelf";
+    sh.add(b2(0.35, 0.06, 2.4, wood, 0, 0, 0));
+    for(var bi = 0; bi < 5; bi++){
+      var bk = b2(0.22, 0.3, 0.05, mat(pick([0x8a2a2a, 0x2a5a8a, 0x3a6a3a, 0xa87a2a, 0x5a3a7a])), 0.02, 0.18, -0.9 + bi * 0.45);
+      bk.rotation.y = R(-0.08, 0.08); sh.add(bk);
+    }
+    var jar = c2(0.09, 0.11, 0.24, new THREE.MeshStandardMaterial({color: 0xc8b898, transparent: true, opacity: 0.6, roughness: 0.3}), 0, 0.15, 1.05, 12);
+    sh.add(jar);
+    add(sh, cx - 5.82, sy, 0, "wall-shelf");
+  });
+  // ---- east wall notice board with paper slips (flat on the wall, no rotation) ----
+  var nb = new THREE.Group(); nb.userData.dressKind = "notice-board";
+  nb.add(b2(0.06, 0.95, 1.3, texMat("fabric", "#4a3a22"), 0, 0, 0));
+  for(var ni = 0; ni < 6; ni++){
+    var slip = b2(0.02, 0.22, 0.16, texMat("paper"), -0.045, -0.28 + (ni % 3) * 0.28, -0.4 + Math.floor(ni / 3) * 0.5 + R(-0.03, 0.03));
+    slip.rotation.x = R(-0.1, 0.1); nb.add(slip);
+  }
+  add(nb, cx + 5.82, 1.7, 0, "notice-board");
+  // ---- ceiling cross-beams + second pendant ----
+  [-2.5, 0, 2.5].forEach(function(bz){
+    wbox(11.6, 0.18, 0.18, woodD, cx, 3.38, bz, "xbeam");
+  });
+  var pend2 = new THREE.Group(); pend2.userData.dressKind = "pendant2";
+  pend2.add(c2(0.02, 0.02, 0.7, texMat("metalDark"), 0, 3.05, 0, 8));
+  pend2.add(c2(0.3, 0.18, 0.35, new THREE.MeshStandardMaterial({color: 0x2a2a2a, emissive: 0xffc860, emissiveIntensity: 0.7, metalness: 0.4, roughness: 0.5}), 0, 2.68, 0, 16));
+  var bulb2 = new THREE.Mesh(geo("pbulb", function(){ return new THREE.SphereGeometry(0.09, 12, 10); }),
+    new THREE.MeshStandardMaterial({color: 0xfff2c0, emissive: 0xffd880, emissiveIntensity: 2.4}));
+  bulb2.position.set(0, 2.55, 0); pend2.add(bulb2);
+  add(pend2, cx + (ri % 2 ? 1.5 : -1.5), 0, (ri % 2 ? 1.5 : -1.5), "pendant2");
+  // ---- runner rug on the door path + extra floor plant + crate ----
+  var runner = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 1.4),
+    new THREE.MeshStandardMaterial({map: texMat("carpet", pick(["#5a1a1a", "#1a3a5a", "#2a4a2a"])).map, roughness: 0.95}));
+  runner.rotation.x = -Math.PI / 2;
+  add(runner, cx, 0.035, 0, "runner");
+  var fp2 = new THREE.Group(); fp2.userData.dressKind = "floor-plant";
+  fp2.add(c2(0.2, 0.16, 0.28, texMat("fabric", "#8a4a2a"), 0, 0.14, 0, 12));
+  for(var k2 = 0; k2 < 6; k2++){
+    var lf2 = new THREE.Mesh(geo("leafF", function(){ return new THREE.ConeGeometry(0.07, 0.55, 6); }),
+      new THREE.MeshStandardMaterial({color: 0x2a6a2a, roughness: 0.9}));
+    var aa2 = (k2 / 6) * Math.PI * 2;
+    lf2.position.set(Math.cos(aa2) * 0.16, 0.8, Math.sin(aa2) * 0.16);
+    lf2.rotation.set(Math.sin(aa2) * 0.6, 0, Math.cos(aa2) * 0.6);
+    fp2.add(lf2);
+  }
+  add(fp2, cx + pick([-5.2, 5.2]), 0, pick([-4.2, 4.2]), "floor-plant");
+  var crate = new THREE.Group(); crate.userData.dressKind = "crate";
+  crate.add(b2(0.6, 0.6, 0.6, wood, 0, 0.3, 0));
+  crate.add(b2(0.5, 0.5, 0.5, woodD, 0.05, 0.85, 0.05));
+  add(crate, cx + pick([-5.0, 5.0]), 0, pick([-2.0, 2.0]), "crate");
 }
 
 function initScene(){
@@ -1805,7 +1959,7 @@ function initScene(){
     var camera = new THREE.PerspectiveCamera(68, (canvas.clientWidth || window.innerWidth) / (canvas.clientHeight || (window.innerHeight - 180)), 0.1, 120);
     camera.rotation.order = "YXZ";
     scene.add(new THREE.AmbientLight(0xffffff, ML.amb));
-    var hemi = new THREE.HemisphereLight(0xbfd4ff, 0x2a1a10, 0.35); scene.add(hemi);
+    var hemi = new THREE.HemisphereLight(0xbfd4ff, 0x2a1a10, 0.5); scene.add(hemi);
     var dir = new THREE.DirectionalLight(ML.dirCol, ML.dir);
     dir.position.set(10, 14, 6); dir.castShadow = true;
     dir.shadow.mapSize.width = 1024; dir.shadow.mapSize.height = 1024;
@@ -1840,21 +1994,21 @@ function initScene(){
       if(ri === 0){ wallBox(0.2, 3.4, 10, wallM, cx - 6, 1.7, 0); addCollider(cx - 6.25, cx - 5.75, -5, 5); }
       else {
         var wx = cx - 6.5;
-        wallBox(0.3, 3.4, 3.9, wallM, wx, 1.7, -3.05); addCollider(wx - 0.5, wx + 0.5, -5, -0.95);
-        wallBox(0.3, 3.4, 3.9, wallM, wx, 1.7, 3.05); addCollider(wx - 0.5, wx + 0.5, 0.95, 5);
-        wallBox(0.3, 0.5, 2.2, texMat("woodDark"), wx, 3.15, 0);
-        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), wx, 1.7, -1.1); addCollider(wx - 0.5, wx + 0.5, -1.35, -0.85);
-        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), wx, 1.7, 1.1); addCollider(wx - 0.5, wx + 0.5, 0.85, 1.35);
+        wallBox(0.3, 3.4, 3.6, wallM, wx, 1.7, -3.2); addCollider(wx - 0.5, wx + 0.5, -5, -1.25);
+        wallBox(0.3, 3.4, 3.6, wallM, wx, 1.7, 3.2); addCollider(wx - 0.5, wx + 0.5, 1.25, 5);
+        wallBox(0.3, 0.5, 2.8, texMat("woodDark"), wx, 3.15, 0);
+        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), wx, 1.7, -1.4); addCollider(wx - 0.5, wx + 0.5, -1.65, -1.15);
+        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), wx, 1.7, 1.4); addCollider(wx - 0.5, wx + 0.5, 1.15, 1.65);
       }
       // east wall
       if(ri === nRooms - 1){ wallBox(0.2, 3.4, 10, wallM, cx + 6, 1.7, 0); addCollider(cx + 5.75, cx + 6.25, -5, 5); }
       else {
         var ex = cx + 6.5;
-        wallBox(0.3, 3.4, 3.9, wallM, ex, 1.7, -3.05); addCollider(ex - 0.5, ex + 0.5, -5, -0.95);
-        wallBox(0.3, 3.4, 3.9, wallM, ex, 1.7, 3.05); addCollider(ex - 0.5, ex + 0.5, 0.95, 5);
-        wallBox(0.3, 0.5, 2.2, texMat("woodDark"), ex, 3.15, 0);
-        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), ex, 1.7, -1.1); addCollider(ex - 0.5, ex + 0.5, -1.35, -0.85);
-        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), ex, 1.7, 1.1); addCollider(ex - 0.5, ex + 0.5, 0.85, 1.35);
+        wallBox(0.3, 3.4, 3.6, wallM, ex, 1.7, -3.2); addCollider(ex - 0.5, ex + 0.5, -5, -1.25);
+        wallBox(0.3, 3.4, 3.6, wallM, ex, 1.7, 3.2); addCollider(ex - 0.5, ex + 0.5, 1.25, 5);
+        wallBox(0.3, 0.5, 2.8, texMat("woodDark"), ex, 3.15, 0);
+        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), ex, 1.7, -1.4); addCollider(ex - 0.5, ex + 0.5, -1.65, -1.15);
+        wallBox(0.3, 3.4, 0.25, texMat("woodDark"), ex, 1.7, 1.4); addCollider(ex - 0.5, ex + 0.5, 1.15, 1.65);
       }
       // door labels (planes, one per side so each room reads its destination)
       if(ri < nRooms - 1){
@@ -1866,10 +2020,10 @@ function initScene(){
       }
       // window with mood sky on the back wall
       var win = new THREE.Group();
-      win.add(b2(1.7, 1.3, 0.08, texMat("woodDark"), 0, 0, 0));
+      win.add(b2(2.0, 1.5, 0.08, texMat("woodDark"), 0, 0, 0));
       var skyT = skyTex(r.m);
-      var sky = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.1),
-        new THREE.MeshStandardMaterial({map: skyT, roughness: 0.9, emissive: 0xffffff, emissiveMap: skyT, emissiveIntensity: 0.35}));
+      var sky = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.3),
+        new THREE.MeshStandardMaterial({map: skyT, roughness: 0.9, emissive: 0xffffff, emissiveMap: skyT, emissiveIntensity: 0.6}));
       sky.position.z = 0.05; win.add(sky);
       win.position.set(cx + (ri % 2 ? 3 : -3), 2.0, -4.88); scene.add(win);
       // rug (v3: seeded size/position/color per room — no copy-paste rooms)
@@ -1883,19 +2037,27 @@ function initScene(){
       if(ri === 0){
         var heroUri = null;
         try{ heroUri = (typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
+        var heroG = new THREE.Group(); heroG.userData.dressKind = "hero-panel";
         if(heroUri){
-          var hf = b2(3.4, 2.0, 0.08, texMat("woodDark"), cx, 1.9, -4.86); scene.add(hf);
-          var hp = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.8),
+          heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
+          var hp = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
             new THREE.MeshStandardMaterial({map: photoTex(heroUri, "#2a2a4a"), roughness: 0.8}));
-          hp.position.set(cx, 1.9, -4.81); scene.add(hp);
+          hp.position.set(0, 1.9, -4.81); heroG.add(hp);
         } else {
+          heroG.add(b2(4.2, 2.4, 0.08, texMat("metal"), 0, 1.95, -4.86));
+          var pp = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
+            new THREE.MeshStandardMaterial({map: artTex((c.id * 3) % 6), roughness: 0.85}));
+          pp.position.set(0, 1.95, -4.81); heroG.add(pp);
           var plaque = makeTextPlane(c.title + " · Case " + c.id, 2.6, 0.6);
-          plaque.position.set(cx, 2.1, -4.86); scene.add(plaque);
+          plaque.position.set(0, 0.45, -4.86); heroG.add(plaque);
         }
+        heroG.position.set(cx, 0, 0); scene.add(heroG);
       }
       // room lamp light (one real point light per room) + lamp props
       var pl = new THREE.PointLight(0xffc880, mood === "day" ? 0.6 : 1.0, 14);
       pl.position.set(cx, 2.6, 0); scene.add(pl);
+      var pl2 = new THREE.PointLight(0xffd0a0, 0.7, 12);
+      pl2.position.set(cx + (ri % 2 ? -3.5 : 3.5), 2.4, (ri % 2 ? 2.5 : -2.5)); scene.add(pl2);
     });
     // ---- furniture per room ----
     var furnSlots = [[-4, -3.4], [4, -3.4], [-4, 3.4], [4, 3.4], [0, -4.3], [0, 4.3]];
@@ -1945,11 +2107,11 @@ function initScene(){
       var grp = evidenceShape(e.label, e.sub, {photo: photoUri});
       grp.position.y = 0.55; plinth.add(grp);
       plinth.userData.inner = grp;
-      var sp = makeLabelSprite(e.label); if(sp){ sp.position.y = 2.05; plinth.add(sp); }
+
       plinth.position.set(cx + slot[0], 0, slot[1]);
       plinth.userData = {kind: "ev", id: e.id};
       scene.add(plinth); evMeshes[e.id] = plinth;
-      interactables.push({group: plinth, kind: "ev", id: e.id, label: e.label});
+      interactables.push({group: plinth, kind: "ev", id: e.id, label: e.label, labelH: 2.05});
       addCollider(cx + slot[0] - 0.45, cx + slot[0] + 0.45, slot[1] - 0.45, slot[1] + 0.45);
       if(S.ev[e.id]) dimGroup(plinth);
     });
@@ -1964,10 +2126,9 @@ function initScene(){
       g.position.set(cx + slot[0], 0, slot[1]);
       g.rotation.y = Math.atan2(-slot[0], -slot[1]);
       g.userData = {kind: "susp", key: sp2.key};
-      var lab = makeLabelSprite(sp2.name.replace(/,\s*\d+$/, ""), 0.85);
-      if(lab){ lab.position.y = 2.15; g.add(lab); }
+
       scene.add(g); suspMeshes[sp2.key] = g;
-      interactables.push({group: g, kind: "susp", key: sp2.key, label: sp2.name.replace(/,\s*\d+$/, "")});
+      interactables.push({group: g, kind: "susp", key: sp2.key, label: sp2.name.replace(/,\s*\d+$/, ""), labelH: 2.15});
       addCollider(cx + slot[0] - 0.4, cx + slot[0] + 0.4, slot[1] - 0.4, slot[1] + 0.4);
       if(S.susp[sp2.key]) dimGroup(g);
     });
@@ -1986,10 +2147,9 @@ function initScene(){
       orb.position.y = 1.35; g.add(orb); g.userData.orb = orb;
       g.position.set(cx + slot[0], 0, slot[1]);
       g.userData = {kind: "puzz", idx: i};
-      var lab = makeLabelSprite("Puzzle " + (i + 1) + " · " + pz.title.replace(/^(?:\S+\s+)?Puzzle\s*\d+\s*[·:]\s*/, ""), 0.85);
-      if(lab){ lab.position.y = 1.95; g.add(lab); }
+
       scene.add(g); puzzMeshes[i] = g;
-      interactables.push({group: g, kind: "puzz", idx: i, label: "Puzzle " + (i + 1) + " · " + pz.title.replace(/^(?:\S+\s+)?Puzzle\s*\d+\s*[·:]\s*/, "")});
+      interactables.push({group: g, kind: "puzz", idx: i, label: "Puzzle " + (i + 1) + " · " + pz.title.replace(/^(?:\S+\s+)?Puzzle\s*\d+\s*[·:]\s*/, ""), labelH: 1.95});
       addCollider(cx + slot[0] - 0.5, cx + slot[0] + 0.5, slot[1] - 0.5, slot[1] + 0.5);
       if(S.puzz[i]) dimGroup(g);
     });
@@ -2006,10 +2166,9 @@ function initScene(){
       dot.position.y = 0.9; g.add(dot);
       g.position.set(cx + slot[0], 0, slot[1]);
       g.userData = {kind: "search", idx: i};
-      var lab = makeLabelSprite("🔍 " + sh.label.replace(/^Search:\s*/, ""), 0.7);
-      if(lab){ lab.position.y = 1.35; g.add(lab); }
+
       scene.add(g); searchMeshes[i] = g;
-      interactables.push({group: g, kind: "search", idx: i, label: sh.label.replace(/^Search:\s*/, "")});
+      interactables.push({group: g, kind: "search", idx: i, label: sh.label.replace(/^Search:\s*/, ""), labelH: 1.35});
     });
     // dust motes for atmosphere
     var dustN = 220, dustPos = new Float32Array(dustN * 3), dustBase = [];
@@ -2027,22 +2186,47 @@ function initScene(){
     var keys = {};
     var joyVec = {x: 0, y: 0};
     var lastPrompt = "", lastObjective = "", lastEvCount = -1, lastPuzzCount = -1;
+    var stuckFrames = 0;
     var inspecting = null;
     function updateLabels(){
+      var layer = $("labels6");
+      if(!layer) return;
+      var rect = canvas.getBoundingClientRect();
+      var W = rect.width || 900, H = rect.height || 600;
       var sheetOpen = $("sheet") && $("sheet").classList.contains("open");
+      var pz2Open = $("pz2d") && $("pz2d").classList.contains("open");
+      var v = new THREE.Vector3();
       interactables.forEach(function(it){
+        if(!it._lblEl){
+          var el = document.createElement("div");
+          el.className = "lbl6";
+          var txt = it.label || "";
+          if(it.kind === "search") txt = "🔍 " + txt;
+          else if(it.kind === "twist") txt = "📞 " + txt;
+          el.textContent = txt;
+          layer.appendChild(el);
+          it._lblEl = el;
+        }
+        var el2 = it._lblEl;
         var p = it.group.position;
         var dx = p.x - PL.x, dz = p.z - PL.z;
         var d = Math.sqrt(dx * dx + dz * dz);
         var room = roomAt(p.x, nRooms);
-        var pz2Open = $("pz2d") && $("pz2d").classList.contains("open");
         var vis = !pz2Open && !sheetOpen && !inspecting && room === PL.room && d < 5.5;
-        it.group.traverse(function(o){
-          if(o.isSprite){
-            o.visible = vis;
-            if(vis) o.material.opacity = Math.max(0.25, Math.min(1, (5.5 - d) / 3));
-          }
-        });
+        if(!vis){ el2.style.display = "none"; return; }
+        var camDir = new THREE.Vector3();
+        camera.getWorldDirection(camDir);
+        var toObj = new THREE.Vector3(p.x - camera.position.x, (it.labelH || 1.8) + p.y - camera.position.y, p.z - camera.position.z);
+        if(toObj.dot(camDir) <= 0){ el2.style.display = "none"; return; }
+        v.set(p.x, (it.labelH || 1.8) + p.y, p.z).project(camera);
+        if(v.z > 1 || v.z < -1){ el2.style.display = "none"; return; }
+        var x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H;
+        x = Math.max(70, Math.min(W - 70, x));
+        y = Math.max(34, Math.min(H - 34, y));
+        el2.style.display = "block";
+        el2.style.left = x + "px"; el2.style.top = y + "px";
+        el2.style.opacity = Math.max(0.3, Math.min(1, (5.5 - d) / 3));
+        el2.style.transform = "translate(-50%,-50%)";
       });
     }
     function applyCam(){
@@ -2081,9 +2265,9 @@ function initScene(){
         var p = it.group.position;
         var dx = p.x - PL.x, dz = p.z - PL.z;
         var d = Math.sqrt(dx * dx + dz * dz);
-        if(d > 3.5 || d < 0.01) return;
+        if(d > 4.2 || d < 0.01) return;
         var dot = (dx * fx + dz * fz) / d;
-        if(dot < 0.86) return;
+        if(dot < 0.75) return;
         if(d < bestD){ bestD = d; best = it; }
       });
       return best;
@@ -2215,15 +2399,24 @@ function initScene(){
         f += -joyVec.y; s += joyVec.x;
         var mag = Math.sqrt(f * f + s * s);
         if(mag > 1){ f /= mag; s /= mag; }
-        var speed = 3.8;
+        var speed = 5.0;
         var fx = -Math.sin(PL.yaw), fz = -Math.cos(PL.yaw);
         var rx = Math.cos(PL.yaw), rz = -Math.sin(PL.yaw);
         var tvx = (fx * f + rx * s) * speed, tvz = (fz * f + rz * s) * speed;
-        PL.velX += (tvx - PL.velX) * 0.35; PL.velZ += (tvz - PL.velZ) * 0.35;
+        PL.velX += (tvx - PL.velX) * 0.5; PL.velZ += (tvz - PL.velZ) * 0.5;
         PL.moving = Math.abs(PL.velX) + Math.abs(PL.velZ) > 0.3;
+        var ox = PL.x, oz = PL.z;
         var nx = PL.x + PL.velX * dt, nz = PL.z + PL.velZ * dt;
         if(!collides(nx, PL.z)) PL.x = nx;
         if(!collides(PL.x, nz)) PL.z = nz;
+        var inMag = Math.abs(f) + Math.abs(s);
+        var disp = Math.sqrt((PL.x - ox) * (PL.x - ox) + (PL.z - oz) * (PL.z - oz));
+        if(inMag > 0.3 && disp < 0.02) stuckFrames++; else stuckFrames = 0;
+        if(stuckFrames > 45){
+          stuckFrames = 0;
+          PL.x = roomCenter(PL.room); PL.z = 0; PL.velX = 0; PL.velZ = 0;
+          toast("↩ Unstuck — back to room center");
+        }
         if(PL.moving){
           PL.bob += dt * 9.0;
           var sn = Math.sin(PL.bob);
@@ -2261,19 +2454,19 @@ function initScene(){
       Object.keys(suspMeshes).forEach(function(key){
         var g = suspMeshes[key]; if(!g || !g.userData.anim) return;
         var a = g.userData.anim;
-        g.position.y = Math.sin(clock * 1.6 + a.phase) * 0.02;
-        a.head.rotation.z = Math.sin(clock * 0.9 + a.phase) * 0.02;
-        a.armL.rotation.x = Math.sin(clock * 1.3 + a.phase) * 0.05;
-        a.armR.rotation.x = Math.sin(clock * 1.3 + a.phase + 1.2) * 0.05;
+        g.position.y = Math.sin(clock * 1.6 + a.phase) * 0.035;
+        a.head.rotation.z = Math.sin(clock * 0.9 + a.phase) * 0.05;
+        a.armL.rotation.x = Math.sin(clock * 1.3 + a.phase) * 0.08;
+        a.armR.rotation.x = Math.sin(clock * 1.3 + a.phase + 1.2) * 0.08;
         var dxp = PL.x - g.position.x, dzp = PL.z - g.position.z;
         var dp = Math.sqrt(dxp * dxp + dzp * dzp);
-        if(dp < 5 && !($("pz2d") && $("pz2d").classList.contains("open"))){
+        if(dp < 8 && !($("pz2d") && $("pz2d").classList.contains("open"))){
           var target = Math.atan2(dxp, dzp);
           var cur = g.rotation.y;
           var diff = target - cur;
           while(diff > Math.PI) diff -= Math.PI * 2;
           while(diff < -Math.PI) diff += Math.PI * 2;
-          g.rotation.y = cur + diff * 0.08;
+          g.rotation.y = cur + diff * 0.12;
         }
         if(sheetOpen){
           a.head.rotation.x = Math.sin(clock * 8) * 0.05;
@@ -2327,10 +2520,10 @@ function initScene(){
         var star = new THREE.Mesh(new THREE.OctahedronGeometry(0.3),
           new THREE.MeshStandardMaterial({color: 0xff6a00, emissive: 0xff6a00, emissiveIntensity: 0.8}));
         star.position.y = 1.2; g.add(star);
-        var lab = makeLabelSprite("📞 " + tw.title, 0.9); if(lab){ lab.position.y = 1.9; g.add(lab); }
+
         g.position.set(roomCenter(PL.room) + 1.5, 0, 1.5); g.userData = {kind: "twist", stage: stage};
         scene.add(g); twistMeshes[stage] = g;
-        interactables.push({group: g, kind: "twist", stage: stage, label: tw.title});
+        interactables.push({group: g, kind: "twist", stage: stage, label: tw.title, labelH: 1.9});
       },
       spawnZoneMarkers: function(){
         var c2 = C(); if(!c2) return;
@@ -2340,12 +2533,12 @@ function initScene(){
           var g = new THREE.Group();
           var post = cyl(0.08, 0.08, 1.1, 0x8a8a8a, 0, 0.55, 0, 10); g.add(post);
           var flag = box(0.7, 0.4, 0.05, 0xffd700, 0.35, 1.2, 0); g.add(flag);
-          var lab = makeLabelSprite(o.t, 0.8); if(lab){ lab.position.y = 1.75; g.add(lab); }
+
           var ang = (i / c2.solveQ.where.length) * Math.PI * 2 + 0.9;
           g.position.set(lastCx + Math.cos(ang) * 3.2, 0, Math.sin(ang) * 3.2);
           g.userData = {kind: "zone", v: o.v};
           scene.add(g); self["zone" + i] = g;
-          interactables.push({group: g, kind: "zone", v: o.v, label: o.t});
+          interactables.push({group: g, kind: "zone", v: o.v, label: o.t, labelH: 1.75});
         });
       },
       clearZoneMarkers: function(){
@@ -2354,7 +2547,10 @@ function initScene(){
           if(k.indexOf("zone") === 0 && self[k] && self[k].parent) self[k].parent.remove(self[k]);
         });
         for(var i = interactables.length - 1; i >= 0; i--){
-          if(interactables[i].kind === "zone") interactables.splice(i, 1);
+          if(interactables[i].kind === "zone"){
+            if(interactables[i]._lblEl && interactables[i]._lblEl.parentNode) interactables[i]._lblEl.parentNode.removeChild(interactables[i]._lblEl);
+            interactables.splice(i, 1);
+          }
         }
       }};
     window.__LG3D_SCENE__ = SCENE;
@@ -2825,6 +3021,11 @@ document.addEventListener("click", function(e){
   if(t){
     var act = t.getAttribute("data-act");
     if(act === "sheet-close"){ closeSheet(); }
+    else if(act === "sheet-toggle"){
+      var sh2 = $("sheet"); if(!sh2) return;
+      var col = sh2.classList.toggle("collapsed");
+      t.textContent = col ? "▴ Expand" : "▾ Collapse";
+    }
     else if(act === "inspect-ev"){
       var eid = t.getAttribute("data-id");
       if(SCENE && SCENE.startInspect && SCENE.startInspect(eid)){
@@ -2917,6 +3118,13 @@ window.__LG3D__ = {
   startSolve: startSolve, doHint: doHint, minEv: minEv, progressPct: progressPct,
   mode: function(){ return window.__LG3D_MODE__ || "list"; }
 };
+/* v6 probe hook: scene entry for jsdom inspection (game code is IIFE-wrapped,
+   so initScene/stopScene are not window properties). Gameplay-neutral: mirrors
+   enterCase's stopScene()+initScene() without the HUD/view steps. */
+if(window.__LG3D__){
+  window.__LG3D__.enterScene = function(){ stopScene(); return initScene(); };
+  window.__LG3D__.stopScene = function(){ stopScene(); };
+}
 
 /* ============ v5 PUZZLES: forensic terminal — Calibrate → Pin → Verify ============
    Round 5 replaces the round-4 casual 2D games with the user's own spec:

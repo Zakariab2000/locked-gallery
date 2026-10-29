@@ -85,6 +85,163 @@ video{width:100%;border-radius:12px;background:#000}
 #pz2d-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
 
 @media (prefers-reduced-motion:reduce){ #sheet{transition:none} }
+/* ===== Locked Gallery v5-fix: forensic terminal puzzle stylesheet =====
+   ROOT CAUSE of the v5 live failure: this stylesheet did not exist.
+   All .pz5-* markup shipped unstyled, so the calibration track rendered
+   0px tall (unhittable), the knob was invisible, and scanlines/crosshairs
+   never appeared. Every rule below is load-bearing. Do not drop it. */
+#pz2d-board{position:relative;padding:18px 16px 24px;border:1px solid #2a2e3a;border-radius:14px;overflow:hidden;
+  background-color:#0a0b0e;
+  background-image:linear-gradient(rgba(45,212,191,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,.05) 1px,transparent 1px);
+  background-size:28px 28px}
+#pz2d-board button{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#pz2d-sub{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#2dd4bf;letter-spacing:.05em}
+#pz2d-count{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#d4a853;white-space:nowrap}
+#pz2d-board .pz5-scanlines{position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
+#pz2d-board .pz5-cross{position:absolute;width:22px;height:22px;pointer-events:none;z-index:6}
+#pz2d-board .pz5-cross.tl{top:8px;left:8px;border-top:2px solid #2dd4bf;border-left:2px solid #2dd4bf}
+#pz2d-board .pz5-cross.tr{top:8px;right:8px;border-top:2px solid #2dd4bf;border-right:2px solid #2dd4bf}
+#pz2d-board .pz5-cross.bl{bottom:8px;left:8px;border-bottom:2px solid #2dd4bf;border-left:2px solid #2dd4bf}
+#pz2d-board .pz5-cross.br{bottom:8px;right:8px;border-bottom:2px solid #2dd4bf;border-right:2px solid #2dd4bf}
+/* ---- stage-1 instrument header (flex gap fixes the run-together telemetry) ---- */
+.pz5-inst-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 0 10px}
+.pz5-inst-name{font-family:"Playfair Display",Georgia,serif;color:#d4a853;font-size:1.15rem;letter-spacing:.02em}
+.pz5-tel{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#2dd4bf;font-size:.9rem;white-space:nowrap}
+.pz5-line{color:#e8e6df;line-height:1.55;margin:10px 0;font-size:1rem}
+/* ---- THE calibration track: 56px hit area, visible rail, 44px knob ---- */
+.pz5-track{position:relative;height:56px;margin:18px 0 8px;border:1px solid #3a3f4d;border-radius:10px;
+  background:linear-gradient(180deg,#14161d,#0d0f14);touch-action:none;cursor:grab}
+.pz5-track::before{content:"";position:absolute;left:6px;right:6px;top:50%;height:10px;transform:translateY(-50%);
+  background:#2a2113;border-radius:5px;box-shadow:inset 0 0 0 1px #4a3b1a}
+.pz5-knob{position:absolute;top:50%;width:44px;height:44px;margin-top:-22px;border-radius:50%;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%,#f0d488,#d4a853 55%,#8a6a1f);
+  border:2px solid #f5e9c8;box-shadow:0 0 18px rgba(212,168,83,.65),0 2px 6px rgba(0,0,0,.6)}
+.pz5-knob::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#0a0b0e}
+.pz5-lock{display:block;width:100%;margin:16px 0 4px;padding:16px;border-radius:12px;border:1px solid #d4a853;
+  background:#d4a853;color:#0a0b0e;font-size:1.05rem;font-weight:700;cursor:pointer}
+.pz5-lock:active{transform:translateY(1px)}
+/* ---- neutral stage-1 strip visualization (frames, NO anomaly marking) ---- */
+.pz5-stripviz{display:flex;gap:6px;margin:4px 0 2px;overflow:hidden}
+.pz5-svcell{flex:1;min-width:0;border:1px solid rgba(45,212,191,.35);border-radius:6px;padding:8px 2px;text-align:center;
+  color:#2dd4bf;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.75rem;background:rgba(45,212,191,.06)}
+.pz5-svcell i{display:block;font-style:normal;font-size:1rem}
+.pz5-svcell b{font-weight:400}
+/* ---- breakers ---- */
+.pz5-breakers{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px;margin:16px 0}
+.pz5-breaker{padding:14px 8px;border-radius:10px;border:1px solid #3a3f4d;background:#12141a;color:#e8e6df;cursor:pointer;min-height:64px}
+.pz5-breaker.on{border-color:#10b981;background:rgba(16,185,129,.15);color:#a7f3d0}
+.pz5-brk-label{display:block;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.8rem}
+.pz5-brk-state{display:block;font-weight:700;margin-top:4px}
+/* ---- overlay aligner / tare beam ---- */
+.pz5-overlay-wrap{position:relative;margin:16px 0;overflow:hidden;border:1px solid #3a3f4d;border-radius:10px;padding:14px;background:#12141a}
+.pz5-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+.pz5-strip span{color:#d4a853;font-size:.8rem;min-width:90px}
+.pz5-strip i{font-style:normal;letter-spacing:.2em;color:#e8e6df}
+.pz5-strip.ovl{color:#2dd4bf;transition:transform .12s ease}
+.pz5-beam{display:inline-block;margin:14px 0;padding:14px 18px;border:1px solid #3a3f4d;border-radius:10px;background:#12141a;
+  color:#d4a853;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:1.1rem;transform-origin:center;transition:transform .15s ease}
+/* ---- stage-2 shared controls: 46px+ touch targets ---- */
+.pz5-tray{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.pz5-tile,.pz5-item,.pz5-link,.pz5-legend{padding:13px 16px;border-radius:10px;border:1px solid #3a3f4d;background:#12141a;
+  color:#e8e6df;font-size:1rem;cursor:pointer;min-height:46px}
+.pz5-item.held,.pz5-link.held{border-color:#d4a853;box-shadow:0 0 0 2px rgba(212,168,83,.35)}
+.pz5-link.ok{border-color:#10b981;color:#a7f3d0}
+.pz5-slots{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.pz5-slot{display:flex;gap:8px;align-items:center;padding:10px 12px;border:1px dashed #3a3f4d;border-radius:10px;background:#101218;min-height:46px}
+.pz5-slot.next{border-color:#d4a853;border-style:solid}
+.pz5-slotnum{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#d4a853}
+.pz5-slotval{color:#e8e6df}
+.pz5-word{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:1.4rem;letter-spacing:.35em;color:#2dd4bf;text-align:center;margin:14px 0}
+.pz5-noise-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pz5-noise{padding:10px 14px;border-radius:10px;border:1px dashed #4b5563;background:#0d0f14;color:#8b93a7;
+  font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;cursor:pointer;min-height:44px}
+/* ---- bins ---- */
+.pz5-bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.pz5-bin{border:1px solid #3a3f4d;border-radius:12px;padding:12px;background:#101218}
+.pz5-bin b{display:block;color:#d4a853;margin-bottom:6px}
+.pz5-bincount{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.8rem;color:#8b93a7}
+.pz5-binitems{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.pz5-filed{padding:6px 9px;border-radius:8px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);color:#a7f3d0;font-size:.9rem}
+.pz5-binbtn{width:100%;padding:12px;border-radius:10px;border:1px solid #d4a853;background:transparent;color:#d4a853;font-weight:700;cursor:pointer;min-height:46px}
+/* ---- wheels ---- */
+.pz5-fmt{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:1.6rem;color:#d4a853;text-align:center;margin:12px 0}
+.pz5-wheels{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}
+.pz5-wheel{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid #3a3f4d;border-radius:12px;padding:10px;background:#101218}
+.pz5-wbtn{width:52px;height:44px;border-radius:8px;border:1px solid #3a3f4d;background:#1a1e28;color:#e8e6df;font-size:1.1rem;cursor:pointer}
+.pz5-digit{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:1.8rem;color:#e8e6df;min-height:44px;display:flex;align-items:center}
+.pz5-digit.ok{color:#10b981}
+.pz5-pinbtn{padding:12px 16px;border-radius:10px;border:1px solid #2dd4bf;background:transparent;color:#2dd4bf;font-weight:700;cursor:pointer;min-height:46px}
+.pz5-pinbtn.ok{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.12)}
+/* ---- connect ---- */
+.pz5-connect{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.pz5-col{display:flex;flex-direction:column;gap:10px}
+.pz5-links{margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.pz5-linkline{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.9rem;color:#2dd4bf}
+.pz5-linkline svg line{stroke:#2dd4bf;stroke-width:2}
+/* ---- memory ---- */
+.pz5-memory{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:14px 0}
+.pz5-card{padding:16px 10px;border-radius:10px;border:1px solid #3a3f4d;background:#12141a;color:#e8e6df;font-size:.95rem;cursor:pointer;min-height:64px}
+.pz5-card.up{background:#1a1e28;border-color:#d4a853}
+.pz5-card.ok{border-color:#10b981;color:#a7f3d0}
+/* ---- prints ---- */
+.pz5-ref{display:flex;gap:14px;align-items:center;margin:14px 0;padding:12px;border:1px solid #3a3f4d;border-radius:12px;background:#101218}
+.pz5-refcap{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.85rem;color:#8b93a7}
+#pz5-refprint,#pz5-compprint,.pz5-printcv{border:1px solid #3a3f4d;border-radius:8px;background:#0d0f14}
+.pz5-printcard{padding:12px;border-radius:12px;border:1px solid #3a3f4d;background:#12141a;color:#e8e6df;cursor:pointer;min-height:120px}
+.pz5-printcard.examined{border-color:#2dd4bf}
+.pz5-printcard.ok{border-color:#10b981}
+.pz5-printcover{padding:26px 10px;color:#8b93a7;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+.pz5-compare{display:flex;gap:14px;align-items:center;margin:14px 0;padding:12px;border:1px solid #3a3f4d;border-radius:12px;background:#101218}
+/* ---- scale ---- */
+.pz5-balance{border:1px solid #3a3f4d;border-radius:12px;padding:14px;margin:14px 0;background:#101218;text-align:center}
+.pz5-pan{margin:10px 0;color:#e8e6df}
+.pz5-readout{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#2dd4bf;margin:10px 0}
+.pz5-block{padding:13px 16px;border-radius:10px;border:1px solid #3a3f4d;background:#12141a;color:#e8e6df;font-size:1rem;cursor:pointer;min-height:46px}
+.pz5-block.on{border-color:#10b981;color:#a7f3d0;background:rgba(16,185,129,.1)}
+/* ---- frames ---- */
+.pz5-viewer{border:1px solid #3a3f4d;border-radius:12px;padding:18px;margin:14px 0;background:#101218;text-align:center;min-height:90px}
+.pz5-viewer.anomaly{border-color:#ef4444;background:rgba(239,68,68,.08)}
+.pz5-viewlabel{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#2dd4bf}
+.pz5-framedesc{margin-top:8px;color:#e8e6df}
+.pz5-frame{padding:12px;border-radius:8px;border:1px solid #3a3f4d;background:#12141a;color:#e8e6df;
+  font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;cursor:pointer;min-height:46px;min-width:52px}
+.pz5-frame.sel{border-color:#d4a853}
+.pz5-frame.anomaly{border-color:#ef4444;color:#fecaca}
+.pz5-frame.static{color:#8b93a7}
+/* ---- gauge ---- */
+.pz5-gaugeval{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:1.5rem;color:#d4a853;text-align:center;margin:12px 0}
+.pz5-viz{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;justify-content:center}
+.pz5-vbox{padding:8px 10px;border-radius:8px;border:1px solid #3a3f4d;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.85rem;color:#8b93a7}
+.pz5-vbox.sel{border-color:#d4a853;color:#d4a853}
+/* ---- vessels ---- */
+.pz5-vessel{border:1px solid #3a3f4d;border-radius:12px;padding:12px;background:#101218;min-width:130px;text-align:center}
+.pz5-vessel.tested{border-color:#2dd4bf}
+.pz5-liquid{height:26px;border-radius:6px;background:linear-gradient(180deg,rgba(45,212,191,.35),rgba(45,212,191,.1));margin:10px 0;border:1px solid #2a2e3a}
+.pz5-result{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.85rem;margin:8px 0;color:#8b93a7}
+.pz5-result.ok{color:#10b981}
+.pz5-result.bad{color:#ef4444}
+.pz5-vbtn{padding:12px 18px;border-radius:10px;border:1px solid #2dd4bf;background:transparent;color:#2dd4bf;font-weight:700;cursor:pointer;min-height:46px}
+/* ---- floorplan ---- */
+.pz5-floorplan{position:relative;margin:14px 0}
+.pz5-plan-svg{width:100%;max-width:520px;height:auto;display:block}
+.pz5-plan-room{fill:#101218;stroke:#3a3f4d;stroke-width:2}
+.pz5-plan-label{fill:#8b93a7;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11px}
+.pz5-plan-nodes{position:absolute;inset:0;pointer-events:none}
+.pz5-plannode{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:2px solid #d4a853;
+  background:rgba(212,168,83,.2);color:#d4a853;font-size:1rem;cursor:pointer;pointer-events:auto}
+.pz5-plan-legend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+/* ---- verify + verified ---- */
+.pz5-verify-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 4px}
+.pz5-verify{padding:15px 22px;border-radius:12px;border:1px solid #3a3f4d;background:#1a1e28;color:#8b93a7;font-weight:700;cursor:not-allowed;min-height:50px}
+.pz5-verify.ready{border-color:#10b981;background:#10b981;color:#0a0b0e;cursor:pointer}
+.pz5-verify-note{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.85rem;color:#8b93a7}
+.pz5-verified{border:1px solid #10b981;border-radius:14px;padding:20px;background:rgba(16,185,129,.08);text-align:center}
+.pz5-verified-mark{font-family:"Playfair Display",Georgia,serif;font-size:1.6rem;color:#10b981;margin-bottom:10px}
+.pz5-takeaway{margin-top:14px;padding:14px;border-radius:10px;border:1px solid rgba(212,168,83,.35);background:#12141a;text-align:left}
+.pz5-takeaway-head{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.8rem;letter-spacing:.15em;color:#d4a853;margin-bottom:6px}
+.pz5-continue{margin-top:16px;padding:14px 20px;border-radius:10px;border:1px solid #10b981;background:#10b981;color:#0a0b0e;font-weight:700;cursor:pointer;min-height:48px}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -550,20 +707,25 @@ function makeLabelSprite(text, scale){
     words.forEach(function(wd){ var t = cur ? cur + " " + wd : wd; if(t.length > 26 && cur){ lines.push(cur); cur = wd; } else cur = t; });
     if(cur) lines.push(cur);
     lines = lines.slice(0, 2);
-    var cv = document.createElement("canvas"); cv.width = 512; cv.height = lines.length > 1 ? 168 : 112;
+    var cv = document.createElement("canvas");
+    var ctx0 = document.createElement("canvas").getContext("2d");
+    var tw = 0;
+    if(ctx0){ ctx0.font = "bold 40px sans-serif"; lines.forEach(function(ln){ var w = ctx0.measureText(ln).width; if(w > tw) tw = w; }); }
+    var cw = Math.max(120, Math.min(512, Math.ceil(tw) + 48));
+    cv.width = cw; cv.height = lines.length > 1 ? 168 : 112;
     var ctx = cv.getContext("2d");
     ctx.fillStyle = "rgba(10,8,4,0.85)";
     var bh = lines.length > 1 ? 140 : 84;
-    if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(6, 14, 500, bh, 26); ctx.fill(); }
-    else { ctx.fillRect(6, 14, 500, bh); }
+    if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(6, 14, cw - 12, bh, 26); ctx.fill(); }
+    else { ctx.fillRect(6, 14, cw - 12, bh); }
     ctx.strokeStyle = "#c9a227"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#f5e9c8"; ctx.font = "bold 40px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    lines.forEach(function(ln, i){ ctx.fillText(ln, 256, lines.length > 1 ? 52 + i * 48 : 58); });
+    lines.forEach(function(ln, i){ ctx.fillText(ln, cw / 2, lines.length > 1 ? 52 + i * 48 : 58); });
     var tex = new THREE.CanvasTexture(cv);
     var mat = new THREE.SpriteMaterial({map: tex, transparent: true, depthTest: true});
     var sp = new THREE.Sprite(mat);
     var hh = lines.length > 1 ? 0.86 : 0.57;
-    sp.scale.set(2.6*(scale||1), hh*(scale||1), 1);
+    sp.scale.set(2.6*(scale||1)*(cw / 512), hh*(scale||1), 1);
     return sp;
   }catch(e){ return null; }
 }
@@ -3052,16 +3214,19 @@ function pz5RenderS1(){
     var off = st.cal.offset;
     html += "<div class='pz5-overlay-wrap'><div class='pz5-strip ref'><span>REFERENCE</span><i>▓▓▓▓ ▓▓ ▓▓▓▓▓</i></div>" +
       "<div class='pz5-strip ovl' style='transform:translateX(" + Math.round(off * 120) + "px)'><span>OVERLAY</span><i>▓▓▓▓ ▓▓ ▓▓▓▓▓</i></div></div>" +
-      "<div class='pz5-track' data-track='offset'><div class='pz5-knob' style='left:calc(" + Math.round((off + 1) / 2 * 100) + "% - 16px)'></div></div>" +
+      "<div class='pz5-track' data-track='offset'><div class='pz5-knob' style='left:calc(" + Math.round((off + 1) / 2 * 100) + "% - 22px)'></div></div>" +
       "<p class='pz5-line'>Drag the knob until the overlay sits on the reference (offset 0).</p>";
   } else if(st.inst === "tare"){
     var tr = st.cal.tare;
     html += "<div class='pz5-beam' style='transform:rotate(" + Math.round(tr * 25) + "deg)'>⚖ BEAM</div>" +
-      "<div class='pz5-track' data-track='tare'><div class='pz5-knob' style='left:calc(" + Math.round((tr + 1) / 2 * 100) + "% - 16px)'></div></div>" +
+      "<div class='pz5-track' data-track='tare'><div class='pz5-knob' style='left:calc(" + Math.round((tr + 1) / 2 * 100) + "% - 22px)'></div></div>" +
       "<p class='pz5-line'>Turn the tare knob until the beam reads level (tare 0).</p>";
   } else {
     var pos = st.cal.pos;
-    html += "<div class='pz5-track' data-track='sweep'><div class='pz5-knob' style='left:calc(" + Math.round(pos * 100) + "% - 16px)'></div></div>" +
+    var sviz = "<div class='pz5-stripviz'>";
+    for(var fi = 0; fi < 12; fi++) sviz += "<span class='pz5-svcell'><i>▮</i><b>" + (fi < 10 ? "0" + fi : fi) + "</b></span>";
+    sviz += "</div>";
+    html += sviz + "<div class='pz5-track' data-track='sweep'><div class='pz5-knob' style='left:calc(" + Math.round(pos * 100) + "% - 22px)'></div></div>" +
       "<p class='pz5-line'>Drag the read head from one end of the track to the other — a full sweep.</p>";
   }
   html += "<button class='pz5-lock' data-pz5='lock'>🔒 LOCK CALIBRATION</button>";
@@ -3080,9 +3245,10 @@ function pz5WireTracks(){
       pz5TrackSet(kind, p);
     };
     tr.addEventListener("pointerdown", function(e){
+      if(tr.setPointerCapture){ try{ tr.setPointerCapture(e.pointerId); }catch(err){} }
       setFromEvent(e);
       var mv = function(ev){ setFromEvent(ev); };
-      var up = function(){ tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); };
+      var up = function(){ if(tr.releasePointerCapture){ try{ tr.releasePointerCapture(e.pointerId); }catch(err){} } tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); };
       tr.addEventListener("pointermove", mv);
       tr.addEventListener("pointerup", up);
       tr.addEventListener("pointercancel", up);
@@ -3638,7 +3804,7 @@ function pz5RenderGauge(){
   }
   viz += "</div>";
   return "<div class='pz5-gaugeval'>" + fmtSlider(m, st.gval) + "</div>" +
-    "<div class='pz5-track' data-track='gauge'><div class='pz5-knob' style='left:calc(" + pct + "% - 16px)'></div></div>" +
+    "<div class='pz5-track' data-track='gauge'><div class='pz5-knob' style='left:calc(" + pct + "% - 22px)'></div></div>" +
     viz + "<button class='pz5-pinbtn' data-pz5='pinlock'>⬢ PIN LOCK</button>";
 }
 function pz5WireGauge(){
@@ -3657,7 +3823,7 @@ function pz5WireGauge(){
     st.played = true;
     var knob = tr.querySelector(".pz5-knob");
     var pct = (m.max === m.min) ? 0 : Math.round((st.gval - m.min) / (m.max - m.min) * 100);
-    if(knob) knob.style.left = "calc(" + pct + "% - 16px)";
+    if(knob) knob.style.left = "calc(" + pct + "% - 22px)";
     var gv = board.querySelector(".pz5-gaugeval");
     if(gv) gv.textContent = fmtSlider(m, st.gval);
     board.querySelectorAll(".pz5-vbox").forEach(function(bx){
@@ -3665,9 +3831,10 @@ function pz5WireGauge(){
     });
   };
   tr.addEventListener("pointerdown", function(e){
+    if(tr.setPointerCapture){ try{ tr.setPointerCapture(e.pointerId); }catch(err){} }
     setFromEvent(e);
     var mv = function(ev){ setFromEvent(ev); };
-    var up = function(){ tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); if(PZ5) pz5RenderS2(); };
+    var up = function(){ if(tr.releasePointerCapture){ try{ tr.releasePointerCapture(e.pointerId); }catch(err){} } tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); if(PZ5) pz5RenderS2(); };
     tr.addEventListener("pointermove", mv);
     tr.addEventListener("pointerup", up);
     tr.addEventListener("pointercancel", up);
@@ -3952,7 +4119,7 @@ function pz5TrackRefresh(){
     if(st.inst === "overlay") p = (st.cal.offset + 1) / 2;
     else if(st.inst === "tare") p = (st.cal.tare + 1) / 2;
     else p = st.cal.pos;
-    knob.style.left = "calc(" + Math.round(p * 100) + "% - 16px)";
+    knob.style.left = "calc(" + Math.round(p * 100) + "% - 22px)";
   }
   var ovl = board.querySelector(".pz5-strip.ovl");
   if(ovl) ovl.style.transform = "translateX(" + Math.round(st.cal.offset * 120) + "px)";

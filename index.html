@@ -70,109 +70,25 @@ video{width:100%;border-radius:12px;background:#000}
 .litem{text-align:left;width:100%}
 .notice{background:#3a2a10;border:1px solid var(--brass);border-radius:12px;padding:12px;margin:10px 0}
 .foot{color:var(--dim);font-size:.85rem;text-align:center;padding:18px}
-#pz2d{position:fixed;inset:0;z-index:90;background:#0d0a06;overflow:auto;display:none}
+#pz2d{position:fixed;inset:0;z-index:90;background:#0a0b0e;overflow:auto;display:none;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#e8e6df}
 #pz2d.open{display:block}
 .pz2-wrap{max-width:860px;margin:0 auto;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
 #pz2d-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-#pz2d-head b{font-size:1.2rem}
+#pz2d-head b{font-size:1.35rem;font-family:"Playfair Display",Georgia,serif;color:#d4a853}
 #pz2d-prog{display:flex;align-items:center;gap:10px;margin:10px 0}
 .pz2-bar{height:10px;background:#2a2113;border-radius:5px;overflow:hidden;flex:1}
-.pz2-bar i{display:block;height:100%;background:var(--brass);width:0%;transition:width .25s ease}
-#pz2d-feedback{margin:12px 0;padding:12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:1.02rem;line-height:1.5;min-height:52px}
-#pz2d-feedback.ok{border-color:var(--ok)}
-#pz2d-feedback.bad{border-color:var(--bad)}
-#pz2d-nudge{color:var(--dim);margin:8px 0;min-height:24px}
+.pz2-bar i{display:block;height:100%;background:#d4a853;width:0%;transition:width .25s ease}
+#pz2d-feedback{margin:12px 0;padding:12px;border-radius:12px;background:#12141a;border:1px solid #2a2e3a;font-size:1.02rem;line-height:1.5;min-height:52px}
+#pz2d-feedback.ok{border-color:#10b981;color:#a7f3d0}
+#pz2d-feedback.bad{border-color:#ef4444;color:#fecaca}
+#pz2d-nudge{color:#2dd4bf;margin:8px 0;min-height:24px;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.92rem}
 #pz2d-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
-.pz2-slots{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.pz2-slot{flex:1;min-width:120px;min-height:64px;background:var(--panel2);border:2px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
-.pz2-slotnum{color:var(--dim);font-size:.8rem;display:block}
-.pz2-slotval{font-weight:700;line-height:1.4}
-.pz2-tray{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-.pz2-tile,.pz2-item,.pz2-block{background:linear-gradient(180deg,#c9a227,#8a6d1a);color:#171006;border-radius:12px;padding:14px 12px;font-weight:700;cursor:pointer;touch-action:none;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center;user-select:none;-webkit-user-select:none}
-.pz2-tile{flex:1;min-width:120px}
-.pz2-tile.cipher{font-family:ui-monospace,Menlo,monospace;font-size:1.6rem}
-.pz2-tile.held,.pz2-item.held,.pz2-block.held,.pz2-printcard.held,.pz2-vessel.held{outline:3px solid #fff2c0;box-shadow:0 6px 20px rgba(0,0,0,.5)}
-.pz2-tile.ok,.pz2-item.ok{outline:2px solid var(--ok)}
-.pz2-word{font-family:ui-monospace,Menlo,monospace;font-size:2rem;letter-spacing:.35em;text-align:center;margin:14px 0;color:var(--paper)}
-.pz2-bins{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
-.pz2-bin{flex:1;min-width:200px;min-height:150px;background:var(--panel2);border:2px dashed var(--line);border-radius:14px;padding:12px}
-.pz2-binitems{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.pz2-binitems .pz2-item{flex:1;min-width:110px}
-.pz2-bincount{color:var(--dim);font-size:.85rem}
-.pz2-wheels{display:flex;gap:16px;justify-content:center;margin:16px 0;flex-wrap:wrap}
-.pz2-wheel{display:flex;flex-direction:column;align-items:center;gap:6px}
-.pz2-digit{font-size:2.6rem;font-weight:800;background:#111;border:2px solid var(--brass);border-radius:12px;min-width:72px;text-align:center;padding:10px 6px;touch-action:none;user-select:none;-webkit-user-select:none}
-.pz2-wbtn{min-width:56px;min-height:44px;font-size:1.2rem;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--paper);cursor:pointer}
-.pz2-fmt{font-size:1.8rem;text-align:center;font-weight:800;letter-spacing:.1em}
-.pz2-lock{text-align:center;margin:16px 0}
-.pz2-shackle{font-size:2.4rem;cursor:pointer;touch-action:none;display:inline-block}
-.pz2-shackle.ok{color:var(--ok)}
-.pz2-connect{display:flex;gap:10px;align-items:stretch;margin:12px 0;position:relative}
-.pz2-col{flex:1;display:flex;flex-direction:column;gap:10px}
-.pz2-link{background:var(--panel2);border:1px solid var(--line);color:var(--paper);border-radius:12px;padding:14px 10px;font-size:.95rem;cursor:pointer;text-align:left;min-height:56px}
-.pz2-link.held{outline:3px solid #fff2c0}
-.pz2-link.ok{border-color:var(--ok);color:#bfe8c8}
-.pz2-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.pz2-lines line{stroke:#c9a227;stroke-width:3}
-.pz2-memory{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
-.pz2-card{background:var(--panel2);border:1px solid var(--line);color:var(--paper);border-radius:12px;padding:18px 8px;font-size:.95rem;min-height:76px;cursor:pointer}
-.pz2-card.up{background:#241c0d}
-.pz2-card.ok{border-color:var(--ok);color:#bfe8c8}
-.pz2-ref{text-align:center;margin:12px 0}
-.pz2-ref canvas{border:2px solid var(--brass);border-radius:12px;background:#1c1a16}
-.pz2-compare{display:flex;gap:12px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap}
-.pz2-compare canvas{border:1px solid var(--line);border-radius:10px;background:#1c1a16}
-.pz2-printcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;cursor:pointer;touch-action:none;min-width:140px;flex:1}
-.pz2-printcard.examined{border-color:var(--brass)}
-.pz2-printcard.ok{border-color:var(--ok)}
-.pz2-printcover{color:var(--dim);padding:18px 4px}
-.pz2-printcv{border-radius:8px;background:#1c1a16}
-.pz2-refzone,.pz2-box,.pz2-tray2,.pz2-lockslot{border:2px dashed var(--brass);border-radius:14px;padding:18px;text-align:center;margin:14px 0;font-weight:700}
-.pz2-balance{text-align:center;margin:12px 0}
-.pz2-beam{display:inline-block;transition:transform .3s ease;background:#3a2a18;border-radius:10px;padding:10px 22px}
-.pz2-pan{display:inline-block;background:#2a2118;border:1px solid var(--line);border-radius:10px;padding:14px 18px;min-width:180px;min-height:60px}
-.pz2-pan .pz2-block{margin:4px}
-.pz2-readout{margin:10px 0;font-weight:700}
-.pz2-sealrow{text-align:center;margin:14px 0}
-.pz2-bolt{display:inline-block;background:linear-gradient(180deg,#c9a227,#8a6d1a);color:#171006;border-radius:12px;padding:14px 20px;font-weight:800;cursor:pointer;touch-action:none}
-.pz2-viewer{min-height:150px;border:2px solid var(--brass);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:12px 0;cursor:pointer;touch-action:none}
-.pz2-viewer.dark{background:#050505}
-.pz2-viewer.hand{background:#1a2a1a}
-.pz2-viewer.flash{outline:4px solid #ffd700}
-.pz2-viewlabel{font-size:1.4rem;font-weight:800}
-.pz2-framedesc{text-align:center;color:var(--dim);min-height:24px}
-.pz2-strip{display:flex;gap:8px;overflow-x:auto;padding:10px 2px;margin:8px 0}
-.pz2-frame{min-width:64px;height:64px;border-radius:10px;border:2px solid var(--line);display:flex;align-items:flex-end;justify-content:center;cursor:pointer;flex-shrink:0;background:#2a2118}
-.pz2-frame span{font-size:.75rem;background:rgba(0,0,0,.6);border-radius:6px;padding:1px 5px;margin-bottom:4px}
-.pz2-frame.dark{background:#050505;border-color:#ffd700}
-.pz2-frame.hand{border-color:#7fd4ff}
-.pz2-frame.sel{outline:3px solid #fff2c0}
-.pz2-gaugeval{font-size:2.2rem;text-align:center;font-weight:800}
-.pz2-track{height:44px;background:#2a2113;border-radius:22px;position:relative;margin:16px 0;cursor:pointer;touch-action:none}
-.pz2-knob{position:absolute;top:6px;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8c860,#8a6d1a);border:2px solid var(--paper)}
-.pz2-viz{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;justify-content:center}
-.pz2-vbox{border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:36px;text-align:center}
-.pz2-vbox.sel{background:var(--brass);color:#171006;font-weight:800}
-.pz2-vbar{height:12px;background:#2a2113;border-radius:6px;overflow:hidden;flex:1}
-.pz2-vbar i{display:block;height:100%;background:var(--brass)}
-.pz2-lockrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0}
-.pz2-vessel{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;cursor:pointer;touch-action:none;min-width:150px;flex:1}
-.pz2-vessel.tested{border-color:var(--brass)}
-.pz2-vessel.ok{border-color:var(--ok)}
-.pz2-liquid{height:10px;background:#7a9a6a;border-radius:5px;margin:10px 0}
-.pz2-result{min-height:24px;font-weight:800}
-.pz2-result.ok{color:var(--ok)}
-.pz2-result.bad{color:var(--bad)}
-.pz2-big{font-size:1.5rem;font-weight:800;margin-bottom:10px}
-.pz2-solvebox{text-align:center;padding:16px;background:var(--panel);border:2px solid var(--ok);border-radius:16px;margin:14px 0}
-.pz2-sealzone{border:2px dashed var(--brass);border-radius:12px;padding:18px;margin:12px 0;font-weight:700}
-.pz2-sealzone.ok{border-color:var(--ok);color:#bfe8c8}
-.pz2-seal{display:inline-block;background:linear-gradient(180deg,#c9a227,#8a6d1a);color:#171006;border-radius:12px;padding:14px 20px;font-weight:800;cursor:pointer;touch-action:none}
-@keyframes pz2shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-#pz2d-board.shake{animation:pz2shake .4s ease}
-.pz2-beam.shake,.pz2-bolt.shake{animation:pz2shake .4s ease}
+
 @media (prefers-reduced-motion:reduce){ #sheet{transition:none} }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- ============ HOME ============ -->
@@ -455,7 +371,7 @@ function toast(msg){
   clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800);
 }
 function openSheet(html, keepPuzzle){
-  if(!keepPuzzle){ try{ closePuzzle2D(); }catch(e){} }
+  if(!keepPuzzle){ try{ closePuzzle5(); }catch(e){} }
   var sh = $("sheet"); sh.innerHTML = html; sh.classList.add("open");
 }
 function closeSheet(){ var sh = $("sheet"); sh.innerHTML = ""; sh.classList.remove("open"); }
@@ -2426,7 +2342,7 @@ function shuffleSeeded(arr, seed){
 }
 function openPuzzle(idx){
   /* v4: every puzzle opens the full-screen 2D game — no 3D stations, no sheet quiz, no gate. */
-  return openPuzzle2D(idx);
+  return openPuzzle5(idx);
 }
 function fmtSlider(mech, v){
   if(mech.unit === "min02") return "02:" + (v < 10 ? "0" : "") + v;
@@ -2652,7 +2568,7 @@ function openBrief(id){
   showView("view-brief");
 }
 function enterCase(){
-  closePuzzle2D();
+  closePuzzle5();
   var c = C(); if(!c) return;
   if(!S.name) S.name = "Player";
   if(!S.role) S.role = "detective";
@@ -2734,7 +2650,7 @@ function retry3d(){
   }
 }
 function leaveCase(){
-  closePuzzle2D();
+  closePuzzle5();
   if(S.timer){ clearInterval(S.timer); S.timer = null; }
   stopScene(); liveStop(); closeSheet();
   S.entered = false; S.solveMode = false;
@@ -2840,58 +2756,104 @@ window.__LG3D__ = {
   mode: function(){ return window.__LG3D_MODE__ || "list"; }
 };
 
-/* ============ v4 PUZZLES: full-screen 2D puzzle games ============
-   The 3D stations are GONE. Tapping a puzzle plinth in a room opens a
-   full-screen 2D puzzle game: big touch targets, drag + tap play,
-   juicy feedback on every move, a progress meter, a nudge (never the
-   answer) plus the existing voice hint when stuck.
-   NO CHECK BUTTON ANYWHERE: completion is detected from play itself,
-   or from a physical commit gesture (drag a bolt / seal / frame into
-   place) — never a button that grades a form. No bare multiple-choice:
-   every answer is built, compared, or found by manipulation.
-   Same puzzle data / titles / hints / done-wrong text / clue unlocks;
-   attemptPuzzle() stays the single win-condition. NO puzzle gate:
-   v3's lock blocked live play, so every puzzle is always playable;
-   solving still unlocks exactly the same clue, and the final case
-   solve keeps its min-evidence gate. Difficulty scales with tier:
-   Normal starts with the first step done + earliest nudges, Hard has
-   no starter, God has no starter, latest nudges, and a seal-the-file
-   finish step. */
-var PZ2D = null;
+/* ============ v5 PUZZLES: forensic terminal — Calibrate → Pin → Verify ============
+   Round 5 replaces the round-4 casual 2D games with the user's own spec:
+   every puzzle is a tactile, visual FORENSIC HARDWARE SIMULATION.
+   NEVER a text quiz, NEVER bare multiple-choice, NEVER a text-only list.
+   Every puzzle runs the same 3-stage loop:
+     STAGE 1 — CALIBRATE: manipulate a physical instrument (timeline scrubber,
+       optical overlay aligner, tare scale, sensor sweep, X-ray gantry, loupe
+       scan, circuit breaker panel) and LOCK the calibration. Wrong calibration
+       = no nodes, clear crimson feedback. Nodes stay hidden/inert until the
+       lock succeeds.
+     STAGE 2 — PIN THE ANOMALY: click directly on visual hotspots / nodes
+       that only became interactive after calibration. A node pins only when
+       its state is the true finding; wrong pins give visible feedback.
+     STAGE 3 — VERIFY: a final lock action, disabled until a real anomaly is
+       pinned. It confirms the pinned finding (never a standalone answer
+       button): emerald VERIFIED state + the forensic takeaway note, which IS
+       the puzzle's existing clue unlock. attemptPuzzle() stays the single
+       win-condition; the final case solve keeps its min-evidence gate.
+   Same puzzle data / titles / hints / done-wrong text / clue unlocks as v4.
+   NO puzzle gate: every puzzle opens and plays at zero evidence (v3's lock
+   blocked live play). Difficulty scales with tier inside the framework:
+   tighter calibration tolerance, more noise nodes, later nudges on Hard/God.
+   Aesthetic: obsidian #0a0b0e, amber #d4a853, cyan #2dd4bf, crimson
+   #ef4444, emerald #10b981; Playfair Display headers, Inter body,
+   JetBrains Mono telemetry; layered inline SVGs, scanlines, crosshairs,
+   CRT noise, glowing nodes, all driven by live JS state. */
+var PZ5 = null;
 function pzFlash(txt, ok){
   var f = $("pz-flash"); if(!f) return;
   f.textContent = txt; f.className = ok ? "show ok" : "show bad";
   if(f._t) clearTimeout(f._t);
   f._t = setTimeout(function(){ f.className = ""; }, 2400);
 }
-function fpHash(str){
+/* Fingerprint drawing (same ring model as v3/v4, renamed). */
+function pz5FpHash(str){
   var h = 5381;
   for(var i = 0; i < str.length; i++){ h = ((h << 5) + h + str.charCodeAt(i)) | 0; }
   return h >>> 0;
 }
-function fpParams(seed){
-  var h = fpHash(seed);
+function pz5FpParams(seed){
+  var h = pz5FpHash(seed);
   return [h % 3, 6 + (h >> 3) % 5, 30 + (h >> 6) % 60, 30 + (h >> 10) % 60, (h >> 14) % 4];
 }
-/* Draw a fingerprint on a 2D canvas from fpParams (same rings as v3's fpTex). */
-function pz2DrawPrint(cv, seed){
-  var p = fpParams(seed);
+function pz5DrawPrint(cv, seed){
+  var p = pz5FpParams(seed);
   var ctx = cv.getContext("2d"); if(!ctx) return;
-  ctx.fillStyle = "#1c1a16"; ctx.fillRect(0, 0, cv.width, cv.height);
-  ctx.strokeStyle = "#c9b898"; ctx.lineWidth = 3;
+  ctx.fillStyle = "#0a0b0e"; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.strokeStyle = "#2dd4bf"; ctx.lineWidth = 3;
   var cx = 30 + p[2] * 0.55, cy = 30 + p[3] * 0.55, sc = cv.width / 256;
-  for(var r = 0; r < p[1]; r++){
-    ctx.beginPath();
-    var rad = (12 + r * 11) * sc;
-    var a0 = p[0] === 0 ? 0 : (p[0] === 1 ? 0.4 : -0.4);
-    ctx.arc(cx * sc, cy * sc, rad, a0, Math.PI * 2 - a0 * 0.5);
-    ctx.stroke();
+  ctx.beginPath();
+  for(var r = 12; r < 110; r += 12){
+    ctx.moveTo((cx + r) * sc, cy * sc);
+    ctx.arc(cx * sc, cy * sc, r * sc, 0, Math.PI * 2);
   }
+  ctx.stroke();
+  ctx.strokeStyle = "#d4a853"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(cx * sc, cy * sc);
+  ctx.lineTo((cx + p[4] * 14) * sc, (cy + 26) * sc); ctx.stroke();
 }
-function pz2Tier(){ return S.caseId <= 12 ? 1 : S.caseId <= 22 ? 2 : 3; }
-function pz2NudgeAfter(){ var t = pz2Tier(); return t === 1 ? 2 : t === 2 ? 3 : 4; }
-/* 11 distinct 2D puzzle types, assigned from the puzzle's own data. */
-function pz2Type(pz, idx){
+/* ---------------- shell + feedback ---------------- */
+function pz5El(id){ return document.getElementById(id); }
+function pz5Say(msg, ok){
+  var f = pz5El("pz2d-feedback"); if(!f) return;
+  f.textContent = msg; f.className = ok === true ? "ok" : ok === false ? "bad" : "";
+}
+function pz5Tone(kind){
+  try{
+    if(kind === "pick") sfxTone(660, 0.06, "sine", 0.08);
+    else if(kind === "place") sfxTone(520, 0.09, "sine", 0.1);
+    else if(kind === "good"){ sfxTone(740, 0.1, "sine", 0.1); sfxTone(980, 0.12, "sine", 0.1, 0.09); }
+    else if(kind === "wrong") sfxTone(160, 0.18, "square", 0.07);
+    else if(kind === "solve"){ [523, 659, 784, 1046].forEach(function(fr, i){ sfxTone(fr, 0.14, "sine", 0.11, i * 0.1); }); }
+  }catch(e){}
+}
+function pz5Progress(done, total, label){
+  var fill = pz5El("pz2d-fill"), cnt = pz5El("pz2d-count");
+  if(fill) fill.style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+  if(cnt) cnt.textContent = label || (done + " / " + total);
+}
+function pz5Wrong(msg){
+  if(!PZ5) return;
+  PZ5.wrongs++;
+  pz5Say("✗ " + msg, false);
+  pz5Tone("wrong");
+  var b = pz5El("pz2d-board");
+  if(b){ b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); }
+  if(PZ5.wrongs >= pz5NudgeAfter()) pz5ShowNudge();
+  /* Keep the S2 view in sync when a wrong move changed state (link deselect,
+     scale pan cleared). Feedback lives outside the board, so it survives. */
+  if(PZ5.stage === 2) pz5RenderS2();
+}
+function pz5Tier(){ return S.caseId <= 12 ? 1 : S.caseId <= 22 ? 2 : 3; }
+function pz5NudgeAfter(){ var t = pz5Tier(); return t === 1 ? 2 : t === 2 ? 3 : 4; }
+function pz5Tol(){ var t = pz5Tier(); return t === 1 ? 0.15 : t === 2 ? 0.08 : 0.04; }
+function pz5NoiseCount(){ var t = pz5Tier(); return t === 1 ? 0 : t === 2 ? 2 : 4; }
+/* ---------------- type + instrument mapping ---------------- */
+/* 11 puzzle types, assigned from the puzzle's own data (same as v4). */
+function pz5Type(pz, idx){
   var m = pz.mech || {};
   if(m.type === "order"){
     if(/spell|letter|cipher/i.test(m.prompt || "")) return "cipher";
@@ -2911,37 +2873,58 @@ function pz2Type(pz, idx){
   if(m.type === "test") return "vessels";
   return "timeline";
 }
-/* ---------------- view shell + feedback ---------------- */
-function pz2El(id){ return document.getElementById(id); }
-function pz2Say(msg, ok){
-  var f = pz2El("pz2d-feedback"); if(!f) return;
-  f.textContent = msg; f.className = ok === true ? "ok" : ok === false ? "bad" : "";
+/* 8 forensic instruments, one per puzzle family. */
+function pz5Instrument(type){
+  if(type === "timeline" || type === "cipher") return "scrubber";
+  if(type === "bins" || type === "memory") return "sweep";
+  if(type === "wheels" || type === "gauge") return "breaker";
+  if(type === "connect") return "overlay";
+  if(type === "prints") return "loupe";
+  if(type === "scale") return "tare";
+  if(type === "frames") return "gantry";
+  if(type === "vessels") return "sweep";
+  return "scrubber";
 }
-function pz2Tone(kind){
-  try{
-    if(kind === "pick") sfxTone(660, 0.06, "sine", 0.08);
-    else if(kind === "place") sfxTone(520, 0.09, "sine", 0.1);
-    else if(kind === "good"){ sfxTone(740, 0.1, "sine", 0.1); sfxTone(980, 0.12, "sine", 0.1, 0.09); }
-    else if(kind === "wrong") sfxTone(160, 0.18, "square", 0.07);
-    else if(kind === "solve"){ [523, 659, 784, 1046].forEach(function(fr, i){ sfxTone(fr, 0.14, "sine", 0.11, i * 0.1); }); }
-  }catch(e){}
+function pz5InstName(inst){
+  return {scrubber: "TIMELINE SCRUBBER", sweep: "SENSOR SWEEP", overlay: "OPTICAL OVERLAY ALIGNER",
+    tare: "TARE SCALE", breaker: "CIRCUIT BREAKER PANEL", gantry: "X-RAY GANTRY",
+    loupe: "OPTICAL LOUPE", floorplan: "ARCHITECTURAL FLOORPLAN"}[inst] || inst;
 }
-function pz2Progress(done, total, label){
-  var fill = pz2El("pz2d-fill"), cnt = pz2El("pz2d-count");
-  if(fill) fill.style.width = (total ? Math.round(done / total * 100) : 0) + "%";
-  if(cnt) cnt.textContent = label || (done + " / " + total);
+function pz5InstBlurb(inst){
+  return {scrubber: "Drag the read head across the FULL track to sweep the timeline, then lock the calibration.",
+    sweep: "Drag the sensor beam across the FULL tray to sweep it, then lock the calibration.",
+    overlay: "Drag the overlay until it sits exactly on the reference, then lock the calibration.",
+    tare: "Turn the tare knob until the beam reads zero, then lock the calibration.",
+    breaker: "Flip every breaker ON to power the instrument, then lock the calibration.",
+    gantry: "Drag the gantry across the FULL strip to scan it, then lock the calibration.",
+    loupe: "Drag the loupe across the FULL reference print to scan it, then lock the calibration."}[inst] || "";
 }
-function pz2Wrong(msg){
-  if(!PZ2D) return;
-  PZ2D.wrongs++;
-  pz2Say("✗ " + msg, false);
-  pz2Tone("wrong");
-  var b = pz2El("pz2d-board");
-  if(b){ b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); }
-  if(PZ2D.wrongs >= pz2NudgeAfter()) pz2ShowNudge();
+/* Floorplan presentation for door/room order puzzles (same timeline logic). */
+function pz5UseFloorplan(st){
+  if(st.type !== "timeline") return false;
+  return /door|room|floor|wing|deck|hall|chamber|corridor|ward|cabin|gallery/i.test(
+    (st.pz.title || "") + " " + ((st.mech && st.mech.prompt) || ""));
 }
-function pz2NudgeText(){
-  var st = PZ2D, m = st.mech;
+function pz5SeededOffset(st){
+  var s = S.caseId * 1000 + st.idx * 37 + 7;
+  var v = ((s % 13) - 6) / 10;
+  if(Math.abs(v) < 0.2) v = v < 0 ? -0.35 : 0.35;
+  return v;
+}
+
+/* ---------------- open / close / stage chrome ---------------- */
+function pz5StageLabel(){
+  var st = PZ5; if(!st) return "";
+  if(st.stage === 1) return "▣ STAGE 1/3 — CALIBRATE · " + pz5InstName(st.inst);
+  if(st.stage === 2) return "▣ STAGE 2/3 — ISOLATE THE ANOMALY · click the true node";
+  return "▣ STAGE 3/3 — FORENSIC VERIFICATION · lock the finding";
+}
+function pz5Chrome(){
+  var st = PZ5; if(!st) return;
+  pz5El("pz2d-sub").textContent = pz5StageLabel();
+}
+function pz5NudgeText(){
+  var st = PZ5, m = st.mech;
   if(!st) return "";
   switch(st.type){
     case "timeline": return "One event is out of place — check the earliest one first.";
@@ -2960,1076 +2943,1028 @@ function pz2NudgeText(){
     case "scale": {
       var tot = 0; Object.keys(st.loaded).forEach(function(i){ tot += m.items[+i].w; });
       tot = Math.round(tot * 10) / 10;
-      if(tot === m.target && !st.setOk) return "The weight matches, but the manifest doesn’t — one loaded item doesn’t belong.";
+      if(tot === m.target && !st.pinnedScale) return "The weight matches, but the manifest doesn’t — one loaded item doesn’t belong.";
       if(tot > m.target) return "You’re over the target — take something off.";
       return "You’re under the target — add something.";
     }
     case "frames": {
-      if(st.selected === null || st.selected === undefined) return "Scrub the strip — one frame looks different from all the rest.";
-      if(st.selected < m.answer) return "The moment you need is later than " + fmtSlider(m, st.selected) + ".";
-      if(st.selected > m.answer) return "The moment you need is earlier than " + fmtSlider(m, st.selected) + ".";
-      return "That frame looks right — get it into the tray.";
+      if(st.viewed === null || st.viewed === undefined) return "Scan the strip — one frame looks different from all the rest.";
+      if(st.viewed < m.answer) return "The moment you need is later than " + fmtSlider(m, st.viewed) + ".";
+      if(st.viewed > m.answer) return "The moment you need is earlier than " + fmtSlider(m, st.viewed) + ".";
+      return "That frame looks right — pin it.";
     }
     case "gauge": {
-      if(st.value < m.answer) return "The value you need is higher than " + st.value + ".";
-      if(st.value > m.answer) return "The value you need is lower than " + st.value + ".";
-      return "That value looks right — slide the bolt to lock it in.";
+      if(st.gval < m.answer) return "The value you need is higher than " + st.gval + ".";
+      if(st.gval > m.answer) return "The value you need is lower than " + st.gval + ".";
+      return "That value looks right — pin the lock.";
     }
     case "vessels": return "Only one vessel reacted — test them all first.";
     default: return "Keep going — the clues point the way.";
   }
 }
-function pz2ShowNudge(){
-  var n = pz2El("pz2d-nudge"); if(!n) return;
-  n.textContent = "👀 Nudge: " + pz2NudgeText();
+function pz5ShowNudge(){
+  var n = pz5El("pz2d-nudge"); if(!n) return;
+  n.textContent = "👀 Terminal nudge: " + pz5NudgeText();
 }
-function pz2Hint(){
-  if(!PZ2D) return;
-  pz2Say("💡 " + PZ2D.pz.hint, null);
-  try{ speak(PZ2D.pz.hint); }catch(e){}
+function pz5Hint(){
+  if(!PZ5) return;
+  pz5Say("💡 " + PZ5.pz.hint, null);
+  try{ speak(PZ5.pz.hint); }catch(e){}
 }
-/* Solve: attemptPuzzle is the single win-condition. played-guard means no
-   puzzle can ever solve without at least one real move. */
-function pz2Finish(attempt){
-  if(!PZ2D || PZ2D.solved) return false;
-  if(!PZ2D.played) return false;
-  var ok = attemptPuzzle(PZ2D.idx, attempt);
-  if(!ok){ pz2Say("✗ " + PZ2D.pz.wrong, false); return false; }
-  PZ2D.solved = true;
-  pz2Tone("solve");
-  var pz = PZ2D.pz;
-  var s = pz2El("pz2d-solve");
-  var god = pz2Tier() === 3;
-  if(s){
-    s.innerHTML = "<div class='pz2-solvebox'><div class='pz2-big'>✓ Solved!</div>" +
-      "<p class='sheet-line'>" + esc(pz.done) + "</p>" +
-      (pz.clue ? "<p class='sheet-line'>🔓 Clue: <b>" + esc(pz.clue.title) + "</b> — " + esc(pz.clue.text) + "</p>" : "") +
-      (god ? "<p class='sheet-sub'>🏆 God-tier case file — drag the brass seal onto the file to close it.</p><div id='pz2d-sealzone' class='pz2-sealzone'>📁 CASE FILE — drop the seal here</div><div id='pz2d-seal' class='pz2-seal' draggable='false'>🏅 SEAL</div>" : "") +
-      "<button class='btn' id='pz2d-continue'>Continue</button></div>";
-    s.classList.remove("hidden");
-    var cont = pz2El("pz2d-continue");
-    if(cont) cont.addEventListener("click", function(){
-      if(god && !PZ2D.sealed){ pz2Say("Seal the file first — drag the brass seal onto the case file.", null); return; }
-      closePuzzle2D();
-    });
-    if(god){
-      var seal = pz2El("pz2d-seal"), zone = pz2El("pz2d-sealzone");
-      if(seal && zone) pz2DragTo(seal, zone, function(){
-        PZ2D.sealed = true;
-        zone.textContent = "✓ SEALED — case file closed";
-        zone.classList.add("ok");
-        pz2Tone("good");
-        pz2Say("✓ Case file sealed. Nice work, detective.", true);
-      });
-    }
-  }
-  pz2Say("✓ " + pz.done, true);
-  pz2Progress(1, 1, "Solved!");
-  return true;
+function pz5OpenSolved(st){
+  var pz = st.pz;
+  pz5El("pz2d-board").innerHTML = "<div class='pz5-verified'><div class='pz5-verified-mark'>✓ VERIFIED</div>" +
+    "<p class='pz5-line'>" + esc(pz.done) + "</p>" +
+    (pz.clue ? "<div class='pz5-takeaway'><div class='pz5-takeaway-head'>FORENSIC TAKEAWAY</div><b>" + esc(pz.clue.title) + "</b> — " + esc(pz.clue.text) + "</div>" : "") + "</div>";
+  pz5Progress(1, 1, "Solved!");
 }
-
-/* ---------------- shared drag + tap model ----------------
-   One pair of document listeners (installed once). Tap a piece to pick
-   it up (gold), tap a target to drop it. Or drag it: while held, the
-   piece follows the pointer; release over a target to drop, anywhere
-   else to keep holding (forgiving — no penalty for a missed drop).
-   Probes drive PZ2D.api directly and never need DOM dragging. */
-var pz2Drag = {held: null, heldEl: null, sx: 0, sy: 0, dragging: false, installed: false};
-function pz2DragClear(){
-  if(pz2Drag.heldEl) pz2Drag.heldEl.classList.remove("held");
-  if(pz2Drag.heldEl){ pz2Drag.heldEl.style.position = ""; pz2Drag.heldEl.style.left = ""; pz2Drag.heldEl.style.top = ""; pz2Drag.heldEl.style.transform = ""; pz2Drag.heldEl.style.zIndex = ""; pz2Drag.heldEl.style.pointerEvents = ""; }
-  pz2Drag.held = null; pz2Drag.heldEl = null; pz2Drag.dragging = false;
-}
-function pz2HoldEl(el, kind, idx){
-  if(pz2Drag.heldEl) pz2DragClear();
-  pz2Drag.held = {kind: kind, idx: idx};
-  pz2Drag.heldEl = el;
-  el.classList.add("held");
-  pz2Tone("pick");
-}
-function pz2InstallDrag(){
-  if(pz2Drag.installed) return; pz2Drag.installed = true;
-  document.addEventListener("pointermove", function(e){
-    if(!PZ2D || !pz2Drag.heldEl) return;
-    var dx = e.clientX - pz2Drag.sx, dy = e.clientY - pz2Drag.sy;
-    if(Math.abs(dx) + Math.abs(dy) > 8){
-      pz2Drag.dragging = true;
-      var el = pz2Drag.heldEl;
-      el.style.position = "fixed";
-      el.style.left = (e.clientX - 44) + "px";
-      el.style.top = (e.clientY - 30) + "px";
-      el.style.transform = "scale(1.06)";
-      el.style.zIndex = 200;
-      el.style.pointerEvents = "none";
-    }
-  });
-  document.addEventListener("pointerup", function(e){
-    if(!PZ2D || !pz2Drag.heldEl) return;
-    if(!pz2Drag.dragging) return;
-    var el = pz2Drag.heldEl, data = pz2Drag.held;
-    var t = null;
-    try{ t = document.elementFromPoint ? document.elementFromPoint(e.clientX, e.clientY) : null; }catch(err){}
-    var drop = t && t.closest ? t.closest("[data-drop]") : null;
-    el.style.position = ""; el.style.left = ""; el.style.top = ""; el.style.transform = ""; el.style.zIndex = ""; el.style.pointerEvents = "";
-    if(drop){
-      var dk = drop.getAttribute("data-drop").split(":");
-      pz2DragClear();
-      if(PZ2D && PZ2D.api && PZ2D.api.drop) PZ2D.api.drop(data.kind, data.idx, dk[0], +dk[1]);
-    } else {
-      pz2Drag.dragging = false; /* dropped nowhere: stay held, forgiving */
-    }
-  });
-}
-function pz2WireDrag(el, kind, idx){
-  el.setAttribute("data-drag", kind + ":" + idx);
-  el.addEventListener("pointerdown", function(e){
-    if(!PZ2D) return;
-    if(el.getAttribute("data-placed")) return;
-    if(pz2Drag.heldEl === el){ pz2DragClear(); return; }
-    pz2HoldEl(el, kind, idx);
-    pz2Drag.sx = e.clientX; pz2Drag.sy = e.clientY; pz2Drag.dragging = false;
-    if(e.preventDefault) e.preventDefault();
-  });
-}
-function pz2WireDrop(el, kind, idx){
-  el.setAttribute("data-drop", kind + ":" + idx);
-  el.addEventListener("pointerdown", function(e){
-    if(!PZ2D || !pz2Drag.held) return;
-    var data = pz2Drag.held;
-    pz2DragClear();
-    if(PZ2D.api && PZ2D.api.drop) PZ2D.api.drop(data.kind, data.idx, kind, idx);
-  });
-}
-/* Simple drag-to-zone helper (God seal, gauge bolt, frame commit fallbacks). */
-function pz2DragTo(el, zone, onDone){
-  var sx = 0, sy = 0, dragging = false;
-  el.addEventListener("pointerdown", function(e){
-    sx = e.clientX; sy = e.clientY; dragging = false;
-    el.classList.add("held");
-    if(e.preventDefault) e.preventDefault();
-  });
-  el.addEventListener("pointermove", function(e){
-    if(sx === 0 && sy === 0) return;
-    if(Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 8){
-      dragging = true;
-      el.style.position = "fixed";
-      el.style.left = (e.clientX - 44) + "px";
-      el.style.top = (e.clientY - 26) + "px";
-      el.style.zIndex = 200;
-      el.style.pointerEvents = "none";
-    }
-  });
-  el.addEventListener("pointerup", function(e){
-    var wasDrag = dragging;
-    el.classList.remove("held");
-    el.style.position = ""; el.style.left = ""; el.style.top = ""; el.style.zIndex = ""; el.style.pointerEvents = "";
-    sx = 0; sy = 0; dragging = false;
-    var r = zone.getBoundingClientRect();
-    var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-    if(wasDrag && inside) onDone();
-    else if(!wasDrag) onDone(); /* tap also works — the gesture is the commit, not the drag */
-  });
-}
-/* ---------------- view open / close ---------------- */
-function openPuzzle2D(idx){
+function openPuzzle5(idx){
   var c = C(); if(!c || !c.puzzles[idx]) return false;
   var pz = c.puzzles[idx];
   closeSheet();
-  var view = pz2El("pz2d"); if(!view) return false;
-  if(!view._wired){
-    view._wired = true;
-    var cl = pz2El("pz2d-close"); if(cl) cl.addEventListener("click", closePuzzle2D);
-    var hb = pz2El("pz2d-hint"); if(hb) hb.addEventListener("click", pz2Hint);
-    var nb = pz2El("pz2d-nudgebtn"); if(nb) nb.addEventListener("click", pz2ShowNudge);
+  var view = pz5El("pz2d"); if(!view) return false;
+  if(!view._wired5){
+    view._wired5 = true;
+    var cl = pz5El("pz2d-close"); if(cl) cl.addEventListener("click", closePuzzle5);
+    var hb = pz5El("pz2d-hint"); if(hb) hb.addEventListener("click", pz5Hint);
+    var nb = pz5El("pz2d-nudgebtn"); if(nb) nb.addEventListener("click", pz5ShowNudge);
+    pz5El("pz2d-board").addEventListener("click", pz5BoardClick);
   }
-  var type = pz2Type(pz, idx);
-  PZ2D = {idx: idx, mech: pz.mech || {}, pz: pz, type: type, tier: pz2Tier(),
-    played: false, wrongs: 0, solved: false, sealed: false, lastBounced: null, api: null};
-  pz2El("pz2d-title").textContent = "🧩 " + pz.title;
-  pz2El("pz2d-goal").textContent = (pz.mech && pz.mech.prompt) || pz.hint;
-  pz2El("pz2d-sub").textContent = "Solve it to unlock its clue for your case file. Drag pieces, or tap to pick up then tap to place.";
-  var sv = pz2El("pz2d-solve"); if(sv) sv.classList.add("hidden");
-  pz2Say("", null);
-  var ng = pz2El("pz2d-nudge"); if(ng) ng.textContent = "";
+  var type = pz5Type(pz, idx);
+  var inst = pz5Instrument(type);
+  PZ5 = {idx: idx, mech: pz.mech || {}, pz: pz, type: type, inst: inst, tier: pz5Tier(),
+    played: false, wrongs: 0, solved: false, lastBounced: null,
+    stage: 1, calibrated: false,
+    cal: {pos: 0, vmin: 1, vmax: 0, offset: pz5SeededOffset({idx: idx}), tare: pz5SeededOffset({idx: idx + 3}), breakers: []},
+    api: null};
+  var st = PZ5;
+  st.api = pz5Api();
+  if(inst === "breaker"){
+    var n = (type === "wheels") ? (st.mech.answer || []).length : 3;
+    for(var i = 0; i < n; i++) st.cal.breakers.push(false);
+  }
+  pz5El("pz2d-title").textContent = "🧩 " + pz.title;
+  pz5El("pz2d-goal").textContent = (pz.mech && pz.mech.prompt) || pz.hint;
+  var sv = pz5El("pz2d-solve"); if(sv) sv.classList.add("hidden");
+  pz5Say("", null);
+  var ng = pz5El("pz2d-nudge"); if(ng) ng.textContent = "";
   if(S.puzz[idx]){
-    pz2El("pz2d-board").innerHTML = "<p class='sheet-line'>✓ Already solved — " + esc(pz.done) + "</p>" +
-      (pz.clue ? "<p class='sheet-line'>🔓 Clue: <b>" + esc(pz.clue.title) + "</b> — " + esc(pz.clue.text) + "</p>" : "");
-    pz2Progress(1, 1, "Solved!");
+    pz5OpenSolved(st);
+    pz5Chrome();
     view.classList.add("open");
     return true;
   }
-  pz2InstallDrag();
-  pz2Render();
+  pz5RenderS1();
   view.classList.add("open");
   return true;
 }
-function closePuzzle2D(){
-  var view = pz2El("pz2d"); if(view) view.classList.remove("open");
-  pz2DragClear();
-  PZ2D = null;
+function closePuzzle5(){
+  var view = pz5El("pz2d"); if(view) view.classList.remove("open");
+  PZ5 = null;
 }
-function pz2Render(){
-  var st = PZ2D; if(!st) return;
-  var r = {timeline: pz2RenderSequence, cipher: pz2RenderSequence, bins: pz2RenderBins,
-    wheels: pz2RenderWheels, connect: pz2RenderConnect, memory: pz2RenderMemory,
-    prints: pz2RenderPrints, scale: pz2RenderScale, frames: pz2RenderFrames,
-    gauge: pz2RenderGauge, vessels: pz2RenderVessels}[st.type];
-  if(r) r();
+/* ---------------- STAGE 1: calibrate ---------------- */
+function pz5S1Telemetry(){
+  var st = PZ5, c = st.cal;
+  if(st.inst === "breaker"){
+    var on = 0; c.breakers.forEach(function(b){ if(b) on++; });
+    return "POWER " + on + "/" + c.breakers.length + " · PANEL " + (on === c.breakers.length ? "LIVE" : "DARK");
+  }
+  if(st.inst === "overlay") return "OFFSET " + (c.offset >= 0 ? "+" : "") + c.offset.toFixed(2) + " · TOL ±" + pz5Tol().toFixed(2);
+  if(st.inst === "tare") return "TARE " + (c.tare >= 0 ? "+" : "") + c.tare.toFixed(2) + " · TOL ±" + pz5Tol().toFixed(2);
+  var pct = (c.vmin > c.vmax) ? 0 : Math.round((c.vmax - c.vmin) * 100);
+  return "SWEEP " + pct + "% · HEAD " + Math.round(c.pos * 100) + "%";
+}
+function pz5RenderS1(){
+  var st = PZ5; if(!st) return;
+  pz5Chrome();
+  var board = pz5El("pz2d-board");
+  var tel = pz5S1Telemetry();
+  var html = "<div class='pz5-scanlines'></div><div class='pz5-cross tl'></div><div class='pz5-cross tr'></div><div class='pz5-cross bl'></div><div class='pz5-cross br'></div>" +
+    "<div class='pz5-inst-head'><span class='pz5-inst-name'>" + pz5InstName(st.inst) + "</span><span class='pz5-tel'>" + tel + "</span></div>" +
+    "<p class='pz5-line'>" + pz5InstBlurb(st.inst) + "</p>";
+  if(st.inst === "breaker"){
+    html += "<div class='pz5-breakers'>";
+    st.cal.breakers.forEach(function(b, i){
+      html += "<button class='pz5-breaker" + (b ? " on" : "") + "' data-pz5='breaker' data-i='" + i + "'><span class='pz5-brk-label'>BRK " + (i + 1) + "</span><span class='pz5-brk-state'>" + (b ? "ON" : "OFF") + "</span></button>";
+    });
+    html += "</div>";
+  } else if(st.inst === "overlay"){
+    var off = st.cal.offset;
+    html += "<div class='pz5-overlay-wrap'><div class='pz5-strip ref'><span>REFERENCE</span><i>▓▓▓▓ ▓▓ ▓▓▓▓▓</i></div>" +
+      "<div class='pz5-strip ovl' style='transform:translateX(" + Math.round(off * 120) + "px)'><span>OVERLAY</span><i>▓▓▓▓ ▓▓ ▓▓▓▓▓</i></div></div>" +
+      "<div class='pz5-track' data-track='offset'><div class='pz5-knob' style='left:calc(" + Math.round((off + 1) / 2 * 100) + "% - 16px)'></div></div>" +
+      "<p class='pz5-line'>Drag the knob until the overlay sits on the reference (offset 0).</p>";
+  } else if(st.inst === "tare"){
+    var tr = st.cal.tare;
+    html += "<div class='pz5-beam' style='transform:rotate(" + Math.round(tr * 25) + "deg)'>⚖ BEAM</div>" +
+      "<div class='pz5-track' data-track='tare'><div class='pz5-knob' style='left:calc(" + Math.round((tr + 1) / 2 * 100) + "% - 16px)'></div></div>" +
+      "<p class='pz5-line'>Turn the tare knob until the beam reads level (tare 0).</p>";
+  } else {
+    var pos = st.cal.pos;
+    html += "<div class='pz5-track' data-track='sweep'><div class='pz5-knob' style='left:calc(" + Math.round(pos * 100) + "% - 16px)'></div></div>" +
+      "<p class='pz5-line'>Drag the read head from one end of the track to the other — a full sweep.</p>";
+  }
+  html += "<button class='pz5-lock' data-pz5='lock'>🔒 LOCK CALIBRATION</button>";
+  board.innerHTML = html;
+  pz5WireTracks();
+  pz5Progress(0, 1, "Stage 1 — calibrate");
+}
+function pz5WireTracks(){
+  var board = pz5El("pz2d-board"); if(!board) return;
+  board.querySelectorAll("[data-track]").forEach(function(tr){
+    var kind = tr.getAttribute("data-track");
+    var setFromEvent = function(e){
+      var r = tr.getBoundingClientRect();
+      var p = r.width ? (e.clientX - r.left) / r.width : 0;
+      p = Math.max(0, Math.min(1, p));
+      pz5TrackSet(kind, p);
+    };
+    tr.addEventListener("pointerdown", function(e){
+      setFromEvent(e);
+      var mv = function(ev){ setFromEvent(ev); };
+      var up = function(){ tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); };
+      tr.addEventListener("pointermove", mv);
+      tr.addEventListener("pointerup", up);
+      tr.addEventListener("pointercancel", up);
+    });
+  });
+}
+function pz5TrackSet(kind, p){
+  var st = PZ5; if(!st || st.stage !== 1) return;
+  st.played = true;
+  if(kind === "sweep"){
+    st.cal.pos = p;
+    if(p < st.cal.vmin) st.cal.vmin = p;
+    if(p > st.cal.vmax) st.cal.vmax = p;
+  } else if(kind === "offset"){
+    st.cal.offset = (p * 2 - 1);
+  } else if(kind === "tare"){
+    st.cal.tare = (p * 2 - 1);
+  }
+  /* In-place refresh only: a full re-render here would replace the track
+     element mid-drag and kill the pointer capture. */
+  pz5TrackRefresh();
+}
+function pz5CalOk(){
+  var st = PZ5, c = st.cal;
+  if(st.inst === "breaker"){
+    for(var i = 0; i < c.breakers.length; i++) if(!c.breakers[i]) return false;
+    return true;
+  }
+  if(st.inst === "overlay") return Math.abs(c.offset) <= pz5Tol();
+  if(st.inst === "tare") return Math.abs(c.tare) <= pz5Tol();
+  return c.vmin <= 0.02 && c.vmax >= 0.98;
+}
+function pz5CalFailMsg(){
+  var st = PZ5, c = st.cal;
+  if(st.inst === "breaker"){
+    var off = 0; c.breakers.forEach(function(b){ if(!b) off++; });
+    return "Panel not fully powered — " + off + " breaker(s) still down.";
+  }
+  if(st.inst === "overlay") return "Misaligned by " + Math.abs(c.offset).toFixed(2) + " — nudge the overlay onto the reference.";
+  if(st.inst === "tare") return "Scale not zeroed — tare reads " + (c.tare >= 0 ? "+" : "") + c.tare.toFixed(2) + ".";
+  return "Incomplete sweep — run the beam across the full range first.";
+}
+function pz5Lock(){
+  var st = PZ5; if(!st || st.stage !== 1) return false;
+  if(!pz5CalOk()){
+    pz5Wrong(pz5CalFailMsg());
+    return false;
+  }
+  st.calibrated = true;
+  st.stage = 2;
+  pz5EnterS2();
+  pz5Tone("good");
+  pz5Say("✓ Calibration locked — anomaly nodes are live. Click the true node.", true);
+  pz5RenderS2();
+  return true;
 }
 
-/* ---------------- timeline + cipher: drag events/letters into order ---------------- */
-function pz2RenderSequence(){
-  var st = PZ2D, m = st.mech, cipher = st.type === "cipher";
-  var disp = shuffleSeeded(m.items, S.caseId * 100 + st.idx);
-  var guard = 0;
-  while(JSON.stringify(disp) === JSON.stringify(m.answer) && guard++ < 20)
-    disp = shuffleSeeded(m.items, S.caseId * 100 + st.idx + guard);
-  st.disp = disp; st.seq = []; st.placed = {};
-  if(st.tier === 1){
-    var fi = disp.indexOf(m.answer[0]);
-    if(fi >= 0){ st.placed[fi] = true; st.seq = [m.answer[0]]; }
+/* ---------------- STAGE 2: isolate the anomaly ---------------- */
+function pz5S2Total(st){
+  var m = st.mech;
+  if(st.type === "timeline" || st.type === "cipher") return m.answer.length;
+  if(st.type === "bins") return m.items.length;
+  if(st.type === "wheels") return m.answer.length;
+  if(st.type === "connect" || st.type === "memory") return m.pairs.length;
+  return 1;
+}
+function pz5S2Pinned(st){
+  var m = st.mech;
+  if(st.type === "timeline" || st.type === "cipher") return st.seq.length;
+  if(st.type === "bins") return Object.keys(st.placed).length;
+  if(st.type === "wheels"){ var n = 0; for(var k in st.armed) if(st.armed[k]) n++; return n; }
+  if(st.type === "connect") return Object.keys(st.links).length;
+  if(st.type === "memory"){
+    var seen = {}, n = 0;
+    for(var i in st.matched){ var cd = st.cards[+i], k2 = cd.li + ":" + cd.ri; if(!seen[k2]){ seen[k2] = true; n++; } }
+    return n;
   }
-  var board = pz2El("pz2d-board");
-  var html = "";
-  if(cipher) html += "<div id='pz2d-word' class='pz2-word'></div>";
-  html += "<div class='pz2-slots'>";
-  for(var s = 0; s < m.answer.length; s++)
-    html += "<div class='pz2-slot' data-drop='slot:" + s + "'><span class='pz2-slotnum'>" + (s + 1) + "</span><span class='pz2-slotval'></span></div>";
-  html += "</div><div class='pz2-tray'>";
-  disp.forEach(function(it, i){
-    html += "<div class='pz2-tile" + (cipher ? " cipher" : "") + "' data-drag='tile:" + i + "'>" + esc(it) + "</div>";
-  });
-  html += "</div>";
-  board.innerHTML = html;
-  board.querySelectorAll(".pz2-slot").forEach(function(el){
-    pz2WireDrop(el, "slot", +el.getAttribute("data-drop").split(":")[1]);
-  });
-  board.querySelectorAll(".pz2-tile").forEach(function(el){
-    pz2WireDrag(el, "tile", +el.getAttribute("data-drag").split(":")[1]);
-  });
-  /* starter tile (Normal) sits in slot 1 already */
-  if(st.seq.length){
-    var placedEl = board.querySelector("[data-drag='tile:" + fi + "']");
-    var slot0 = board.querySelector("[data-drop='slot:0']");
-    if(placedEl && slot0){
-      placedEl.classList.add("ok");
-      slot0.querySelector(".pz2-slotval").textContent = st.seq[0];
-      placedEl.remove();
+  if(st.type === "prints") return st.pinnedPrint >= 0 ? 1 : 0;
+  if(st.type === "scale") return st.pinnedScale ? 1 : 0;
+  if(st.type === "frames") return st.pinnedFrame >= 0 ? 1 : 0;
+  if(st.type === "gauge") return st.pinnedGauge ? 1 : 0;
+  if(st.type === "vessels") return st.pinnedVessel >= 0 ? 1 : 0;
+  return 0;
+}
+function pz5S2Done(st){
+  st = st || PZ5; if(!st) return false;
+  return pz5S2Pinned(st) >= pz5S2Total(st);
+}
+function pz5EnterS2(){
+  var st = PZ5, m = st.mech;
+  st.seq = []; st.placed = {}; st.wheels = []; st.armed = {}; st.links = {};
+  st.flipped = []; st.matched = {}; st.seen = {}; st.examined = {}; st.pinnedPrint = -1;
+  st.loaded = {}; st.pinnedScale = false; st.viewed = null; st.pinnedFrame = -1;
+  st.gval = m.min || 0; st.pinnedGauge = false; st.tested = {}; st.pinnedVessel = -1;
+  st.held = -1; st.selL = -1;
+  if(st.type === "timeline" || st.type === "cipher"){
+    var tiles = m.items.map(function(t, i){ return {i: i, t: t}; });
+    st.tray = shuffleSeeded(tiles, S.caseId * 100 + st.idx + 11);
+    st.used = {};
+    if(st.tier === 1 && m.answer.length){
+      st.seq = [m.answer[0]];
+      for(var k = 0; k < st.tray.length; k++){
+        if(st.tray[k].t === m.answer[0]){ st.used[st.tray[k].i] = true; break; }
+      }
     }
+    st.noise = [];
+    for(var n = 0; n < pz5NoiseCount(); n++) st.noise.push("n" + n);
   }
-  pz2SeqUpdate();
-  st.api = {
-    placeTile: function(di){ return pz2SeqPlace(di); },
-    drop: function(k, i, dk, di){ if(k === "tile" && dk === "slot") return pz2SeqPlace(i); return false; },
-    state: function(){ return {seq: st.seq.slice(), placed: Object.keys(st.placed).length, total: m.answer.length}; }
-  };
+  if(st.type === "bins" && st.tier === 1 && m.items.length){
+    st.placed[0] = m.answer[0];
+  }
+  if(st.type === "wheels"){
+    st.wheels = m.answer.map(function(){ return 0; });
+    if(st.tier === 1 && m.answer.length){ st.wheels[0] = m.answer[0]; st.armed[0] = true; }
+  }
+  if(st.type === "connect" && st.tier === 1 && m.pairs.length){
+    st.links[m.pairs[0][0]] = m.pairs[0][1];
+  }
+  if(st.type === "connect"){
+    st.noise = [];
+    for(var n3 = 0; n3 < pz5NoiseCount(); n3++) st.noise.push("n" + n3);
+  }
+  if(st.type === "memory"){
+    var cards = [];
+    m.pairs.forEach(function(pr){
+      cards.push({text: m.left[pr[0]], li: pr[0], ri: pr[1], side: "L"});
+      cards.push({text: m.right[pr[1]], li: pr[0], ri: pr[1], side: "R"});
+    });
+    st.cards = shuffleSeeded(cards, S.caseId * 100 + st.idx + 5);
+    if(st.tier === 1){
+      st.cards.forEach(function(cd, i){
+        if(cd.li === m.pairs[0][0] && cd.ri === m.pairs[0][1]) st.matched[i] = true;
+      });
+    }
+    st.noise = [];
+    for(var n2 = 0; n2 < pz5NoiseCount(); n2++) st.noise.push("n" + n2);
+  }
+  if(st.type === "frames"){
+    var vals = [];
+    for(var v = m.min; v <= m.max; v += (m.step || 1)) vals.push(v);
+    st.frameVals = vals;
+  }
+  st.api = pz5Api();
 }
-function pz2SeqUpdate(){
-  var st = PZ2D, m = st.mech;
-  pz2Progress(st.seq.length, m.answer.length);
+function pz5VerifyRow(){
+  var done = pz5S2Done();
+  return "<div class='pz5-verify-row'><button class='pz5-verify" + (done ? " ready" : "") + "' data-pz5='verify'" + (done ? "" : " disabled") + ">✓ LOCK FINDING — VERIFY</button>" +
+    "<span class='pz5-verify-note'>" + (done ? "Anomaly isolated — lock it in." : "Pin the true anomaly first — VERIFY stays locked until then.") + "</span></div>";
+}
+function pz5Chrome2(){
+  pz5Chrome();
+  var st = PZ5;
+  pz5Progress(pz5S2Pinned(st), pz5S2Total(st));
+}
+function pz5RenderS2(){
+  var st = PZ5; if(!st) return;
+  pz5Chrome();
+  var board = pz5El("pz2d-board");
+  var inner = "";
+  if(st.type === "timeline" || st.type === "cipher") inner = pz5RenderSequence();
+  else if(st.type === "bins") inner = pz5RenderBins();
+  else if(st.type === "wheels") inner = pz5RenderWheels();
+  else if(st.type === "connect") inner = pz5RenderConnect();
+  else if(st.type === "memory") inner = pz5RenderMemory();
+  else if(st.type === "prints") inner = pz5RenderPrints();
+  else if(st.type === "scale") inner = pz5RenderScale();
+  else if(st.type === "frames") inner = pz5RenderFrames();
+  else if(st.type === "gauge") inner = pz5RenderGauge();
+  else if(st.type === "vessels") inner = pz5RenderVessels();
+  board.innerHTML = "<div class='pz5-scanlines'></div><div class='pz5-cross tl'></div><div class='pz5-cross tr'></div><div class='pz5-cross bl'></div><div class='pz5-cross br'></div>" + inner + pz5VerifyRow();
+  pz5Chrome2();
+  if(st.type === "prints") pz5DrawPrintCanvases();
+  if(st.type === "gauge") pz5WireGauge();
+}
+/* ---- sequence (timeline / cipher / floorplan) ---- */
+function pz5RenderSequence(){
+  var st = PZ5, m = st.mech;
+  var slots = "<div class='pz5-slots'>";
+  for(var s = 0; s < m.answer.length; s++){
+    var val = st.seq[s];
+    slots += "<div class='pz5-slot" + (s === st.seq.length ? " next" : "") + "'><span class='pz5-slotnum'>" + (s + 1) + "</span><span class='pz5-slotval'>" + (val !== undefined ? esc(val) : "· · ·") + "</span></div>";
+  }
+  slots += "</div>";
+  var word = "";
   if(st.type === "cipher"){
-    var w = pz2El("pz2d-word");
-    if(w) w.textContent = st.seq.join("") + new Array(m.answer.length - st.seq.length + 1).join("_");
+    var w = "";
+    for(var wi = 0; wi < m.answer.length; wi++) w += (st.seq[wi] !== undefined ? st.seq[wi] : "_");
+    word = "<div class='pz5-word'>" + esc(w) + "</div>";
   }
+  var nodes = "";
+  if(pz5UseFloorplan(st)){
+    nodes = "<div class='pz5-floorplan'><svg viewBox='0 0 320 190' class='pz5-plan-svg'>" +
+      "<rect x='8' y='8' width='304' height='174' class='pz5-plan-room'/>" +
+      "<rect x='8' y='8' width='150' height='80' class='pz5-plan-room'/>" +
+      "<rect x='162' y='8' width='150' height='80' class='pz5-plan-room'/>" +
+      "<rect x='8' y='92' width='304' height='90' class='pz5-plan-room'/>" +
+      "<text x='16' y='26' class='pz5-plan-label'>SECTOR A</text><text x='170' y='26' class='pz5-plan-label'>SECTOR B</text><text x='16' y='110' class='pz5-plan-label'>SECTOR C</text>" +
+      "</svg><div class='pz5-plan-nodes'>";
+    st.tray.forEach(function(tl){
+      if(st.used[tl.i]) return;
+      var px = 20 + ((tl.i * 67) % 260), py = 30 + ((tl.i * 53) % 130);
+      nodes += "<button class='pz5-plannode' style='left:" + px + "px;top:" + py + "px' data-pz5='tile' data-i='" + tl.i + "' title='" + esc(tl.t) + "'>⬢</button>";
+    });
+    nodes += "</div></div><div class='pz5-plan-legend'>";
+    st.tray.forEach(function(tl){
+      if(st.used[tl.i]) return;
+      nodes += "<button class='pz5-legend' data-pz5='tile' data-i='" + tl.i + "'>⬢ " + esc(tl.t) + "</button>";
+    });
+    nodes += "</div>";
+  } else {
+    nodes = "<div class='pz5-tray'>";
+    st.tray.forEach(function(tl){
+      if(st.used[tl.i]) return;
+      nodes += "<button class='pz5-tile' data-pz5='tile' data-i='" + tl.i + "'>" + esc(tl.t) + "</button>";
+    });
+    nodes += "</div>";
+  }
+  var noise = "";
+  if(st.noise.length){
+    noise = "<div class='pz5-noise-row'>";
+    st.noise.forEach(function(nid){
+      noise += "<button class='pz5-noise' data-pz5='noise' data-i='" + nid + "'>··· signal noise</button>";
+    });
+    noise += "</div>";
+  }
+  return slots + word + nodes + noise;
 }
-function pz2SeqPlace(di){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || st.placed[di]) return false;
+function pz5PinTile(trayIdx){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  var tl = null;
+  for(var i = 0; i < st.tray.length; i++) if(st.tray[i].i === trayIdx) tl = st.tray[i];
+  if(!tl || st.used[tl.i]) return false;
   st.played = true;
-  if(st.disp[di] !== m.answer[st.seq.length]){
-    pz2Wrong(st.pz.wrong);
-    return false;
+  if(tl.t === m.answer[st.seq.length]){
+    st.seq.push(tl.t); st.used[tl.i] = true;
+    pz5Tone("good"); pz5Say("✓ Node pinned — " + tl.t, true);
+    pz5AdvanceS2();
+    return true;
   }
-  st.placed[di] = true;
-  st.seq.push(st.disp[di]);
-  var board = pz2El("pz2d-board");
-  var tileEl = board.querySelector("[data-drag='tile:" + di + "']");
-  var slot = board.querySelector("[data-drop='slot:" + (st.seq.length - 1) + "']");
-  if(tileEl && slot){
-    if(pz2Drag.heldEl === tileEl) pz2DragClear();
-    tileEl.classList.add("ok");
-    slot.querySelector(".pz2-slotval").textContent = st.disp[di];
-    tileEl.remove();
-  }
-  pz2Tone("good");
-  pz2SeqUpdate();
-  if(st.seq.length === m.answer.length) pz2Finish(st.seq.slice());
-  return true;
+  pz5Wrong("That node doesn't come next in the sequence.");
+  return false;
 }
-/* ---------------- bins: drag items into their bins ---------------- */
-function pz2RenderBins(){
-  var st = PZ2D, m = st.mech;
-  st.assigned = {};
-  if(st.tier === 1) st.assigned[0] = m.answer[0];
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-bins'>";
-  m.buckets.forEach(function(b, bi){
-    html += "<div class='pz2-bin' data-drop='bin:" + bi + "'><b>" + esc(b) + "</b><div class='pz2-binitems' id='pz2d-binitems-" + bi + "'></div><span class='pz2-bincount'></span></div>";
-  });
-  html += "</div><div class='pz2-tray'>";
+/* ---- bins ---- */
+function pz5RenderBins(){
+  var st = PZ5, m = st.mech;
+  var tray = "<div class='pz5-tray'>";
   m.items.forEach(function(it, i){
-    html += "<div class='pz2-item' data-drag='item:" + i + "'>" + esc(it) + "</div>";
+    if(st.placed[i] !== undefined) return;
+    tray += "<button class='pz5-item" + (st.held === i ? " held" : "") + "' data-pz5='item' data-i='" + i + "'>" + esc(it) + "</button>";
+  });
+  tray += "</div>";
+  var bins = "<div class='pz5-bins'>";
+  m.buckets.forEach(function(b, bi){
+    var inside = [];
+    for(var k in st.placed) if(st.placed[k] === bi) inside.push(m.items[+k]);
+    bins += "<div class='pz5-bin'><b>" + esc(b) + "</b><span class='pz5-bincount'>" + inside.length + " filed</span><div class='pz5-binitems'>" +
+      inside.map(function(x){ return "<span class='pz5-filed'>" + esc(x) + "</span>"; }).join("") +
+      "</div><button class='pz5-binbtn' data-pz5='bucket' data-b='" + bi + "'>▸ File here</button></div>";
+  });
+  bins += "</div>";
+  return tray + bins;
+}
+function pz5AssignItem(i, b){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  if(st.placed[i] !== undefined) return false;
+  st.played = true;
+  if(m.answer[i] === b){
+    st.placed[i] = b; st.held = -1;
+    pz5Tone("good"); pz5Say("✓ Filed — " + m.items[i], true);
+    pz5AdvanceS2();
+    return true;
+  }
+  st.lastBounced = m.items[i]; st.held = -1;
+  pz5Wrong("Wrong bin for “" + m.items[i] + "” — it bounces back.");
+  return false;
+}
+/* ---- wheels ---- */
+function pz5RenderWheels(){
+  var st = PZ5, m = st.mech;
+  var time = "";
+  if(m.fmt === "time" && st.wheels.length === 4){
+    time = "<div class='pz5-fmt'>" + st.wheels[0] + st.wheels[1] + ":" + st.wheels[2] + st.wheels[3] + "</div>";
+  }
+  var html = time + "<div class='pz5-wheels'>";
+  st.wheels.forEach(function(d, i){
+    var max = m.wheels[i];
+    html += "<div class='pz5-wheel'><button class='pz5-wbtn' data-pz5='wheel-up' data-i='" + i + "'>▲</button>" +
+      "<div class='pz5-digit" + (st.armed[i] ? " ok" : "") + "'>" + d + "</div>" +
+      "<button class='pz5-wbtn' data-pz5='wheel-down' data-i='" + i + "'>▼</button>" +
+      "<button class='pz5-pinbtn" + (st.armed[i] ? " ok" : "") + "' data-pz5='pinwheel' data-i='" + i + "'>" + (st.armed[i] ? "✓ PINNED" : "⬢ PIN") + "</button></div>";
   });
   html += "</div>";
-  board.innerHTML = html;
-  board.querySelectorAll(".pz2-bin").forEach(function(el){
-    pz2WireDrop(el, "bin", +el.getAttribute("data-drop").split(":")[1]);
-  });
-  board.querySelectorAll(".pz2-item").forEach(function(el){
-    pz2WireDrag(el, "item", +el.getAttribute("data-drag").split(":")[1]);
-  });
-  if(st.assigned[0] !== undefined){
-    var pre = board.querySelector("[data-drag='item:0']");
-    var binBox = pz2El("pz2d-binitems-" + st.assigned[0]);
-    if(pre && binBox){ pre.classList.add("ok"); pre.setAttribute("data-placed", "1"); binBox.appendChild(pre); }
-  }
-  pz2BinsUpdate();
-  st.api = {
-    dropItem: function(i, bi){ return pz2BinsDrop(i, bi); },
-    drop: function(k, i, dk, di){ if(k === "item" && dk === "bin") return pz2BinsDrop(i, di); return false; },
-    state: function(){ return {assigned: Object.keys(st.assigned).length, total: m.items.length}; }
-  };
+  return html;
 }
-function pz2BinsUpdate(){
-  var st = PZ2D, m = st.mech;
-  pz2Progress(Object.keys(st.assigned).length, m.items.length);
-  m.buckets.forEach(function(b, bi){
-    var box = pz2El("pz2d-binitems-" + bi);
-    var cnt = box ? box.parentNode.querySelector(".pz2-bincount") : null;
-    var n = 0; Object.keys(st.assigned).forEach(function(i){ if(st.assigned[i] === bi) n++; });
-    if(cnt) cnt.textContent = n + " item" + (n === 1 ? "" : "s");
-  });
-}
-function pz2BinsDrop(i, bi){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || st.assigned[i] !== undefined) return false;
+function pz5SetWheel(i, v){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  var max = m.wheels[i];
+  st.wheels[i] = ((v % max) + max) % max;
   st.played = true;
-  if(m.answer[i] !== bi){
-    st.lastBounced = m.items[i];
-    pz2Wrong(st.pz.wrong);
-    return false;
-  }
-  st.assigned[i] = bi;
-  var board = pz2El("pz2d-board");
-  var card = board.querySelector("[data-drag='item:" + i + "']");
-  var binBox = pz2El("pz2d-binitems-" + bi);
-  if(card && binBox){
-    if(pz2Drag.heldEl === card) pz2DragClear();
-    card.classList.add("ok");
-    card.setAttribute("data-placed", "1");
-    binBox.appendChild(card);
-  }
-  pz2Tone("good");
-  pz2BinsUpdate();
-  if(Object.keys(st.assigned).length === m.items.length){
-    var att = m.items.map(function(_, j){ return st.assigned[j]; });
-    pz2Finish(att);
-  }
+  pz5RenderS2();
   return true;
 }
-/* ---------------- wheels: turn the dials, try the lock ---------------- */
-function pz2RenderWheels(){
-  var st = PZ2D, m = st.mech;
-  st.wheels = m.answer.map(function(){ return 0; });
-  st.touched = false;
-  if(st.tier === 1) st.wheels[0] = m.answer[0];
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-fmt' id='pz2d-fmt'></div><div class='pz2-wheels'>";
-  m.wheels.forEach(function(max, i){
-    html += "<div class='pz2-wheel'><button class='pz2-wbtn' data-wup='" + i + "'>▲</button>" +
-      "<div class='pz2-digit' data-wheel='" + i + "'>" + st.wheels[i] + "</div>" +
-      "<button class='pz2-wbtn' data-wdn='" + i + "'>▼</button></div>";
-  });
-  html += "</div><div class='pz2-lock'><div class='pz2-shackle' id='pz2d-shackle'>🔒</div>" +
-    "<p class='sheet-sub'>Drag the shackle up — or tap it — to try the lock.</p></div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-wup]").forEach(function(b){
-    b.addEventListener("click", function(){ pz2WheelSet(+b.getAttribute("data-wup"), st.wheels[+b.getAttribute("data-wup")] + 1); });
-  });
-  board.querySelectorAll("[data-wdn]").forEach(function(b){
-    b.addEventListener("click", function(){ pz2WheelSet(+b.getAttribute("data-wdn"), st.wheels[+b.getAttribute("data-wdn")] - 1); });
-  });
-  board.querySelectorAll("[data-wheel]").forEach(function(d){
-    var wi = +d.getAttribute("data-wheel"), sy = 0, sv = 0, moved = false;
-    d.addEventListener("pointerdown", function(e){ sy = e.clientY; sv = st.wheels[wi]; moved = false; });
-    d.addEventListener("pointermove", function(e){
-      if(sy === 0) return;
-      var steps = Math.round((sy - e.clientY) / 28);
-      if(steps !== 0){ moved = true; pz2WheelSet(wi, sv + steps); }
-    });
-    d.addEventListener("pointerup", function(){
-      if(!moved) pz2WheelSet(wi, st.wheels[wi] + 1);
-      sy = 0;
-    });
-  });
-  var sh = pz2El("pz2d-shackle"), shy = 0, shMoved = false;
-  sh.addEventListener("pointerdown", function(e){ shy = e.clientY; shMoved = false; });
-  sh.addEventListener("pointermove", function(e){ if(shy && shy - e.clientY > 30){ shMoved = true; pz2WheelTry(); shy = 0; } });
-  sh.addEventListener("pointerup", function(){ if(!shMoved) pz2WheelTry(); shy = 0; });
-  pz2WheelsUpdate();
-  st.api = {
-    setWheel: function(i, v){ pz2WheelSet(i, v); return st.wheels[i]; },
-    tryLock: function(){ return pz2WheelTry(); },
-    wheels: function(){ return st.wheels.slice(); }
-  };
-}
-function pz2WheelFmt(){
-  var st = PZ2D, m = st.mech;
-  if(m.fmt === "time" && st.wheels.length === 4)
-    return "" + st.wheels[0] + st.wheels[1] + ":" + st.wheels[2] + st.wheels[3];
-  return st.wheels.join("");
-}
-function pz2WheelsUpdate(){
-  var st = PZ2D, m = st.mech;
-  var board = pz2El("pz2d-board");
-  board.querySelectorAll("[data-wheel]").forEach(function(d){
-    d.textContent = st.wheels[+d.getAttribute("data-wheel")];
-  });
-  var f = pz2El("pz2d-fmt"); if(f) f.textContent = pz2WheelFmt();
-  var correct = 0; st.wheels.forEach(function(v, i){ if(v === m.answer[i]) correct++; });
-  pz2Progress(correct, st.wheels.length);
-}
-function pz2WheelSet(i, v){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  var max = m.wheels[i];
-  v = ((v % max) + max) % max;
-  if(st.wheels[i] === v) return;
-  st.wheels[i] = v; st.touched = true; st.played = true;
-  pz2Tone("place");
-  pz2WheelsUpdate();
-}
-function pz2WheelTry(){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
-  if(!st.touched){ pz2Say("Set the wheels first.", null); return false; }
+function pz5PinWheel(i){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
   st.played = true;
-  var ok = JSON.stringify(st.wheels.slice()) === JSON.stringify(m.answer);
-  if(ok){
-    var sh = pz2El("pz2d-shackle"); if(sh){ sh.textContent = "🔓"; sh.classList.add("ok"); }
-    return pz2Finish(st.wheels.slice());
+  if(st.wheels[i] === m.answer[i]){
+    st.armed[i] = true;
+    pz5Tone("good"); pz5Say("✓ Wheel " + (i + 1) + " pinned on the true digit.", true);
+    pz5AdvanceS2();
+    return true;
   }
-  pz2Wrong(st.pz.wrong);
+  pz5Wrong("Wheel " + (i + 1) + " isn't on the true digit yet.");
+  return false;
+}
+/* ---- connect ---- */
+function pz5RenderConnect(){
+  var st = PZ5, m = st.mech;
+  var cols = "<div class='pz5-connect'><div class='pz5-col'>";
+  m.left.forEach(function(it, i){
+    var linked = st.links[i] !== undefined;
+    cols += "<button class='pz5-link" + (st.selL === i ? " held" : "") + (linked ? " ok" : "") + "' data-pz5='left' data-i='" + i + "'>" + esc(it) + "</button>";
+  });
+  cols += "</div><div class='pz5-col'>";
+  m.right.forEach(function(it, i){
+    var used = false; for(var k in st.links) if(st.links[k] === i) used = true;
+    cols += "<button class='pz5-link" + (used ? " ok" : "") + "' data-pz5='right' data-i='" + i + "'>" + esc(it) + "</button>";
+  });
+  cols += "</div></div><div class='pz5-links'>";
+  for(var k in st.links){
+    cols += "<div class='pz5-linkline'>" + esc(m.left[+k]) + " <svg width='40' height='10'><line x1='0' y1='5' x2='40' y2='5'/></svg> " + esc(m.right[st.links[k]]) + "</div>";
+  }
+  cols += "</div>";
+  var noise = "";
+  if(st.noise && st.noise.length){
+    noise = "<div class='pz5-noise-row'>";
+    st.noise.forEach(function(nid){
+      noise += "<button class='pz5-noise' data-pz5='noise' data-i='" + nid + "'>··· signal noise</button>";
+    });
+    noise += "</div>";
+  }
+  return cols + noise;
+}
+function pz5Link(l, r){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  if(st.links[l] !== undefined) return false;
+  st.played = true;
+  var ok = m.pairs.some(function(pr){ return pr[0] === l && pr[1] === r; });
+  if(ok){
+    st.links[l] = r; st.selL = -1;
+    pz5Tone("good"); pz5Say("✓ Link pinned.", true);
+    pz5AdvanceS2();
+    return true;
+  }
+  st.selL = -1;
+  pz5Wrong("Those two don't belong together.");
   return false;
 }
 
-/* ---------------- connect: tap left, tap right, link the pair ---------------- */
-function pz2RenderConnect(){
-  var st = PZ2D, m = st.mech;
-  st.leftSel = -1; st.links = {};
-  if(st.tier === 1 && m.pairs.length) st.links[m.pairs[0][0]] = m.pairs[0][1];
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-connect'><div class='pz2-col'>";
-  m.left.forEach(function(it, i){
-    html += "<button class='pz2-link' data-left='" + i + "'>" + esc(it) + "</button>";
+/* ---- memory ---- */
+function pz5RenderMemory(){
+  var st = PZ5;
+  var html = "<div class='pz5-memory'>";
+  st.cards.forEach(function(cd, i){
+    var up = !!st.matched[i] || st.flipped.indexOf(i) >= 0;
+    html += "<button class='pz5-card" + (up ? " up" : "") + (st.matched[i] ? " ok" : "") + "' data-pz5='card' data-i='" + i + "'>" + (up ? esc(cd.text) : "?") + "</button>";
   });
-  html += "</div><svg id='pz2d-lines' class='pz2-lines'></svg><div class='pz2-col'>";
-  m.right.forEach(function(it, i){
-    html += "<button class='pz2-link' data-right='" + i + "'>" + esc(it) + "</button>";
-  });
-  html += "</div></div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-left]").forEach(function(b){
-    b.addEventListener("click", function(){ pz2ConnectLeft(+b.getAttribute("data-left")); });
-  });
-  board.querySelectorAll("[data-right]").forEach(function(b){
-    b.addEventListener("click", function(){ pz2ConnectRight(+b.getAttribute("data-right")); });
-  });
-  pz2ConnectDraw();
-  pz2Progress(Object.keys(st.links).length, m.pairs.length);
-  st.api = {
-    tapLeft: function(i){ pz2ConnectLeft(i); },
-    tapRight: function(i){ pz2ConnectRight(i); },
-    links: function(){ return Object.keys(st.links).map(function(k){ return [+k, st.links[k]]; }); }
-  };
-}
-function pz2ConnectDraw(){
-  var st = PZ2D, m = st.mech;
-  var svg = pz2El("pz2d-lines"); if(!svg) return;
-  var board = pz2El("pz2d-board");
-  var br = board.getBoundingClientRect();
-  var lines = "";
-  Object.keys(st.links).forEach(function(li){
-    var ri = st.links[li];
-    var lb = board.querySelector("[data-left='" + li + "']");
-    var rb = board.querySelector("[data-right='" + ri + "']");
-    if(!lb || !rb) return;
-    var lr = lb.getBoundingClientRect(), rr = rb.getBoundingClientRect();
-    var x1 = lr.left - br.left + lr.width, y1 = lr.top - br.top + lr.height / 2;
-    var x2 = rr.left - br.left, y2 = rr.top - br.top + rr.height / 2;
-    lines += "<line x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "'/>";
-  });
-  svg.innerHTML = lines;
-  board.querySelectorAll("[data-left]").forEach(function(b){
-    var li = +b.getAttribute("data-left");
-    b.classList.toggle("ok", st.links[li] !== undefined);
-    b.classList.toggle("held", st.leftSel === li);
-  });
-  board.querySelectorAll("[data-right]").forEach(function(b){
-    var ri = +b.getAttribute("data-right");
-    var linked = false; Object.keys(st.links).forEach(function(li){ if(st.links[li] === ri) linked = true; });
-    b.classList.toggle("ok", linked);
-  });
-}
-function pz2ConnectLeft(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || st.links[i] !== undefined) return;
-  if(st.leftSel >= 0){
-    var prev = pz2El("pz2d-board").querySelector("[data-left='" + st.leftSel + "']");
-    if(prev) prev.classList.remove("held");
-  }
-  st.leftSel = i; st.played = true;
-  pz2Tone("pick");
-  pz2ConnectDraw();
-}
-function pz2ConnectRight(ri){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  if(st.leftSel < 0){ pz2Say("Pick a left item first.", null); return; }
-  var li = st.leftSel;
-  st.played = true;
-  var ok = m.pairs.some(function(pr){ return pr[0] === li && pr[1] === ri; });
-  if(ok){
-    st.links[li] = ri;
-    st.leftSel = -1;
-    pz2Tone("good");
-    pz2ConnectDraw();
-    pz2Progress(Object.keys(st.links).length, m.pairs.length);
-    if(Object.keys(st.links).length === m.pairs.length){
-      var pairs = Object.keys(st.links).map(function(k){ return [+k, st.links[k]]; });
-      pz2Finish(pairs);
-    }
-  } else {
-    st.leftSel = -1;
-    pz2Wrong(st.pz.wrong);
-    pz2ConnectDraw();
-  }
-}
-/* ---------------- memory: flip cards, find the pairs ---------------- */
-function pz2RenderMemory(){
-  var st = PZ2D, m = st.mech;
-  var cards = [];
-  m.pairs.forEach(function(pr){
-    cards.push({text: m.left[pr[0]], li: pr[0], ri: pr[1], side: "L"});
-    cards.push({text: m.right[pr[1]], li: pr[0], ri: pr[1], side: "R"});
-  });
-  st.cards = shuffleSeeded(cards, S.caseId * 100 + st.idx + 5);
-  st.flipped = []; st.matched = {}; st.seen = {};
-  if(st.tier === 1){
-    /* Normal starter: first pair already matched. */
-    st.cards.forEach(function(cd, i){
-      if(cd.li === m.pairs[0][0] && cd.ri === m.pairs[0][1]) st.matched[i] = true;
+  if(st.noise){
+    st.noise.forEach(function(nid){
+      html += "<button class='pz5-card pz5-noise' data-pz5='noise' data-i='" + nid + "'>?</button>";
     });
   }
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-memory'>";
-  st.cards.forEach(function(cd, i){
-    html += "<button class='pz2-card' data-card='" + i + "'>?</button>";
-  });
   html += "</div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-card]").forEach(function(b){
-    b.addEventListener("click", function(){ pz2MemoryFlip(+b.getAttribute("data-card")); });
-  });
-  pz2MemoryDraw();
-  st.api = {
-    flip: function(i){ pz2MemoryFlip(i); },
-    matchedPairs: function(){
-      var seenPairs = {}, out = [];
-      Object.keys(st.matched).forEach(function(i){
-        var cd = st.cards[+i], k = cd.li + ":" + cd.ri;
-        if(!seenPairs[k]){ seenPairs[k] = true; out.push([cd.li, cd.ri]); }
-      });
-      return out;
-    }
-  };
+  return html;
 }
-function pz2MemoryDraw(){
-  var st = PZ2D;
-  var board = pz2El("pz2d-board");
-  board.querySelectorAll("[data-card]").forEach(function(b){
-    var i = +b.getAttribute("data-card");
-    var up = !!st.matched[i] || st.flipped.indexOf(i) >= 0;
-    b.textContent = up ? st.cards[i].text : "?";
-    b.classList.toggle("up", up);
-    b.classList.toggle("ok", !!st.matched[i]);
-  });
-  var done = Object.keys(st.matched).length / 2;
-  pz2Progress(done, st.mech.pairs.length);
-}
-function pz2MemoryFlip(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || st.matched[i] || st.flipped.indexOf(i) >= 0 || st.flipped.length >= 2) return;
+function pz5Flip(i){
+  var st = PZ5; if(!st || st.stage !== 2) return false;
+  if(st.matched[i] || st.flipped.indexOf(i) >= 0 || st.flipped.length >= 2) return false;
   st.played = true;
   st.seen[i] = true;
   st.flipped.push(i);
-  pz2Tone("pick");
-  pz2MemoryDraw();
-  if(st.flipped.length < 2) return;
+  pz5Tone("pick");
+  pz5RenderS2();
+  if(st.flipped.length < 2) return true;
   var a = st.cards[st.flipped[0]], b = st.cards[st.flipped[1]];
   var isPair = a.li === b.li && a.ri === b.ri && a.side !== b.side;
   if(isPair){
     st.matched[st.flipped[0]] = true; st.matched[st.flipped[1]] = true;
     st.flipped = [];
-    pz2Tone("good");
-    pz2MemoryDraw();
-    if(Object.keys(st.matched).length / 2 === m.pairs.length){
-      var pairs = [];
-      var seenP = {};
-      Object.keys(st.matched).forEach(function(k){
-        var cd = st.cards[+k], key = cd.li + ":" + cd.ri;
-        if(!seenP[key]){ seenP[key] = true; pairs.push([cd.li, cd.ri]); }
-      });
-      pz2Finish(pairs);
-    }
+    pz5Tone("good"); pz5Say("✓ Pair pinned.", true);
+    pz5AdvanceS2();
   } else {
-    var pair = st.flipped.slice();
-    pz2Wrong("Not a pair — remember where they were.");
-    setTimeout(function(){
-      if(!PZ2D || PZ2D.idx !== st.idx) return;
-      st.flipped = st.flipped.filter(function(x){ return pair.indexOf(x) < 0; });
-      pz2MemoryDraw();
-    }, 800);
+    var fl = st.flipped.slice();
+    st.flipped = [];
+    pz5Wrong("No match — those two don't belong together.");
+    setTimeout(function(){ if(PZ5) pz5RenderS2(); }, 800);
   }
+  return true;
 }
-/* ---------------- prints: compare real fingerprints, place the match ---------------- */
-function pz2DrawPrintP(cv, p){
-  var ctx = cv.getContext("2d"); if(!ctx) return;
-  ctx.fillStyle = "#1c1a16"; ctx.fillRect(0, 0, cv.width, cv.height);
-  ctx.strokeStyle = "#c9b898"; ctx.lineWidth = 3;
-  var cx = 30 + p[2] * 0.55, cy = 30 + p[3] * 0.55, sc = cv.width / 256;
-  for(var r = 0; r < p[1]; r++){
-    ctx.beginPath();
-    var rad = (12 + r * 11) * sc;
-    var a0 = p[0] === 0 ? 0 : (p[0] === 1 ? 0.4 : -0.4);
-    ctx.arc(cx * sc, cy * sc, rad, a0, Math.PI * 2 - a0 * 0.5);
-    ctx.stroke();
-  }
-}
-function pz2RenderPrints(){
-  var st = PZ2D, m = st.mech;
-  var refKey = fpParams(m.answer).join(",");
-  var tokens = {};
-  tokens[m.answer] = refKey;
-  m.options.forEach(function(o){
-    if(o === m.answer) return;
-    var k = fpParams(o).join(","), salt = 0;
-    while(k === refKey && salt < 8){ salt++; k = fpParams(o + "~" + salt).join(","); }
-    tokens[o] = k;
+/* ---- prints ---- */
+function pz5DrawPrintCanvases(){
+  var st = PZ5; if(!st || st.type !== "prints") return;
+  var ref = pz5El("pz5-refprint");
+  if(ref) pz5DrawPrint(ref, st.mech.answer);
+  var comp = pz5El("pz5-compprint");
+  if(comp && st.examinedIdx !== undefined && st.examinedIdx >= 0) pz5DrawPrint(comp, st.mech.options[st.examinedIdx]);
+  var board = pz5El("pz2d-board");
+  if(board) board.querySelectorAll("[data-printcv]").forEach(function(cv){
+    pz5DrawPrint(cv, st.mech.options[+cv.getAttribute("data-printcv")]);
   });
-  st.tokens = tokens; st.refKey = refKey; st.examined = {};
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-ref'><canvas id='pz2d-refcanvas' width='150' height='150'></canvas><b>REFERENCE PRINT</b></div>" +
-    "<div class='pz2-compare' id='pz2d-compare'></div><div class='pz2-tray'>";
+}
+function pz5RenderPrints(){
+  var st = PZ5, m = st.mech;
+  var html = "<div class='pz5-ref'><canvas id='pz5-refprint' width='128' height='128'></canvas><div class='pz5-refcap'>REFERENCE — lifted from the scene</div></div>" +
+    "<div class='pz5-tray'>";
   m.options.forEach(function(o, i){
-    html += "<div class='pz2-printcard' data-print='" + i + "'><b>" + esc(o) + "</b>" +
-      "<div class='pz2-printcover'>Tap to examine</div><canvas class='pz2-printcv hidden' width='120' height='120'></canvas></div>";
+    var ex = !!st.examined[i];
+    html += "<button class='pz5-printcard" + (ex ? " examined" : "") + (st.pinnedPrint === i ? " ok" : "") + "' data-pz5='print' data-i='" + i + "'>" +
+      (ex ? "<canvas class='pz5-printcv' width='96' height='96' data-printcv='" + i + "'></canvas>" : "<div class='pz5-printcover'>⬢ candidate</div>") +
+      "<div>" + esc(o) + "</div></button>";
   });
-  html += "</div><div class='pz2-refzone' data-drop='ref:0'>⬆ Drop the matching print here</div>";
-  board.innerHTML = html;
-  pz2DrawPrintP(pz2El("pz2d-refcanvas"), fpParams(m.answer));
-  board.querySelectorAll("[data-print]").forEach(function(card){
-    var i = +card.getAttribute("data-print");
-    card.addEventListener("pointerdown", function(e){
-      if(!PZ2D) return;
-      var opt = m.options[i];
-      if(!st.examined[opt]){ pz2PrintExamine(i); return; }
-      if(pz2Drag.heldEl === card){ pz2DragClear(); return; }
-      pz2HoldEl(card, "print", i);
-      pz2Drag.sx = e.clientX; pz2Drag.sy = e.clientY; pz2Drag.dragging = false;
-      if(e.preventDefault) e.preventDefault();
-    });
+  html += "</div>";
+  if(st.examinedIdx !== undefined && st.examinedIdx >= 0){
+    html += "<div class='pz5-compare'><canvas id='pz5-compprint' width='128' height='128'></canvas>" +
+      "<button class='pz5-pinbtn' data-pz5='pinprint' data-i='" + st.examinedIdx + "'>⬢ PIN THIS PRINT</button></div>";
+  }
+  return html;
+}
+function pz5ExaminePrint(i){
+  var st = PZ5; if(!st || st.stage !== 2) return false;
+  st.played = true;
+  st.examined[i] = true; st.examinedIdx = i;
+  pz5Tone("pick"); pz5Say("Comparing — look at the core pattern, not the edges.", null);
+  pz5RenderS2();
+  var cards = pz5El("pz2d-board").querySelectorAll("[data-printcv]");
+  cards.forEach(function(cv){
+    var idx = +cv.getAttribute("data-printcv");
+    pz5DrawPrint(cv, st.mech.options[idx]);
   });
-  var zone = board.querySelector("[data-drop='ref:0']");
-  pz2WireDrop(zone, "ref", 0);
-  pz2Progress(0, m.options.length, "Compared 0 / " + m.options.length);
-  st.api = {
-    examine: function(i){ pz2PrintExamine(i); },
-    place: function(i){ return pz2PrintPlace(i); },
-    drop: function(k, i, dk, di){ if(k === "print" && dk === "ref") return pz2PrintPlace(i); return false; },
-    examinedCount: function(){ return Object.keys(st.examined).length; },
-    tokens: tokens, refKey: refKey
-  };
+  return true;
 }
-function pz2PrintExamine(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  var opt = m.options[i];
-  if(st.examined[opt]) return;
-  st.examined[opt] = true;
+function pz5PinPrint(i){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
   st.played = true;
-  var board = pz2El("pz2d-board");
-  var card = board.querySelector("[data-print='" + i + "']");
-  if(card){
-    var cover = card.querySelector(".pz2-printcover");
-    var cv = card.querySelector(".pz2-printcv");
-    if(cover) cover.classList.add("hidden");
-    if(cv){
-      cv.classList.remove("hidden");
-      var parts = st.tokens[opt].split(",");
-      pz2DrawPrintP(cv, parts.map(Number));
-    }
-    card.classList.add("examined");
+  if(!st.examined[i]){
+    pz5Say("Examine it under the loupe first — tap the card to compare.", null);
+    return false;
   }
-  var cmp = pz2El("pz2d-compare");
-  if(cmp){
-    cmp.innerHTML = "<span>Reference</span><canvas id='pz2d-cmpref' width='90' height='90'></canvas>" +
-      "<span>Yours: " + esc(opt) + "</span><canvas id='pz2d-cmpmine' width='90' height='90'></canvas>";
-    pz2DrawPrintP(pz2El("pz2d-cmpref"), fpParams(m.answer));
-    var parts2 = st.tokens[opt].split(",");
-    pz2DrawPrintP(pz2El("pz2d-cmpmine"), parts2.map(Number));
+  if(m.options[i] === m.answer){
+    st.pinnedPrint = i;
+    pz5Tone("good"); pz5Say("✓ Print pinned — the cores match.", true);
+    pz5AdvanceS2();
+    return true;
   }
-  pz2Tone("place");
-  pz2Say("Examined: " + opt + " — compare it with the reference.", null);
-  pz2Progress(Object.keys(st.examined).length, m.options.length, "Compared " + Object.keys(st.examined).length + " / " + m.options.length);
-}
-function pz2PrintPlace(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
-  var opt = m.options[i];
-  if(!st.examined[opt]){ pz2Say("Examine it first — tap the card to see its print.", null); return false; }
-  var need = Math.min(2, m.options.length);
-  if(Object.keys(st.examined).length < need){ pz2Say("Compare at least " + need + " prints first.", null); return false; }
-  st.played = true;
-  if(opt === m.answer){
-    var board = pz2El("pz2d-board");
-    var card = board.querySelector("[data-print='" + i + "']");
-    if(card) card.classList.add("ok");
-    return pz2Finish(opt);
-  }
-  pz2Wrong(st.pz.wrong + " — that print does not match the reference.");
+  pz5Wrong("That print doesn't match the reference.");
   return false;
 }
-
-/* ---------------- scale: load the pan, weigh it in ---------------- */
-function pz2RenderScale(){
-  var st = PZ2D, m = st.mech;
-  st.loaded = {};
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-balance'><div class='pz2-beam' id='pz2d-beam'><span class='pz2-pan' data-drop='pan:0' id='pz2d-pan'>PAN</span></div>" +
-    "<div class='pz2-readout' id='pz2d-scaleread'></div></div><div class='pz2-tray'>";
+/* ---- scale ---- */
+function pz5RenderScale(){
+  var st = PZ5, m = st.mech;
+  var tot = 0; Object.keys(st.loaded).forEach(function(i){ tot += m.items[+i].w; });
+  tot = Math.round(tot * 10) / 10;
+  var tilt = Math.max(-25, Math.min(25, (tot - m.target) * 6));
+  var blocks = "<div class='pz5-tray'>";
   m.items.forEach(function(it, i){
-    html += "<div class='pz2-block' data-drag='block:" + i + "'>" + esc(it.label) + " · " + it.w + " " + esc(m.unit || "kg") + "</div>";
+    blocks += "<button class='pz5-block" + (st.loaded[i] ? " on" : "") + "' data-pz5='block' data-i='" + i + "'>" + esc(it.label) + " · " + it.w + " " + esc(m.unit || "kg") + "</button>";
   });
-  html += "</div><div class='pz2-sealrow'><div class='pz2-bolt' id='pz2d-sealbtn'>🏅 Weigh it in</div>" +
-    "<p class='sheet-sub'>Drag the seal onto the pan — or tap it — to weigh in.</p></div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-drag]").forEach(function(el){
-    pz2WireDrag(el, "block", +el.getAttribute("data-drag").split(":")[1]);
-  });
-  var pan = pz2El("pz2d-pan");
-  pz2WireDrop(pan, "pan", 0);
-  var tray = board.querySelector(".pz2-tray");
-  tray.setAttribute("data-drop", "tray:0");
-  pz2WireDrop(tray, "tray", 0);
-  var seal = pz2El("pz2d-sealbtn");
-  pz2DragTo(seal, pan, function(){ pz2ScaleWeigh(); });
-  pz2ScaleUpdate();
-  st.api = {
-    toggle: function(i){ return pz2ScaleToggle(i); },
-    weighIn: function(){ return pz2ScaleWeigh(); },
-    drop: function(k, i, dk, di){
-      if(k === "block" && dk === "pan") return pz2ScaleLoad(i);
-      if(k === "block" && dk === "tray") return pz2ScaleUnload(i);
-      return false;
-    },
-    loaded: function(){ return Object.keys(st.loaded).map(Number); },
-    total: function(){ return pz2ScaleTotal(); }
-  };
+  blocks += "</div>";
+  var pan = "<div class='pz5-balance'><div class='pz5-beam' style='transform:rotate(" + tilt + "deg)'>⚖ PAN</div>" +
+    "<div class='pz5-pan'>Loaded: " + Object.keys(st.loaded).map(function(i){ return esc(m.items[+i].label); }).join(", ") + "</div>" +
+    "<div class='pz5-readout'>TOTAL " + tot.toFixed(1) + " " + esc(m.unit || "kg") + " · TARGET " + m.target + " " + esc(m.unit || "kg") + "</div>" +
+    "<button class='pz5-pinbtn' data-pz5='pinload'>⬢ PIN LOAD</button></div>";
+  return blocks + pan;
 }
-function pz2ScaleTotal(){
-  var st = PZ2D, m = st.mech, t = 0;
-  Object.keys(st.loaded).forEach(function(i){ t += m.items[+i].w; });
-  return Math.round(t * 10) / 10;
-}
-function pz2ScaleUpdate(){
-  var st = PZ2D, m = st.mech;
-  var tot = pz2ScaleTotal();
-  var r = pz2El("pz2d-scaleread");
-  if(r) r.textContent = "Loaded: " + tot + " " + esc(m.unit || "kg") + " / target " + m.target + " " + esc(m.unit || "kg");
-  var beam = pz2El("pz2d-beam");
-  if(beam){
-    var deg = Math.max(-22, Math.min(22, (tot - m.target) / Math.max(m.target, 1) * 25));
-    beam.style.transform = "rotate(" + deg + "deg)";
-  }
-  pz2Progress(0, 1, "Loaded " + tot + " / " + m.target);
-}
-function pz2ScaleLoad(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || st.loaded[i]) return false;
-  st.loaded[i] = true; st.played = true;
-  var board = pz2El("pz2d-board");
-  var card = board.querySelector("[data-drag='block:" + i + "']");
-  var pan = pz2El("pz2d-pan");
-  if(card && pan){ if(pz2Drag.heldEl === card) pz2DragClear(); card.classList.add("ok"); card.setAttribute("data-placed", "1"); pan.appendChild(card); }
-  pz2Tone("place");
-  pz2ScaleUpdate();
-  return true;
-}
-function pz2ScaleUnload(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved || !st.loaded[i]) return false;
-  delete st.loaded[i]; st.played = true;
-  var board = pz2El("pz2d-board");
-  var card = board.querySelector("[data-drag='block:" + i + "']");
-  var tray = board.querySelector(".pz2-tray");
-  if(card && tray){ if(pz2Drag.heldEl === card) pz2DragClear(); card.classList.remove("ok"); card.removeAttribute("data-placed"); tray.appendChild(card); }
-  pz2Tone("place");
-  pz2ScaleUpdate();
-  return true;
-}
-function pz2ScaleToggle(i){
-  var st = PZ2D;
-  if(!st || st.solved) return false;
-  if(st.loaded[i]) return pz2ScaleUnload(i);
-  return pz2ScaleLoad(i);
-}
-function pz2ScaleWeigh(){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
+function pz5LoadBlock(i){
+  var st = PZ5; if(!st || st.stage !== 2) return false;
   st.played = true;
-  var att = Object.keys(st.loaded).map(Number);
+  if(st.loaded[i]) delete st.loaded[i]; else st.loaded[i] = true;
+  pz5Tone("pick");
+  pz5RenderS2();
+  return true;
+}
+function pz5PinLoad(){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  st.played = true;
+  var got = Object.keys(st.loaded).map(function(x){ return +x; }).sort(function(a, b){ return a - b; });
   var want = m.correct.slice().sort(function(a, b){ return a - b; });
-  var got = att.slice().sort(function(a, b){ return a - b; });
   if(JSON.stringify(got) === JSON.stringify(want)){
-    var beam = pz2El("pz2d-beam"); if(beam) beam.style.transform = "rotate(0deg)";
-    return pz2Finish(att);
+    st.pinnedScale = true;
+    pz5Tone("good"); pz5Say("✓ Load pinned — the manifest matches.", true);
+    pz5AdvanceS2();
+    return true;
   }
-  var beam2 = pz2El("pz2d-beam");
-  if(beam2){ beam2.classList.remove("shake"); void beam2.offsetWidth; beam2.classList.add("shake"); }
-  pz2Wrong(st.pz.wrong + " — the beam slams down. Adjust the load and weigh again.");
+  st.loaded = {};
+  pz5Wrong("That load doesn't match the manifest — the set is wrong. Pan cleared.");
   return false;
 }
-/* ---------------- frames: scrub the strip, capture the frame ---------------- */
-function pz2FrameScene(v, answer, unit){
-  /* What the frame SHOWS (generic scene art, not story facts): the answer
-     frame is visually distinctive; the rest are ordinary. */
-  if(v === answer){
-    if(unit === "frame") return {cls: "answer hand", desc: "The hand covers the flute."};
-    return {cls: "answer dark", desc: "The corridor — lights OUT."};
+/* ---- frames ---- */
+function pz5FrameScene(v, answer){
+  if(v === answer) return {cls: "anomaly", label: "⚫ SIGNAL LOST — anomaly frame"};
+  var variants = ["feed", "feed", "feed", "static"];
+  return {cls: variants[(v * 7 + 3) % 4], label: "normal feed"};
+}
+function pz5RenderFrames(){
+  var st = PZ5, m = st.mech;
+  var viewer = "<div class='pz5-viewer" + (st.viewed === m.answer ? " anomaly" : "") + "'>";
+  if(st.viewed === null || st.viewed === undefined){
+    viewer += "<div class='pz5-viewlabel'>Pick a frame from the strip</div>";
+  } else {
+    var sc = pz5FrameScene(st.viewed, m.answer);
+    viewer += "<div class='pz5-viewlabel'>" + fmtSlider(m, st.viewed) + "</div><div class='pz5-framedesc'>" + sc.label + "</div>";
   }
-  var rnd = mulberry32(v * 97 + 13)();
-  if(unit === "frame") return {cls: "lit f" + (1 + Math.floor(rnd * 3)), desc: rnd < 0.5 ? "The flute, no hand over it." : "A hand, but not over the flute."};
-  return {cls: "lit f" + (1 + Math.floor(rnd * 3)), desc: "The corridor — lights on."};
-}
-function pz2RenderFrames(){
-  var st = PZ2D, m = st.mech;
-  st.selected = null;
-  var vals = [];
-  for(var v = m.min; v <= m.max; v += (m.step || 1)) vals.push(v);
-  st.frameVals = vals;
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-viewer' data-drag='frame:0' id='pz2d-frameview'><div class='pz2-viewlabel'>Pick a frame from the strip</div></div>" +
-    "<div class='pz2-framedesc' id='pz2d-framedesc'></div>" +
-    "<div class='pz2-strip'>";
-  vals.forEach(function(v){
-    var sc = pz2FrameScene(v, m.answer, m.unit);
-    html += "<div class='pz2-frame " + sc.cls + "' data-frame='" + v + "' title='" + fmtSlider(m, v) + "'><span>" + fmtSlider(m, v) + "</span></div>";
+  viewer += "</div>";
+  var strip = "<div class='pz5-strip'>";
+  st.frameVals.forEach(function(v){
+    var sc = pz5FrameScene(v, m.answer);
+    strip += "<button class='pz5-frame " + sc.cls + (st.viewed === v ? " sel" : "") + "' data-pz5='frame' data-v='" + v + "'><span>" + fmtSlider(m, v) + "</span></button>";
   });
-  html += "</div><div class='pz2-tray2' data-drop='tray:0'>⬆ Drop the chosen frame here to capture it — or tap this tray</div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-frame]").forEach(function(el){
-    el.addEventListener("click", function(){ pz2FrameSelect(+el.getAttribute("data-frame")); });
-  });
-  var viewer = pz2El("pz2d-frameview");
-  pz2WireDrag(viewer, "frame", 0);
-  var tray = board.querySelector("[data-drop='tray:0']");
-  pz2WireDrop(tray, "tray", 0);
-  tray.addEventListener("pointerdown", function(){ if(PZ2D && PZ2D.type === "frames") pz2FrameCommit(); });
-  pz2Progress(0, 1, "No frame captured yet");
-  st.api = {
-    select: function(v){ pz2FrameSelect(v); return st.selected; },
-    commit: function(){ return pz2FrameCommit(); },
-    drop: function(k, i, dk, di){ if(k === "frame" && dk === "tray") return pz2FrameCommit(); return false; },
-    selected: function(){ return st.selected; }
-  };
+  strip += "</div>";
+  var pin = "";
+  if(st.viewed !== null && st.viewed !== undefined){
+    pin = "<button class='pz5-pinbtn' data-pz5='pinframe' data-v='" + st.viewed + "'>⬢ PIN THIS FRAME</button>";
+  }
+  return viewer + strip + pin;
 }
-function pz2FrameSelect(v){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  st.selected = v; st.played = true;
-  var board = pz2El("pz2d-board");
-  board.querySelectorAll("[data-frame]").forEach(function(el){
-    el.classList.toggle("sel", +el.getAttribute("data-frame") === v);
-  });
-  var sc = pz2FrameScene(v, m.answer, m.unit);
-  var view = pz2El("pz2d-frameview");
-  if(view){ view.className = "pz2-viewer " + sc.cls; view.innerHTML = "<div class='pz2-viewlabel'>" + fmtSlider(m, v) + "</div>"; }
-  var desc = pz2El("pz2d-framedesc");
-  if(desc) desc.textContent = sc.desc;
-  pz2Tone("place");
-}
-function pz2FrameCommit(){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
-  if(st.selected === null || st.selected === undefined){ pz2Say("Pick a frame from the strip first.", null); return false; }
+function pz5ViewFrame(v){
+  var st = PZ5; if(!st || st.stage !== 2) return false;
   st.played = true;
-  if(st.selected === m.answer){
-    var view = pz2El("pz2d-frameview");
-    if(view) view.classList.add("flash");
-    return pz2Finish(st.selected);
-  }
-  pz2Wrong(st.pz.wrong + " — not that moment. Keep looking.");
-  return false;
+  st.viewed = v;
+  pz5Tone("pick");
+  pz5RenderS2();
+  return true;
 }
-/* ---------------- gauge: set the value, slide the bolt to lock ---------------- */
-function pz2RenderGauge(){
-  var st = PZ2D, m = st.mech;
-  st.value = m.min || 0;
-  var n = m.max - m.min + 1;
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-gaugeval' id='pz2d-gaugeval'></div>" +
-    "<div class='pz2-track' id='pz2d-track'><div class='pz2-knob' id='pz2d-knob'></div></div>" +
-    "<div class='pz2-viz' id='pz2d-viz'></div>" +
-    "<div class='pz2-lockrow'><div class='pz2-bolt' id='pz2d-bolt'>🔩 BOLT</div>" +
-    "<div class='pz2-lockslot' data-drop='lock:0'>🔒 LOCK SLOT — drop the bolt here</div></div>";
-  board.innerHTML = html;
-  var track = pz2El("pz2d-track");
-  function setFromX(clientX){
-    var r = track.getBoundingClientRect();
-    var frac = r.width ? (clientX - r.left) / r.width : 0;
-    frac = Math.max(0, Math.min(1, frac));
-    var raw = m.min + frac * (m.max - m.min);
-    var v = Math.round(raw / (m.step || 1)) * (m.step || 1);
-    pz2GaugeSet(Math.max(m.min, Math.min(m.max, v)));
-  }
-  track.addEventListener("pointerdown", function(e){ setFromX(e.clientX); });
-  track.addEventListener("pointermove", function(e){ if(e.buttons) setFromX(e.clientX); });
-  var bolt = pz2El("pz2d-bolt");
-  var slot = board.querySelector("[data-drop='lock:0']");
-  pz2DragTo(bolt, slot, function(){ pz2GaugeLock(); });
-  pz2WireDrop(slot, "lock", 0);
-  pz2GaugeUpdate();
-  st.api = {
-    setValue: function(v){ pz2GaugeSet(v); return st.value; },
-    lock: function(){ return pz2GaugeLock(); },
-    drop: function(k, i, dk, di){ if(dk === "lock") return pz2GaugeLock(); return false; },
-    value: function(){ return st.value; }
-  };
-}
-function pz2GaugeSet(v){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  v = Math.max(m.min, Math.min(m.max, v));
-  v = Math.round(v / (m.step || 1)) * (m.step || 1);
-  if(st.value === v) return;
-  st.value = v; st.played = true;
-  pz2Tone("place");
-  pz2GaugeUpdate();
-}
-function pz2GaugeUpdate(){
-  var st = PZ2D, m = st.mech;
-  var val = pz2El("pz2d-gaugeval");
-  if(val) val.textContent = fmtSlider(m, st.value);
-  var knob = pz2El("pz2d-knob");
-  if(knob){
-    var frac = (m.max === m.min) ? 0 : (st.value - m.min) / (m.max - m.min);
-    knob.style.left = "calc(" + (frac * 100) + "% - 16px)";
-  }
-  var viz = pz2El("pz2d-viz");
-  if(viz){
-    var n = m.max - m.min + 1;
-    if(n <= 31){
-      var boxes = "";
-      for(var v = m.min; v <= m.max; v++)
-        boxes += "<span class='pz2-vbox" + (v === st.value ? " sel" : "") + "'>" + v + "</span>";
-      viz.innerHTML = boxes;
-    } else {
-      var pct = (m.max === m.min) ? 0 : Math.round((st.value - m.min) / (m.max - m.min) * 100);
-      viz.innerHTML = "<div class='pz2-vbar'><i style='width:" + pct + "%'></i></div>";
-    }
-  }
-  pz2Progress(0, 1, "Value: " + fmtSlider(m, st.value));
-}
-function pz2GaugeLock(){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
+function pz5PinFrame(v){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
   st.played = true;
-  if(st.value === m.answer) return pz2Finish(st.value);
-  var bolt = pz2El("pz2d-bolt");
-  if(bolt){ bolt.classList.remove("shake"); void bolt.offsetWidth; bolt.classList.add("shake"); }
-  pz2Wrong(st.pz.wrong + " — not that value. Adjust and lock again.");
+  st.viewed = v;
+  if(v === m.answer){
+    st.pinnedFrame = v;
+    pz5Tone("good"); pz5Say("✓ Frame pinned — the anomaly is isolated.", true);
+    pz5AdvanceS2();
+    return true;
+  }
+  pz5Wrong("That frame isn't the anomaly.");
   return false;
 }
-/* ---------------- vessels: test, then place the positive one ---------------- */
-function pz2RenderVessels(){
-  var st = PZ2D, m = st.mech;
-  st.tested = {};
-  var board = pz2El("pz2d-board");
-  var html = "<div class='pz2-tray'>";
-  m.items.forEach(function(it, i){
-    html += "<div class='pz2-vessel' data-vessel='" + i + "'><b>" + esc(it) + "</b>" +
-      "<div class='pz2-liquid'></div><div class='pz2-result'></div></div>";
-  });
-  html += "</div><div class='pz2-box' data-drop='box:0'>📦 EVIDENCE BOX — drop the positive vessel here</div>";
-  board.innerHTML = html;
-  board.querySelectorAll("[data-vessel]").forEach(function(card){
-    var i = +card.getAttribute("data-vessel");
-    card.addEventListener("pointerdown", function(e){
-      if(!PZ2D) return;
-      var val = m.items[i];
-      if(!st.tested[val]){ pz2VesselTest(i); return; }
-      if(pz2Drag.heldEl === card){ pz2DragClear(); return; }
-      pz2HoldEl(card, "vessel", i);
-      pz2Drag.sx = e.clientX; pz2Drag.sy = e.clientY; pz2Drag.dragging = false;
-      if(e.preventDefault) e.preventDefault();
+/* ---- gauge ---- */
+function pz5RenderGauge(){
+  var st = PZ5, m = st.mech;
+  var pct = (m.max === m.min) ? 0 : Math.round((st.gval - m.min) / (m.max - m.min) * 100);
+  var viz = "<div class='pz5-viz'>";
+  for(var v = m.min; v <= m.max; v += (m.step || 1)){
+    viz += "<span class='pz5-vbox" + (v === st.gval ? " sel" : "") + "'>" + fmtSlider(m, v) + "</span>";
+  }
+  viz += "</div>";
+  return "<div class='pz5-gaugeval'>" + fmtSlider(m, st.gval) + "</div>" +
+    "<div class='pz5-track' data-track='gauge'><div class='pz5-knob' style='left:calc(" + pct + "% - 16px)'></div></div>" +
+    viz + "<button class='pz5-pinbtn' data-pz5='pinlock'>⬢ PIN LOCK</button>";
+}
+function pz5WireGauge(){
+  var board = pz5El("pz2d-board"); if(!board) return;
+  var tr = board.querySelector("[data-track='gauge']");
+  if(!tr) return;
+  var setFromEvent = function(e){
+    var st = PZ5, m = st.mech; if(!st) return;
+    var r = tr.getBoundingClientRect();
+    var p = r.width ? (e.clientX - r.left) / r.width : 0;
+    p = Math.max(0, Math.min(1, p));
+    var raw = m.min + p * (m.max - m.min);
+    var step = m.step || 1;
+    st.gval = Math.round(raw / step) * step;
+    st.gval = Math.max(m.min, Math.min(m.max, st.gval));
+    st.played = true;
+    var knob = tr.querySelector(".pz5-knob");
+    var pct = (m.max === m.min) ? 0 : Math.round((st.gval - m.min) / (m.max - m.min) * 100);
+    if(knob) knob.style.left = "calc(" + pct + "% - 16px)";
+    var gv = board.querySelector(".pz5-gaugeval");
+    if(gv) gv.textContent = fmtSlider(m, st.gval);
+    board.querySelectorAll(".pz5-vbox").forEach(function(bx){
+      bx.classList.toggle("sel", bx.textContent === fmtSlider(m, st.gval));
     });
-  });
-  var box = board.querySelector("[data-drop='box:0']");
-  pz2WireDrop(box, "box", 0);
-  box.addEventListener("pointerdown", function(){
-    if(PZ2D && pz2Drag.held && pz2Drag.held.kind === "vessel"){
-      var d = pz2Drag.held; pz2DragClear(); pz2VesselPlace(d.idx);
-    }
-  });
-  pz2Progress(0, m.items.length, "Tested 0 / " + m.items.length);
-  st.api = {
-    test: function(i){ pz2VesselTest(i); },
-    place: function(i){ return pz2VesselPlace(i); },
-    drop: function(k, i, dk, di){ if(k === "vessel" && dk === "box") return pz2VesselPlace(i); return false; },
-    testedCount: function(){ return Object.keys(st.tested).length; }
   };
+  tr.addEventListener("pointerdown", function(e){
+    setFromEvent(e);
+    var mv = function(ev){ setFromEvent(ev); };
+    var up = function(){ tr.removeEventListener("pointermove", mv); tr.removeEventListener("pointerup", up); tr.removeEventListener("pointercancel", up); if(PZ5) pz5RenderS2(); };
+    tr.addEventListener("pointermove", mv);
+    tr.addEventListener("pointerup", up);
+    tr.addEventListener("pointercancel", up);
+  });
 }
-function pz2VesselTest(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return;
-  var val = m.items[i];
-  if(st.tested[val]) return;
-  var pos = val === m.answer;
-  st.tested[val] = true; /* NOTE: never store pos itself — place() tests !tested[val], and a false negative would read as untested */
+function pz5PinGauge(){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
   st.played = true;
-  var board = pz2El("pz2d-board");
-  var card = board.querySelector("[data-vessel='" + i + "']");
-  if(card){
-    var res = card.querySelector(".pz2-result");
-    if(res){ res.textContent = pos ? "✓ POSITIVE" : "— NEGATIVE"; res.className = "pz2-result " + (pos ? "ok" : "bad"); }
-    card.classList.add("tested");
+  if(st.gval === m.answer){
+    st.pinnedGauge = true;
+    pz5Tone("good"); pz5Say("✓ Lock pinned on the true value.", true);
+    pz5AdvanceS2();
+    return true;
   }
-  pz2Tone(pos ? "good" : "place");
-  pz2Say("Tested: " + val + " — " + (pos ? "POSITIVE reaction." : "negative."), pos ? true : null);
-  pz2Progress(Object.keys(st.tested).length, m.items.length, "Tested " + Object.keys(st.tested).length + " / " + m.items.length);
-}
-function pz2VesselPlace(i){
-  var st = PZ2D, m = st.mech;
-  if(!st || st.solved) return false;
-  var val = m.items[i];
-  if(!st.tested[val]){ pz2Say("Test it first — tap the vessel to test it.", null); return false; }
-  st.played = true;
-  if(val === m.answer){
-    var board = pz2El("pz2d-board");
-    var card = board.querySelector("[data-vessel='" + i + "']");
-    if(card) card.classList.add("ok");
-    return pz2Finish(val);
-  }
-  pz2Wrong(st.pz.wrong + " — that vessel tested negative.");
+  pz5Wrong("The gauge isn't on the true value yet.");
   return false;
+}
+/* ---- vessels ---- */
+function pz5RenderVessels(){
+  var st = PZ5, m = st.mech;
+  var html = "<div class='pz5-tray'>";
+  m.items.forEach(function(it, i){
+    var t = st.tested[i];
+    html += "<div class='pz5-vessel" + (t !== undefined ? " tested" : "") + "'><div>" + esc(it) + "</div>" +
+      "<div class='pz5-liquid'></div>" +
+      "<div class='pz5-result" + (t === true ? " ok" : t === false ? " bad" : "") + "'>" +
+      (t === true ? "POSITIVE" : t === false ? "NEGATIVE" : "untested") + "</div>" +
+      "<button class='pz5-vbtn' data-pz5='vessel' data-i='" + i + "'>TEST</button>" +
+      (t !== undefined ? "<button class='pz5-pinbtn' data-pz5='pinvessel' data-i='" + i + "'>⬢ PIN</button>" : "") +
+      "</div>";
+  });
+  html += "</div>";
+  return html;
+}
+function pz5TestVessel(i){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  st.played = true;
+  st.tested[i] = (m.items[i] === m.answer);
+  pz5Tone("pick");
+  pz5Say(st.tested[i] ? "POSITIVE reaction on this vessel." : "NEGATIVE — clean.", st.tested[i]);
+  pz5RenderS2();
+  return true;
+}
+function pz5PinVessel(i){
+  var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+  st.played = true;
+  if(st.tested[i] === undefined){
+    pz5Say("Test it first — run the sensor over the vessel.", null);
+    return false;
+  }
+  if(m.items[i] === m.answer){
+    st.pinnedVessel = i;
+    pz5Tone("good"); pz5Say("✓ Vessel pinned — the source is isolated.", true);
+    pz5AdvanceS2();
+    return true;
+  }
+  pz5Wrong("That vessel tested negative — not the source.");
+  return false;
+}
+/* ---- stage advance + verify ---- */
+function pz5AdvanceS2(){
+  var st = PZ5; if(!st) return;
+  if(pz5S2Done(st)){
+    st.stage = 3;
+    pz5Tone("good");
+    pz5Say("✓ Anomaly isolated — lock the finding to verify.", true);
+  }
+  pz5RenderS2();
+}
+function pz5BuildAttempt(st){
+  var m = st.mech;
+  if(st.type === "timeline" || st.type === "cipher") return st.seq.slice();
+  if(st.type === "bins"){
+    var out = [];
+    for(var i = 0; i < m.items.length; i++) out.push(st.placed[i]);
+    return out;
+  }
+  if(st.type === "wheels") return st.wheels.slice();
+  if(st.type === "connect"){
+    var pairs = [];
+    for(var k in st.links) pairs.push([+k, st.links[k]]);
+    return pairs;
+  }
+  if(st.type === "memory"){
+    var seen = {}, pairs = [];
+    for(var i in st.matched){ var cd = st.cards[+i], k2 = cd.li + ":" + cd.ri; if(!seen[k2]){ seen[k2] = true; pairs.push([cd.li, cd.ri]); } }
+    return pairs;
+  }
+  if(st.type === "prints") return m.options[st.pinnedPrint];
+  if(st.type === "scale"){
+    return Object.keys(st.loaded).map(function(x){ return +x; }).sort(function(a, b){ return a - b; });
+  }
+  if(st.type === "frames") return st.pinnedFrame;
+  if(st.type === "gauge") return st.gval;
+  if(st.type === "vessels") return m.items[st.pinnedVessel];
+  return null;
+}
+function pz5Verify(){
+  var st = PZ5; if(!st || st.solved) return false;
+  if(st.stage !== 3 || !pz5S2Done(st)){
+    pz5Say("VERIFY is locked — pin the true anomaly first.", false);
+    return false;
+  }
+  var ok = attemptPuzzle(st.idx, pz5BuildAttempt(st));
+  if(!ok){ pz5Wrong(st.pz.wrong); return false; }
+  st.solved = true;
+  pz5Tone("solve");
+  var pz = st.pz;
+  pz5El("pz2d-board").innerHTML = "<div class='pz5-verified'><div class='pz5-verified-mark'>✓ VERIFIED</div>" +
+    "<p class='pz5-line'>" + esc(pz.done) + "</p>" +
+    (pz.clue ? "<div class='pz5-takeaway'><div class='pz5-takeaway-head'>FORENSIC TAKEAWAY</div><b>" + esc(pz.clue.title) + "</b> — " + esc(pz.clue.text) + "</div>" : "") +
+    "<button class='pz5-continue' data-pz5='continue'>Continue the case →</button></div>";
+  pz5Progress(1, 1, "Verified!");
+  return true;
 }
 
-/* v4 probe tail: 2D puzzle engine + kept dressing/voice helpers. */
+/* ---------------- board click delegation + drag ---------------- */
+function pz5BoardClick(e){
+  var t = e.target.closest ? e.target.closest("[data-pz5]") : null;
+  if(!t || !PZ5) return;
+  var act = t.getAttribute("data-pz5");
+  var st = PZ5;
+  if(act === "lock"){ pz5Lock(); return; }
+  if(act === "breaker"){
+    var bi = +t.getAttribute("data-i");
+    st.cal.breakers[bi] = !st.cal.breakers[bi];
+    pz5Tone("pick");
+    pz5RenderS1();
+    return;
+  }
+  if(st.stage !== 2 && act !== "verify" && act !== "continue") return;
+  if(act === "verify"){ pz5Verify(); return; }
+  if(act === "continue"){ closePuzzle5(); return; }
+  if(act === "noise"){ pz5Wrong("Signal noise — not evidence."); return; }
+  if(act === "tile"){ pz5PinTile(+t.getAttribute("data-i")); return; }
+  if(act === "item"){
+    st.held = +t.getAttribute("data-i");
+    pz5Tone("pick");
+    pz5RenderS2();
+    return;
+  }
+  if(act === "bucket"){
+    if(st.held < 0){ pz5Say("Pick an item first, then file it.", null); return; }
+    pz5AssignItem(st.held, +t.getAttribute("data-b"));
+    return;
+  }
+  if(act === "wheel-up"){ pz5SetWheel(+t.getAttribute("data-i"), st.wheels[+t.getAttribute("data-i")] + 1); return; }
+  if(act === "wheel-down"){ pz5SetWheel(+t.getAttribute("data-i"), st.wheels[+t.getAttribute("data-i")] - 1); return; }
+  if(act === "pinwheel"){ pz5PinWheel(+t.getAttribute("data-i")); return; }
+  if(act === "left"){
+    st.selL = +t.getAttribute("data-i");
+    pz5Tone("pick");
+    pz5RenderS2();
+    return;
+  }
+  if(act === "right"){
+    if(st.selL < 0){ pz5Say("Pick a left item first, then its match.", null); return; }
+    pz5Link(st.selL, +t.getAttribute("data-i"));
+    return;
+  }
+  if(act === "card"){ pz5Flip(+t.getAttribute("data-i")); return; }
+  if(act === "print"){ pz5ExaminePrint(+t.getAttribute("data-i")); return; }
+  if(act === "pinprint"){ pz5PinPrint(+t.getAttribute("data-i")); return; }
+  if(act === "block"){ pz5LoadBlock(+t.getAttribute("data-i")); return; }
+  if(act === "pinload"){ pz5PinLoad(); return; }
+  if(act === "frame"){ pz5ViewFrame(+t.getAttribute("data-v")); return; }
+  if(act === "pinframe"){ pz5PinFrame(+t.getAttribute("data-v")); return; }
+  if(act === "pinlock"){ pz5PinGauge(); return; }
+  if(act === "vessel"){ pz5TestVessel(+t.getAttribute("data-i")); return; }
+  if(act === "pinvessel"){ pz5PinVessel(+t.getAttribute("data-i")); return; }
+}
+/* ---------------- probe API (test-only surface) ---------------- */
+function pz5NodeList(){
+  var st = PZ5; if(!st || st.stage < 2) return [];
+  var m = st.mech, out = [];
+  if(st.type === "timeline" || st.type === "cipher"){
+    st.tray.forEach(function(tl){
+      out.push({id: "tile:" + tl.i, label: tl.t, pinned: !!st.used[tl.i], noise: false});
+    });
+    (st.noise || []).forEach(function(nid){ out.push({id: "noise:" + nid, label: "signal noise", pinned: false, noise: true}); });
+  } else if(st.type === "bins"){
+    m.items.forEach(function(it, i){ out.push({id: "item:" + i, label: it, pinned: st.placed[i] !== undefined, noise: false}); });
+  } else if(st.type === "wheels"){
+    m.answer.forEach(function(a, i){ out.push({id: "wheel:" + i, label: "wheel " + (i + 1), pinned: !!st.armed[i], noise: false}); });
+  } else if(st.type === "connect"){
+    m.left.forEach(function(it, i){ out.push({id: "left:" + i, label: it, pinned: st.links[i] !== undefined, noise: false}); });
+    (st.noise || []).forEach(function(nid){ out.push({id: "noise:" + nid, label: "signal noise", pinned: false, noise: true}); });
+  } else if(st.type === "memory"){
+    st.cards.forEach(function(cd, i){ out.push({id: "card:" + i, label: cd.text, pinned: !!st.matched[i], noise: false}); });
+    (st.noise || []).forEach(function(nid){ out.push({id: "noise:" + nid, label: "signal noise", pinned: false, noise: true}); });
+  } else if(st.type === "prints"){
+    m.options.forEach(function(o, i){ out.push({id: "print:" + i, label: o, pinned: st.pinnedPrint === i, noise: false}); });
+  } else if(st.type === "scale"){
+    m.items.forEach(function(it, i){ out.push({id: "block:" + i, label: it.label, pinned: !!st.loaded[i], noise: false}); });
+  } else if(st.type === "frames"){
+    st.frameVals.forEach(function(v){ out.push({id: "frame:" + v, label: fmtSlider(m, v), pinned: st.pinnedFrame === v, noise: false}); });
+  } else if(st.type === "gauge"){
+    out.push({id: "lock", label: "lock", pinned: !!st.pinnedGauge, noise: false});
+  } else if(st.type === "vessels"){
+    m.items.forEach(function(it, i){ out.push({id: "vessel:" + i, label: it, pinned: st.pinnedVessel === i, noise: false}); });
+  }
+  return out;
+}
+function pz5Api(){
+  return {
+    stage: function(){ return PZ5 ? PZ5.stage : 0; },
+    calibrated: function(){ return !!(PZ5 && PZ5.calibrated); },
+    s2done: function(){ return pz5S2Done(); },
+    verifyEnabled: function(){ return !!(PZ5 && PZ5.stage === 3 && pz5S2Done()); },
+    solved: function(){ return !!(PZ5 && PZ5.solved); },
+    wrongs: function(){ return PZ5 ? PZ5.wrongs : 0; },
+    cal: function(v){
+      var st = PZ5; if(!st || st.stage !== 1) return false;
+      st.played = true;
+      if(st.inst === "breaker") return false;
+      if(st.inst === "overlay"){ st.cal.offset = Math.max(-1, Math.min(1, v)); }
+      else if(st.inst === "tare"){ st.cal.tare = Math.max(-1, Math.min(1, v)); }
+      else {
+        st.cal.pos = Math.max(0, Math.min(1, v));
+        if(v < st.cal.vmin) st.cal.vmin = v;
+        if(v > st.cal.vmax) st.cal.vmax = v;
+      }
+      pz5TrackRefresh();
+      return true;
+    },
+    sweep: function(){
+      var st = PZ5; if(!st || st.stage !== 1) return false;
+      st.played = true;
+      st.cal.pos = 1; st.cal.vmin = 0; st.cal.vmax = 1;
+      pz5TrackRefresh();
+      return true;
+    },
+    toggleBreaker: function(i){
+      var st = PZ5; if(!st || st.stage !== 1) return false;
+      st.played = true;
+      st.cal.breakers[i] = !st.cal.breakers[i];
+      pz5RenderS1();
+      return true;
+    },
+    lock: function(){ return pz5Lock(); },
+    calTarget: function(){
+      var st = PZ5; if(!st) return null;
+      if(st.inst === "breaker") return {kind: "breakers", n: st.cal.breakers.length};
+      if(st.inst === "overlay") return {kind: "offset", target: 0, tol: pz5Tol()};
+      if(st.inst === "tare") return {kind: "tare", target: 0, tol: pz5Tol()};
+      return {kind: "sweep"};
+    },
+    nodes: function(){ return pz5NodeList(); },
+    pinTile: function(i){ return pz5PinTile(i); },
+    assignItem: function(i, b){ return pz5AssignItem(i, b); },
+    setWheel: function(i, v){ return pz5SetWheel(i, v); },
+    pinWheel: function(i){ return pz5PinWheel(i); },
+    link: function(l, r){ return pz5Link(l, r); },
+    flip: function(i){ return pz5Flip(i); },
+    examine: function(i){ return pz5ExaminePrint(i); },
+    pinPrint: function(i){ return pz5PinPrint(i); },
+    loadBlock: function(i){ return pz5LoadBlock(i); },
+    pinLoad: function(){ return pz5PinLoad(); },
+    viewFrame: function(v){ return pz5ViewFrame(v); },
+    pinFrame: function(v){ return pz5PinFrame(v); },
+    setGauge: function(v){
+      var st = PZ5, m = st.mech; if(!st || st.stage !== 2) return false;
+      var step = m.step || 1;
+      st.gval = Math.max(m.min, Math.min(m.max, Math.round(v / step) * step));
+      st.played = true;
+      pz5RenderS2();
+      return true;
+    },
+    pinGauge: function(){ return pz5PinGauge(); },
+    testVessel: function(i){ return pz5TestVessel(i); },
+    pinVessel: function(i){ return pz5PinVessel(i); },
+    verify: function(){ return pz5Verify(); }
+  };
+}
+function pz5TrackRefresh(){
+  var st = PZ5; if(!st) return;
+  var board = pz5El("pz2d-board"); if(!board) return;
+  var tel = board.querySelector(".pz5-tel"); if(tel) tel.textContent = pz5S1Telemetry();
+  var knob = board.querySelector(".pz5-knob");
+  if(knob){
+    var p = 0;
+    if(st.inst === "overlay") p = (st.cal.offset + 1) / 2;
+    else if(st.inst === "tare") p = (st.cal.tare + 1) / 2;
+    else p = st.cal.pos;
+    knob.style.left = "calc(" + Math.round(p * 100) + "% - 16px)";
+  }
+  var ovl = board.querySelector(".pz5-strip.ovl");
+  if(ovl) ovl.style.transform = "translateX(" + Math.round(st.cal.offset * 120) + "px)";
+  var beam = board.querySelector(".pz5-beam");
+  if(beam) beam.style.transform = "rotate(" + Math.round(st.cal.tare * 25) + "deg)";
+}
+
+/* v5 probe tail: forensic terminal engine + kept dressing/voice helpers. */
 if(window.__LG3D__){
-  window.__LG3D__.openPuzzle2D = openPuzzle2D;
-  window.__LG3D__.closePuzzle2D = closePuzzle2D;
-  window.__LG3D__.pz2d = function(){ return PZ2D; };
+  window.__LG3D__.openPuzzle5 = openPuzzle5;
+  window.__LG3D__.closePuzzle5 = closePuzzle5;
+  window.__LG3D__.pz5 = function(){ return PZ5; };
   window.__LG3D__.dressRoom = dressRoom; window.__LG3D__.dressTheme = dressTheme;
   window.__LG3D__.pzFlash = pzFlash; window.__LG3D__.evSub = evSub;
 }

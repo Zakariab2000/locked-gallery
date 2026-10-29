@@ -1405,7 +1405,35 @@ function suspectFigure(sp, idx, caseId){
   var hairCol15 = new THREE.Color(hair);
   var hasPhoto15 = false;
   try{ hasPhoto15 = !!((typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[caseId + ":" + (sp.key || "")] : null); }catch(e){}
-  if(!hasPhoto15) hairCol15.convertSRGBToLinear();
+  if(!hasPhoto15){
+    /* v16 RECALIBRATION (diagnostic round — see rebuild-v16/dump16.js
+       and dump_v15.txt): the enumeration through the real entry path
+       proves hair10 / hair-back10 ARE the visible cap and DID carry
+       v15's decoded colour (0.144 for #6a6a6a) — yet the cap renders
+       light grey, because the fault sits one leg further down the
+       pipeline than v15 modelled. The portrait is a 2D canvas: it
+       DISPLAYS the raw sRGB hex (0.416). This renderer sets ACES
+       exposure 1.3 and NO sRGB output encoding, and the rig sums
+       ~2.9x irradiance on the cap's front-crown normal (ambient
+       0.95 + hemi ~0.55 + dir ~0.65 + camera fill ~0.55 + room
+       point ~0.3, read off the spawned scene), so the decoded
+       albedo displays at ACES(0.144 * 2.9 * 1.3) ~ 0.66. Compensate
+       through the WHOLE pipeline: albedo = ACESinv(sRGB) / (K16 *
+       1.3) per channel, ACESinv the closed-form inverse of three
+       r147's ACES fit, K16 = 2.9 the nominal summed irradiance.
+       The reference view lands on the portrait's tone; shading
+       still varies with orientation, as it should. */
+    var K16 = 2.9 * 1.3;
+    var invAces16 = function(s){
+      s = Math.max(0, Math.min(0.98, s));
+      var A16 = 2.51 - 2.43 * s, B16 = 0.03 - 0.59 * s, C16 = -0.14 * s;
+      return (-B16 + Math.sqrt(Math.max(0, B16 * B16 - 4 * A16 * C16))) / (2 * A16);
+    };
+    hairCol15 = new THREE.Color(
+      invAces16(hairCol15.r) / K16,
+      invAces16(hairCol15.g) / K16,
+      invAces16(hairCol15.b) / K16);
+  }
   var hairM = new THREE.MeshStandardMaterial({color: hairCol15, roughness: 0.95});
   // legs (proper proportions: 0.78m)
   var legL = c2(0.075, 0.06, 0.78, pantsM, -0.11, 0.39, 0, 10); g.add(legL);
@@ -3481,8 +3509,10 @@ function legacyClosed15(caseId){
   var sv15 = loadSave();
   return !!(sv15 && sv15.caseId === caseId && sv15.lg8 && typeof sv15.lg8.epilogue === "string" && sv15.lg8.epilogue.length > 0);
 }
+var CARDSMODE16 = "normal"; /* v16 ITEM 2: mode the cards were last rendered in */
 function renderCards(mode){
   var wrap = $("casecards"); if(!wrap) return;
+  CARDSMODE16 = mode;
   var cmap15 = closedMap15(); /* v15 ITEM 2 */
   var html = "";
   Object.keys(CASES).sort(function(a,b){ return a-b; }).forEach(function(k){
@@ -3611,6 +3641,13 @@ function leaveCase(){
   if(S.timer){ clearInterval(S.timer); S.timer = null; }
   stopScene(); liveStop(); closeSheet();
   S.entered = false; S.solveMode = false;
+  /* v16 ITEM 2: re-render the case cards on EVERY return home. The
+     verdict writes the durable lg15-closed record, and renderCards
+     badges from it — but cards were rendered at boot and only
+     re-rendered on mode-tab clicks, so a case closed this session
+     showed no badge until a tab tap or a reload (proven organically
+     on v15: full DOM playthrough, record written, card stale). */
+  try{ renderCards(CARDSMODE16 || "normal"); }catch(e){}
   showView("view-home");
 }
 

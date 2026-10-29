@@ -278,6 +278,16 @@ input[type="text"],select{background:#1f222d;color:var(--paper);border:1px solid
 .locked-row{border:1px dashed var(--line);border-radius:12px;padding:12px;margin:8px 0;color:var(--dim)}
 .chat-msg{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0;background:var(--panel2)}
 .chat-msg b{color:var(--blue)}
+
+/* ============ v8 ROOM-FIX: canvas can never cover its own controls ============ */
+#gl{transform:none!important}
+#vp-bar{position:relative;z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px}
+#stage{position:relative;z-index:1}
+.board-chip.locked{opacity:.55;border-style:dashed;cursor:pointer}
+.susp-port{width:52px;height:52px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px;border:2px solid var(--brass)}
+.susp-port-ico{display:inline-block;width:52px;height:52px;line-height:52px;text-align:center;font-size:1.6rem;vertical-align:middle;margin-right:8px}
+#sub-focus{color:var(--dim);margin:6px 0 0}
+#brief-play-btn{margin-top:8px;min-height:44px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -355,7 +365,7 @@ input[type="text"],select{background:#1f222d;color:var(--paper);border:1px solid
   </div>
   <div class="bar" style="margin:10px 0"><i id="hud-fill"></i></div>
   <div id="topbar7"><div class="top-kicker" id="topbar-chapter">Chapter 1</div><div class="top-q" id="topbar-question"></div><div class="bar"><i id="topbar-fill"></i></div><p class="sheet-note" id="topbar-count" style="margin:6px 0 0"></p></div>
-  <div id="sub-bar" class="hidden"><span class="kicker">🎙 Briefing</span><p id="sub-text" class="sheet-line" style="margin:6px 0 0"></p></div>
+  <div id="sub-bar" class="hidden"><span class="kicker">🎙 Briefing</span><p id="sub-text" class="sheet-line" style="margin:6px 0 0"></p><p id="sub-focus" class="sheet-note"></p><button class="btn ghost" id="brief-play-btn" data-act="brief-play">▶ Play briefing</button></div>
   <div id="live-members" style="margin:4px 0 10px"></div>
   <div id="mode-notice" class="notice hidden"></div>
   <div id="vp-bar"><button class="btn ghost vpbtn" data-act="vp" data-room="0">📍 Location 1</button><button class="btn ghost vpbtn" data-act="vp" data-room="1">📍 Location 2</button><button class="btn ghost vpbtn" data-act="vp" data-room="2">📍 Location 3</button><button class="btn ghost vpbtn" data-act="vp-zoom-out">− Zoom out</button><button class="btn ghost vpbtn" data-act="vp-zoom-in">＋ Zoom in</button><button class="btn ghost vpbtn" data-act="vp-zoom-reset">Reset view</button><span class="sheet-note">Drag to look · Pinch to zoom · Locations unlock chapter by chapter.</span></div>
@@ -384,7 +394,7 @@ input[type="text"],select{background:#1f222d;color:var(--paper);border:1px solid
     <button class="btn ghost" data-mute data-act="mute">🔊 Sound</button>
     <button class="btn ghost" data-act="copy-link">🔗 Copy link</button>
   </div>
-  <p class="sheet-note">Drag to look · Pinch to zoom · Tap a glowing object to examine it, tap a figure to talk · Switch locations with the viewpoint buttons · Desktop: WASD still walks as a fallback.</p>
+  <p class="sheet-note">Drag to look · Pinch to zoom · Tap a glowing object to examine it, tap a figure to talk · Switch locations with the viewpoint buttons · Desktop: A/D or ←/→ switch location · W/S zoom in/out.</p>
 
   <div id="tabbar7">
     <button class="tabbtn" data-act="tab7" data-tab="scene" aria-pressed="true">🎬 Scene</button>
@@ -891,26 +901,48 @@ function skyTex(mood){
   });
 }
 function faceTex(skin, hair, style){
-  // Procedural face for suspects WITHOUT a photo portrait (cases 13-32).
-  // Soft features only — a person, not a cartoon: skin tone, subtle eyes/mouth.
-  return cvTex(256, 256, function(ctx, w, h){
+  // v8: Procedural face for suspects WITHOUT a photo portrait (cases 13-32).
+  // BIG high-contrast features on a 512 canvas - at 3m a subtle face reads as
+  // a blank square (the v6/v7 failure), so eyes/brows/nose/mouth are drawn
+  // large and dark on the skin tone, with hair framing the top and sides.
+  return cvTex(512, 512, function(ctx, w, h){
     ctx.fillStyle = skin; ctx.fillRect(0, 0, w, h);
+    // soft cheek shading so the face is not one flat tone
+    ctx.fillStyle = "rgba(0,0,0,0.08)";
+    ctx.beginPath(); ctx.ellipse(96, 320, 52, 74, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(416, 320, 52, 74, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.10)";
+    ctx.beginPath(); ctx.ellipse(256, 300, 110, 130, 0, 0, 7); ctx.fill();
+    // hair: top band + side falls
     ctx.fillStyle = hair;
-    if(style === "long"){ ctx.fillRect(0, 0, w, 78); ctx.fillRect(0, 0, 34, h); ctx.fillRect(w - 34, 0, 34, h); }
-    else if(style === "bald"){ ctx.beginPath(); ctx.arc(w / 2, 30, 60, Math.PI, 0); ctx.fill(); }
-    else { ctx.fillRect(0, 0, w, 62); ctx.beginPath(); ctx.arc(w / 2, 62, 90, Math.PI, 0); ctx.fill(); }
-    ctx.fillStyle = "rgba(30,18,12,0.95)";
-    ctx.fillRect(52, 96, 58, 10); ctx.fillRect(146, 96, 58, 10);
+    if(style === "long"){ ctx.fillRect(0, 0, w, 128); ctx.fillRect(0, 0, 62, h); ctx.fillRect(w - 62, 0, 62, h); }
+    else if(style === "bald"){ ctx.beginPath(); ctx.arc(w / 2, 44, 110, Math.PI, 0); ctx.fill(); }
+    else { ctx.fillRect(0, 0, w, 104); ctx.beginPath(); ctx.arc(w / 2, 104, 168, Math.PI, 0); ctx.fill(); }
+    // brows: thick, dark, unmissable
+    ctx.fillStyle = "rgba(24,14,8,0.97)";
+    ctx.fillRect(84, 176, 128, 26); ctx.fillRect(300, 176, 128, 26);
+    // eyes: big whites + dark irises + pupils
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.beginPath(); ctx.ellipse(148, 248, 46, 27, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(364, 248, 46, 27, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "rgba(22,12,8,0.97)";
+    ctx.beginPath(); ctx.ellipse(148, 248, 23, 24, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(364, 248, 23, 24, 0, 0, 7); ctx.fill();
     ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.beginPath(); ctx.ellipse(82, 122, 20, 12, 0, 0, 7); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(174, 122, 20, 12, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = "rgba(25,15,10,0.95)";
-    ctx.beginPath(); ctx.ellipse(82, 122, 10, 11, 0, 0, 7); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(174, 122, 10, 11, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = "rgba(120,80,60,0.6)";
-    ctx.beginPath(); ctx.ellipse(128, 152, 10, 14, 0, 0, 7); ctx.fill();
-    ctx.strokeStyle = "rgba(90,50,40,0.85)"; ctx.lineWidth = 6; ctx.beginPath();
-    ctx.arc(128, 188, 30, 0.25, Math.PI - 0.25); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(156, 240, 7, 7, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(372, 240, 7, 7, 0, 0, 7); ctx.fill();
+    // nose: bridge line + base + nostrils
+    ctx.strokeStyle = "rgba(105,64,44,0.9)"; ctx.lineWidth = 11; ctx.beginPath();
+    ctx.moveTo(256, 262); ctx.lineTo(244, 330); ctx.stroke();
+    ctx.beginPath(); ctx.arc(256, 344, 34, 0.3, Math.PI - 0.3); ctx.stroke();
+    ctx.fillStyle = "rgba(60,34,22,0.9)";
+    ctx.beginPath(); ctx.ellipse(232, 348, 9, 6, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(280, 348, 9, 6, 0, 0, 7); ctx.fill();
+    // mouth: wide, dark, with a lip line
+    ctx.strokeStyle = "rgba(96,36,32,0.95)"; ctx.lineWidth = 13; ctx.beginPath();
+    ctx.arc(256, 402, 62, 0.2, Math.PI - 0.2); ctx.stroke();
+    ctx.fillStyle = "rgba(140,70,60,0.55)";
+    ctx.beginPath(); ctx.ellipse(256, 424, 58, 13, 0, 0, 7); ctx.fill();
   });
 }
 var TEXCACHE = {};
@@ -1315,10 +1347,15 @@ function suspectFigure(sp, idx, caseId){
   var faceUri = null;
   try{ faceUri = (typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[caseId + ":" + (sp.key || "")] : null; }catch(e){}
   var faceMap = faceUri ? photoTex(faceUri, "#c89878") : faceTex(skin, hair, hairStyle);
-  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.36),
-    new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.5}));
-  facePlane.position.set(0, -0.01, 0.155);
+  var facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.36, 0.42),
+    new THREE.MeshStandardMaterial({map: faceMap, roughness: 0.7, emissive: 0xffffff, emissiveMap: faceMap, emissiveIntensity: 0.65}));
+  facePlane.position.set(0, -0.01, 0.175); facePlane.name = "face8";
   head.add(facePlane);
+  if(hairStyle !== "bald"){
+    var cap8 = new THREE.Mesh(geo("haircap8", function(){ return new THREE.SphereGeometry(0.158, 20, 12, 0, Math.PI * 2, 0, 1.85); }), hairM);
+    cap8.position.set(0, 0.018, -0.012); cap8.rotation.x = -0.28; cap8.name = "hair8";
+    head.add(cap8);
+  }
   var hairMesh;
   if(hairStyle === "long"){
     hairMesh = b2(0.26, 0.42, 0.06, hairM, 0, 0.02, -0.1);
@@ -1423,11 +1460,37 @@ function roomAt(x, nRooms){
   if(x < 19.5) return 1;
   return 2;
 }
+/* ---- v8 label layout: pure clamp + overlap suppression (probe-tested) ---- */
+function clampLabelBox8(cx, cy, w, h, W, H){
+  var m = 8, x = cx, y = cy;
+  if(w >= W - 2 * m) x = W / 2; else x = Math.max(w / 2 + m, Math.min(W - w / 2 - m, cx));
+  if(h >= H - 2 * m) y = H / 2; else y = Math.max(h / 2 + m, Math.min(H - h / 2 - m, cy));
+  return {x: x, y: y};
+}
+function suppressLabels8(items){
+  /* items: [{x,y,w,h,d}] centre-based boxes. Nearest wins; a box that overlaps
+     an already-kept box is dropped; at most 6 labels survive. Returns a
+     {index: true} set of kept indices (indices into the input array). */
+  var order = items.map(function(it, i){ return i; }).sort(function(a, b){ return items[a].d - items[b].d; });
+  var kept = [], set = {};
+  for(var k = 0; k < order.length && kept.length < 6; k++){
+    var i = order[k], a = items[i], clash = false;
+    for(var j = 0; j < kept.length; j++){
+      var b = items[kept[j]];
+      if(Math.abs(a.x - b.x) < (a.w + b.w) / 2 + 4 && Math.abs(a.y - b.y) < (a.h + b.h) / 2 + 4){ clash = true; break; }
+    }
+    if(!clash){ kept.push(i); set[i] = true; }
+  }
+  return set;
+}
+function clearLabelLayer8(){
+  var layer = $("labels6"); if(layer) layer.innerHTML = "";
+}
 var MOODLIGHT = {
-  night: {amb: 0.72, dir: 1.0, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
-  day: {amb: 0.9, dir: 1.15, dirCol: 0xfff2d0, fog: 0x8aa8c8, bg: 0x8aa8c8},
-  dusk: {amb: 0.75, dir: 1.0, dirCol: 0xffa060, fog: 0x2a1a2a, bg: 0x2a1a2a},
-  dawn: {amb: 0.8, dir: 1.0, dirCol: 0xffc0a0, fog: 0x3a3a5a, bg: 0x3a3a5a}
+  night: {amb: 0.95, dir: 1.0, dirCol: 0x9ab8ff, fog: 0x0a0d18, bg: 0x0a0d18},
+  day: {amb: 1.05, dir: 1.15, dirCol: 0xfff2d0, fog: 0x8aa8c8, bg: 0x8aa8c8},
+  dusk: {amb: 0.95, dir: 1.0, dirCol: 0xffa060, fog: 0x2a1a2a, bg: 0x2a1a2a},
+  dawn: {amb: 1.0, dir: 1.0, dirCol: 0xffc0a0, fog: 0x3a3a5a, bg: 0x3a3a5a}
 };
 /* ---- optional free-model hook: GLB files in models/ override procedural
    furniture ONLY when the loader + file are present; otherwise procedural.
@@ -1895,34 +1958,8 @@ function dressWalls6(scene, c, room, ri, th){
     });
     doomed.forEach(function(o){ scene.remove(o); });
   }
-  // ---- hero panel (rooms 1-2): first evidence photo of this room, else big art ----
-  if(ri > 0){
-    var dist = fpDistribution(c.id);
-    var heroUri = null;
-    (c.ev || []).forEach(function(e){
-      if(!heroUri && dist.ev[e.id] === ri){
-        try{ heroUri = (typeof TEX3D !== "undefined" && TEX3D.evidence) ? TEX3D.evidence[c.id + ":" + e.id] : null; }catch(err){}
-      }
-    });
-    var hg = new THREE.Group(); hg.userData.dressKind = "hero-panel";
-    hg.add(b2(2.8, 1.8, 0.08, texMat("metal"), 0, 0, 0));
-    var hp2 = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.6),
-      heroUri
-        ? new THREE.MeshStandardMaterial({map: photoTex(heroUri, "#2a2a4a"), roughness: 0.8})
-        : new THREE.MeshStandardMaterial({map: artTex((c.id * 5 + ri) % 6), roughness: 0.85}));
-    hp2.position.z = 0.05; hg.add(hp2);
-    add(hg, cx - 1.2, 1.95, -4.84, "hero-panel");
-  }
-  // ---- back-wall feature art (rooms 1-2; room 0 has the big hero) ----
-  if(ri > 0){
-    var fx = ri % 2 ? 5.0 : 3.6;
-    var fg = new THREE.Group(); fg.userData.dressKind = "feature-art";
-    fg.add(b2(1.9, 1.4, 0.07, texMat("metal"), 0, 0, 0));
-    var fa = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.2),
-      new THREE.MeshStandardMaterial({map: artTex((c.id * 7 + ri * 3) % 6), roughness: 0.85}));
-    fa.position.z = 0.045; fg.add(fa);
-    add(fg, cx + fx, 1.9, -4.84, "feature-art");
-  }
+  // v8: rooms 1-2 hero + feature art removed here — initScene adds a 4.2x2.4m
+  // hero panel + flanking panels on this wall for EVERY room (no overlaps).
   // ---- front-wall window (mirrors the back window, glowing sky) ----
   var fwx = cx + (ri % 2 ? -2.6 : 2.6);
   var fw = new THREE.Group(); fw.userData.dressKind = "front-window";
@@ -1988,6 +2025,7 @@ function dressWalls6(scene, c, room, ri, th){
 
 function initScene(){
   var c = C(); if(!c) return false;
+  clearLabelLayer8();
   var th = THEMES[c.id] || THEMES[1];
   var rooms = ROOM_MAPS[c.id] || ROOM_MAPS[1];
   var nRooms = rooms.length;
@@ -2000,14 +2038,17 @@ function initScene(){
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || (window.innerHeight - 180));
     renderer.shadowMap.enabled = true;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.3;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(ML.bg);
     scene.fog = new THREE.Fog(ML.fog, 14, 40);
     var camera = new THREE.PerspectiveCamera(68, (canvas.clientWidth || window.innerWidth) / (canvas.clientHeight || (window.innerHeight - 180)), 0.1, 120);
     camera.rotation.order = "YXZ";
+    scene.add(camera);
+    var fill8 = new THREE.PointLight(0xffe2b8, 0.85, 13); fill8.position.set(0, 0.15, 0.4); fill8.name = "fill8"; camera.add(fill8);
     scene.add(new THREE.AmbientLight(0xffffff, ML.amb));
-    var hemi = new THREE.HemisphereLight(0xbfd4ff, 0x2a1a10, 0.5); scene.add(hemi);
+    var hemi = new THREE.HemisphereLight(0xbfd4ff, 0x4a3420, 0.85); scene.add(hemi);
     var dir = new THREE.DirectionalLight(ML.dirCol, ML.dir);
     dir.position.set(10, 14, 6); dir.castShadow = true;
     dir.shadow.mapSize.width = 1024; dir.shadow.mapSize.height = 1024;
@@ -2023,8 +2064,19 @@ function initScene(){
     if(floorTex.map) floorTex.map.repeat.set(10, 3);
     var floor = new THREE.Mesh(new THREE.BoxGeometry(mapW, 0.2, 10), floorTex);
     floor.position.set((nRooms - 1) * 13 / 2, -0.1, 0); floor.receiveShadow = true; scene.add(floor);
-    var ceil = new THREE.Mesh(new THREE.BoxGeometry(mapW, 0.2, 10), texMat("wallpaper", "#4a3a28"));
-    ceil.position.set((nRooms - 1) * 13 / 2, 3.5, 0); scene.add(ceil);
+    var ceilMat8 = new THREE.MeshStandardMaterial({map: fabricTex("#77694f", "#99865f"), color: 0xd8c9a8, roughness: 0.95, emissive: 0x2a2012, emissiveIntensity: 0.5});
+    var ceil = new THREE.Mesh(new THREE.BoxGeometry(mapW, 0.2, 10), ceilMat8);
+    ceil.position.set((nRooms - 1) * 13 / 2, 3.5, 0); ceil.userData = {kind: "ceiling8"}; scene.add(ceil);
+    for(var cb8 = 0; cb8 < nRooms; cb8++){
+      [-3.2, 0, 3.2].forEach(function(bz8){
+        var beam8 = new THREE.Mesh(new THREE.BoxGeometry(12, 0.14, 0.34), texMat("woodDark"));
+        beam8.position.set(roomCenter(cb8), 3.36, bz8); beam8.userData = {kind: "ceiling-beam8"}; scene.add(beam8);
+      });
+      var cpan8 = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.0),
+        new THREE.MeshStandardMaterial({color: 0xf5e3b0, emissive: 0xffdf9a, emissiveIntensity: 0.55, roughness: 0.9}));
+      cpan8.rotation.x = Math.PI / 2; cpan8.position.set(roomCenter(cb8), 3.38, 0);
+      cpan8.userData = {kind: "ceiling-panel8"}; scene.add(cpan8);
+    }
     var colliders = [];
     function addCollider(x0, x1, z0, z1){ colliders.push({x0: x0, x1: x1, z0: z0, z1: z1}); }
     function wallBox(w, h, d, material, x, y, z){
@@ -2081,25 +2133,37 @@ function initScene(){
       var rug = new THREE.Mesh(new THREE.PlaneGeometry(3.6 + rugRnd() * 1.2, 2.6 + rugRnd() * 0.8),
         new THREE.MeshStandardMaterial({map: texMat("carpet", rugCol3).map, roughness: 0.95}));
       rug.rotation.x = -Math.PI / 2; rug.position.set(cx + (rugRnd() - 0.5) * 1.2, 0.02, (rugRnd() - 0.5) * 1.2); rug.receiveShadow = true; scene.add(rug);
-      // hero wall art (real photo when it exists) or title plaque, room 0 only
-      if(ri === 0){
+      // v8: hero wall art in EVERY room, on the north wall the viewpoint faces,
+      // plus flanking panels + benches so the default view is dressed at eye level
+      {
         var heroUri = null;
-        try{ heroUri = (typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
-        var heroG = new THREE.Group(); heroG.userData.dressKind = "hero-panel";
-        if(heroUri){
-          heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
-          var hp = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
-            new THREE.MeshStandardMaterial({map: photoTex(heroUri, "#2a2a4a"), roughness: 0.8}));
-          hp.position.set(0, 1.9, -4.81); heroG.add(hp);
-        } else {
-          heroG.add(b2(4.2, 2.4, 0.08, texMat("metal"), 0, 1.95, -4.86));
-          var pp = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
-            new THREE.MeshStandardMaterial({map: artTex((c.id * 3) % 6), roughness: 0.85}));
-          pp.position.set(0, 1.95, -4.81); heroG.add(pp);
-          var plaque = makeTextPlane(c.title + " · Case " + c.id, 2.6, 0.6);
-          plaque.position.set(0, 0.45, -4.86); heroG.add(plaque);
-        }
+        try{ heroUri = (ri === 0 && typeof TEX3D !== "undefined" && TEX3D.heroes) ? TEX3D.heroes[String(c.id)] : null; }catch(e){}
+        var heroG = new THREE.Group(); heroG.userData = {dressKind: "hero-panel", room: ri, heroW: 4.2, heroH: 2.4};
+        heroG.add(b2(4.2, 2.4, 0.08, texMat("woodDark"), 0, 1.9, -4.86));
+        var heroTex8 = heroUri ? photoTex(heroUri, "#2a2a4a") : artTex((c.id * 3 + ri * 2) % 6);
+        var hart = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.2),
+          new THREE.MeshStandardMaterial({map: heroTex8, roughness: 0.8, emissive: 0xffffff, emissiveMap: heroTex8, emissiveIntensity: 0.22}));
+        hart.position.set(0, 1.9, -4.81); hart.name = "hero-art8"; heroG.add(hart);
+        var plaque = makeTextPlane(ri === 0 ? (c.title + " \u00b7 Case " + c.id) : r.n, 2.6, 0.6);
+        plaque.position.set(0, 0.45, -4.8); heroG.add(plaque);
         heroG.position.set(cx, 0, 0); scene.add(heroG);
+        [-4.8, 4.8].forEach(function(fx8){
+          var fr8 = new THREE.Group(); fr8.userData = {dressKind: "wall-panel8", room: ri};
+          fr8.add(b2(1.3, 1.7, 0.06, texMat("woodDark"), 0, 0, 0));
+          var fp8 = new THREE.Mesh(new THREE.PlaneGeometry(1.14, 1.54),
+            new THREE.MeshStandardMaterial({map: artTex((c.id + ri + (fx8 > 0 ? 2 : 4)) % 6), roughness: 0.85}));
+          fp8.position.z = 0.045; fr8.add(fp8);
+          fr8.position.set(cx + fx8, 1.9, -4.9); scene.add(fr8);
+        });
+        [-1.9, 1.9].forEach(function(bx8){
+          var bn8 = new THREE.Group(); bn8.userData = {dressKind: "bench8", room: ri};
+          bn8.add(b2(1.8, 0.1, 0.46, texMat("wood"), 0, 0.46, 0));
+          bn8.add(b2(0.08, 0.42, 0.4, texMat("woodDark"), -0.8, 0.21, 0));
+          bn8.add(b2(0.08, 0.42, 0.4, texMat("woodDark"), 0.8, 0.21, 0));
+          bn8.add(b2(1.8, 0.34, 0.05, texMat("wood"), 0, 0.68, 0.22));
+          bn8.position.set(cx + bx8, 0, -2.5); scene.add(bn8);
+          addCollider(cx + bx8 - 0.95, cx + bx8 + 0.95, -2.75, -2.25);
+        });
       }
       // room lamp light (one real point light per room) + lamp props
       var pl = new THREE.PointLight(0xffc880, mood === "day" ? 0.6 : 1.0, 14);
@@ -2171,9 +2235,12 @@ function initScene(){
       var slot = suspSlots[suspPerRoom[ri] % suspSlots.length]; suspPerRoom[ri]++;
       var cx = roomCenter(ri);
       var g = suspectFigure(sp2, i, c.id);
+      var key8 = (suspPerRoom[ri] === 1);
+      if(key8) slot = [0.9, -0.7];
       g.position.set(cx + slot[0], 0, slot[1]);
-      g.rotation.y = Math.atan2(-slot[0], -slot[1]);
+      g.rotation.y = key8 ? Math.atan2(0 - slot[0], 2.2 - slot[1]) : Math.atan2(-slot[0], -slot[1]);
       g.userData = {kind: "susp", key: sp2.key};
+      g.userData.face8 = {faceZ: 0.175, headR: 0.15};
 
       scene.add(g); suspMeshes[sp2.key] = g;
       interactables.push({group: g, kind: "susp", key: sp2.key, label: sp2.name.replace(/,\s*\d+$/, ""), labelH: 2.15});
@@ -2230,51 +2297,64 @@ function initScene(){
     var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({color: 0xffe8b0, size: 0.035, transparent: true, opacity: 0.4, depthWrite: false}));
     scene.add(dust);
     // ---- first-person player state ----
-    var PL = {x: -4.5, z: 0, yaw: -Math.PI / 2, pitch: 0, velX: 0, velZ: 0, bob: 0, prevSin: 0, room: 0, moving: false};
+    var PL = {x: 0, z: 2.2, yaw: 0, pitch: 0, velX: 0, velZ: 0, bob: 0, prevSin: 0, room: 0, moving: false};
     var keys = {};
     var joyVec = {x: 0, y: 0};
     var lastPrompt = "", lastObjective = "", lastEvCount = -1, lastPuzzCount = -1;
     var stuckFrames = 0;
     var inspecting = null;
+    var lastLabelRoom8 = -1;
+    function clearLabels8(){
+      clearLabelLayer8();
+      interactables.forEach(function(it){ it._lblEl = null; });
+    }
     function updateLabels(){
       var layer = $("labels6");
       if(!layer) return;
+      if(PL.room !== lastLabelRoom8){ clearLabels8(); lastLabelRoom8 = PL.room; }
       var rect = canvas.getBoundingClientRect();
       var W = rect.width || 900, H = rect.height || 600;
       var sheetOpen = $("sheet") && $("sheet").classList.contains("open");
       var pz2Open = $("pz2d") && $("pz2d").classList.contains("open");
       var v = new THREE.Vector3();
+      var camDir = new THREE.Vector3();
+      camera.getWorldDirection(camDir);
+      var cand = [];
       interactables.forEach(function(it){
         if(!it._lblEl){
           var el = document.createElement("div");
           el.className = "lbl6";
           var txt = it.label || "";
-          if(it.kind === "search") txt = "🔍 " + txt;
-          else if(it.kind === "twist") txt = "📞 " + txt;
+          if(it.kind === "search") txt = "\uD83D\uDD0D " + txt;
+          else if(it.kind === "twist") txt = "\uD83D\uDCDE " + txt;
           el.textContent = txt;
           layer.appendChild(el);
           it._lblEl = el;
         }
         var el2 = it._lblEl;
+        el2.style.display = "none";
         var p = it.group.position;
         var dx = p.x - PL.x, dz = p.z - PL.z;
         var d = Math.sqrt(dx * dx + dz * dz);
         var room = roomAt(p.x, nRooms);
-        var vis = !pz2Open && !sheetOpen && !inspecting && room === PL.room && d < 5.5;
-        if(!vis){ el2.style.display = "none"; return; }
-        var camDir = new THREE.Vector3();
-        camera.getWorldDirection(camDir);
+        if(pz2Open || sheetOpen || inspecting || room !== PL.room || d >= 5.5) return;
         var toObj = new THREE.Vector3(p.x - camera.position.x, (it.labelH || 1.8) + p.y - camera.position.y, p.z - camera.position.z);
-        if(toObj.dot(camDir) <= 0){ el2.style.display = "none"; return; }
+        if(toObj.dot(camDir) <= 0) return;
         v.set(p.x, (it.labelH || 1.8) + p.y, p.z).project(camera);
-        if(v.z > 1 || v.z < -1){ el2.style.display = "none"; return; }
+        if(v.z > 1 || v.z < -1) return;
         var x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H;
-        x = Math.max(70, Math.min(W - 70, x));
-        y = Math.max(34, Math.min(H - 34, y));
-        el2.style.display = "block";
-        el2.style.left = x + "px"; el2.style.top = y + "px";
-        el2.style.opacity = Math.max(0.3, Math.min(1, (5.5 - d) / 3));
-        el2.style.transform = "translate(-50%,-50%)";
+        var w = el2.offsetWidth || Math.min(W - 16, Math.max(40, (it.label || "").length * 7 + 24));
+        var h = el2.offsetHeight || 26;
+        var cl = clampLabelBox8(x, y, w, h, W, H);
+        cand.push({x: cl.x, y: cl.y, w: w, h: h, d: d, el: el2});
+      });
+      var kept = suppressLabels8(cand);
+      cand.forEach(function(cd, ci){
+        if(!kept[ci]) return;
+        cd.el.style.display = "block";
+        cd.el.style.left = cd.x + "px"; cd.el.style.top = cd.y + "px";
+        cd.el.style.opacity = Math.max(0.3, Math.min(1, (5.5 - cd.d) / 3));
+        cd.el.style.transform = "translate(-50%,-50%)";
       });
     }
     function applyCam(){
@@ -2440,11 +2520,14 @@ function initScene(){
       clock += dt;
       if(!($("pz2d") && $("pz2d").classList.contains("open")) && !inspecting){
         var f = 0, s = 0;
-        if(keys["KeyW"] || keys["ArrowUp"]) f += 1;
-        if(keys["KeyS"] || keys["ArrowDown"]) f -= 1;
-        if(keys["KeyA"] || keys["ArrowLeft"]) s -= 1;
-        if(keys["KeyD"] || keys["ArrowRight"]) s += 1;
-        f += -joyVec.y; s += joyVec.x;
+        var vpMode8 = $("stage") && $("stage").classList.contains("vp-mode");
+        if(!vpMode8){
+          if(keys["KeyW"] || keys["ArrowUp"]) f += 1;
+          if(keys["KeyS"] || keys["ArrowDown"]) f -= 1;
+          if(keys["KeyA"] || keys["ArrowLeft"]) s -= 1;
+          if(keys["KeyD"] || keys["ArrowRight"]) s += 1;
+          f += -joyVec.y; s += joyVec.x;
+        }
         var mag = Math.sqrt(f * f + s * s);
         if(mag > 1){ f /= mag; s /= mag; }
         var speed = 5.0;
@@ -2558,7 +2641,7 @@ function initScene(){
       },
       endInspect: function(){ inspecting = null; applyCam(); },
       isInspecting: function(){ return !!inspecting; },
-      updateLabels: updateLabels,
+      updateLabels: updateLabels, clearLabels: clearLabels8, clampLabelBox: clampLabelBox8, suppressLabels: suppressLabels8, ceilingMat: ceilMat8,
       evMeshes: evMeshes, suspMeshes: suspMeshes, puzzMeshes: puzzMeshes, searchMeshes: searchMeshes,
       twistMeshes: twistMeshes, stopped: false, animate: animate, fpInteract: fpInteract,
       interactables: interactables, colliders: colliders, rooms: rooms, dist: dist,
@@ -2612,6 +2695,17 @@ function initScene(){
           applyCam();
           return r;
         },
+        setView: function(x, z, yaw, pitch){
+          PL.x = x; PL.z = z; PL.yaw = yaw || 0; PL.pitch = pitch || 0; PL.velX = 0; PL.velZ = 0;
+          var r = roomAt(x, nRooms);
+          if(r !== PL.room){ PL.room = r; }
+          applyCam();
+          return r;
+        },
+        viewpoint: function(ri){ return {x: roomCenter(ri), z: 2.2, yaw: 0, pitch: 0}; },
+        setFov: function(f){ camera.fov = f; camera.updateProjectionMatrix(); return camera.fov; },
+        fov: function(){ return camera.fov; },
+        baseFov: 68,
         roomAt: function(x){ return roomAt(x, nRooms); },
         distribution: function(){ return dist; },
         rooms: function(){ return rooms; },
@@ -2639,6 +2733,7 @@ function dimGroup(g){
   }catch(e){}
 }
 function stopScene(){
+  clearLabelLayer8();
   if(SCENE){ SCENE.stopped = true; }
   SCENE = null; window.__LG3D_SCENE__ = null;
   try{ sfxAmbientStop(); }catch(e){}
@@ -4392,7 +4487,15 @@ if(window.__LG3D__){
   window.__LG3D__.pzFlash = pzFlash; window.__LG3D__.evSub = evSub;
 }
 
-/* ============ v7 STYLE REBUILD: reference-game structure, same cases ============
+/* ============ v8 ROOM-FIX (layered on the v7 STYLE REBUILD below) ============
+   Zoom = camera FOV only (the canvas element NEVER scales/moves, controls stay
+   clickable at every zoom); full-session persistence (party config + chapter +
+   proved links + report + viewRoom survive a reload); Board shows locked chips
+   for unexamined evidence with real feedback; chapter-specific briefings with
+   an explicit Play button; Suspects tab shows real portraits (cases 1-12);
+   WASD in viewpoint mode = A/D switch location, W/S zoom (the engine's free-
+   walk keys are disabled while vp-mode is on, so the promise is true).
+   ============ v7 STYLE REBUILD: reference-game structure, same cases ============
    Phone-first dark noir, bottom tab bar (Scene / Evidence / Suspects / Board /
    Chat), chapter framework + board-link deduction, role renaming + gating,
    viewpoint rooms (drag to look, pinch to zoom), briefing voice + subtitles.
@@ -4489,11 +4592,16 @@ function renderBoard7(){
   var bp = $("board-pick");
   if(bp){
     var c = C();
-    var chips = c.ev.filter(function(e){ return !!S.ev[e.id]; }).map(function(e){
-      var cls = "board-chip" + (LG7.slotA === e.id || LG7.slotB === e.id ? " sel" : "");
-      return "<button class='" + cls + "' data-act='board-pick' data-id='" + esc(e.id) + "'>" + esc(e.label) + "</button>";
-    }).join("") || "<p class='sheet-note'>No findings yet — examine glowing objects in the Scene, or open the Evidence tab.</p>";
-    bp.innerHTML = "<p class='sheet-note'>Picked: <b>" + esc(LG7.slotA || "—") + "</b> + <b>" + esc(LG7.slotB || "—") + "</b></p>" + chips;
+    var chips = c.ev.map(function(e){
+      if(S.ev[e.id]){
+        var cls = "board-chip" + (LG7.slotA === e.id || LG7.slotB === e.id ? " sel" : "");
+        return "<button class='" + cls + "' data-act='board-pick' data-id='" + esc(e.id) + "'>" + esc(e.label) + "</button>";
+      }
+      var lbl = lg7RoleCan(e.id) ? ("\uD83D\uDD12 " + esc(e.label)) : "\uD83D\uDD12 Sealed clue";
+      return "<button class='board-chip locked' data-act='board-locked' data-id='" + esc(e.id) + "' aria-disabled='true'>" + lbl + "</button>";
+    }).join("");
+    bp.innerHTML = "<p class='sheet-note'>Picked: <b>" + esc(LG7.slotA || "—") + "</b> + <b>" + esc(LG7.slotB || "—") + "</b></p>" + chips +
+      "<p class='sheet-note'>Locked chips are findings you have not examined yet \u2014 tap one to see what to do.</p>";
   }
   var fb = $("board-feedback");
   if(fb) fb.innerHTML = LG7.boardFeedback ? "<p class='sheet-line'>" + LG7.boardFeedback + "</p>" : "";
@@ -4506,6 +4614,7 @@ function renderBoard7(){
   var ep = $("board-epilogue");
   if(ep) ep.innerHTML = LG7.epilogue ? "<div class='goal ok'><b>Epilogue</b><p class='sheet-line'>" + LG7.epilogue + "</p></div>" : "";
   var hp = $("hud-pz"); if(hp) hp.textContent = lg7ProvedCount() + "/" + lg7TotalGoals();
+  try{ if(S.entered) save(); }catch(e){}
 }
 function renderEvidence7(){
   var el = $("ev-list"); if(!el) return;
@@ -4522,7 +4631,10 @@ function renderSuspects7(){
     var topics = sp.qa.map(function(q, i){
       return "<button class='btn ghost qbtn' data-act='ask' data-key='" + esc(sp.key) + "' data-qi='" + i + "'>\u201C" + esc(q.q) + "\u201D</button>";
     }).join("");
-    return "<div class='goal'><b>👤 " + esc(sp.name) + "</b> <small>· " + esc(sp.role) + "</small>" +
+    var port8 = null;
+    try{ port8 = (typeof TEX3D !== "undefined" && TEX3D.portraits) ? TEX3D.portraits[c.id + ":" + sp.key] : null; }catch(e){}
+    var head8 = port8 ? "<img class='susp-port' src='" + esc(port8) + "' alt=''/>" : "<span class='susp-port-ico'>👤</span>";
+    return "<div class='goal'>" + head8 + "<b>" + esc(sp.name) + "</b> <small>· " + esc(sp.role) + "</small>" +
       "<p class='sheet-line'>\u201C" + esc(sp.intro) + "\u201D</p>" +
       "<button class='btn ghost' data-act='susp' data-key='" + esc(sp.key) + "'>Talk</button>" + topics + "</div>";
   }).join("");
@@ -4618,15 +4730,30 @@ function vp7(ri){
   LG7.viewRoom = ri;
   try{
     var fp = (window.__LG3D__ && window.__LG3D__.fp) || null;
-    if(fp && fp.moveTo) fp.moveTo(roomCenter(ri), 0);
+    if(fp && fp.setView){
+      var vpp = fp.viewpoint ? fp.viewpoint(ri) : {x: roomCenter(ri), z: 2.2, yaw: 0, pitch: 0};
+      fp.setView(vpp.x, vpp.z, vpp.yaw, vpp.pitch);
+    }
+    else if(fp && fp.moveTo) fp.moveTo(roomCenter(ri), 0);
   }catch(e){}
-  renderVp7(); return true;
+  renderVp7();
+  try{ if(S.entered) save(); }catch(e){}
+  return true;
 }
 function setZoom7(z){
   LG7.zoom = Math.max(1, Math.min(2.5, z));
+  try{
+    var fp = (window.__LG3D__ && window.__LG3D__.fp) || null;
+    if(fp && fp.setFov) fp.setFov(68 / LG7.zoom);
+  }catch(e){}
   var cv = $("gl");
-  if(cv){ cv.style.transform = "scale(" + LG7.zoom + ")"; cv.style.transformOrigin = "center center"; }
+  if(cv){ cv.style.transform = ""; }
   return LG7.zoom;
+}
+function resetView7(){
+  setZoom7(1);
+  vp7(LG7.viewRoom);
+  return true;
 }
 
 /* ---- chat (separable block: everything chat lives here + renderChat7) ---- */
@@ -4643,15 +4770,30 @@ function sendChat7(text){
 /* ---- briefing voice + subtitles (existing recorded hint lines, NOT actors) ---- */
 function brief7(){
   var c = C(); if(!c) return;
-  var hint = (c.hints && c.hints[0]) || "";
-  var sb = $("sub-bar"), st = $("sub-text");
-  if(st) st.textContent = hint ? "🎙 " + hint : "";
-  if(sb) sb.classList.toggle("hidden", !hint);
-  LG7.briefing = {text: hint, src: ""};
+  var ch = lg7ChapterGoals();
+  var hint = (c.hints && c.hints[Math.min(LG7.chapter - 1, c.hints.length - 1)]) || (c.hints && c.hints[0]) || "";
+  var focus = "";
+  if(ch && ch.goals.length) focus = ch.goals.map(function(g){ return g.label; }).join("  \u00b7  ");
+  var head = "Chapter " + LG7.chapter + " \u00b7 " + (ch ? ch.room : "") + " \u2014 " + (ch ? ch.question : "");
+  var sb = $("sub-bar"), st = $("sub-text"), sf = $("sub-focus");
+  if(st) st.textContent = hint ? "\uD83C\uDF99 " + hint : "";
+  if(sf) sf.textContent = focus ? ("Focus: " + focus) : "";
+  if(sb) sb.classList.toggle("hidden", !(hint || focus));
+  LG7.briefing = {text: head + (focus ? " Focus: " + focus : "") + (hint ? " " + hint : ""),
+    hint: hint, focus: focus, head: head, chapter: LG7.chapter, src: ""};
   if(hint){
     try{ speak(hint); }catch(e){}
     try{ if(audioEl) LG7.briefing.src = audioEl.src || ""; }catch(e){}
   }
+}
+function playBrief7(){
+  if(!LG7.briefing || !LG7.briefing.hint) brief7();
+  var hint = (LG7.briefing && LG7.briefing.hint) || "";
+  if(!hint) return false;
+  var sb = $("sub-bar"); if(sb) sb.classList.remove("hidden");
+  try{ speak(hint); }catch(e){}
+  try{ if(audioEl) LG7.briefing.src = audioEl.src || ""; }catch(e){}
+  return true;
 }
 
 /* ---- state lifecycle ---- */
@@ -4699,6 +4841,8 @@ save = function(){
   try{
     var raw = JSON.parse(localStorage.getItem("lg3d-save-v1") || "{}");
     raw.lg7 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat};
+    raw.lg8 = {chapter: LG7.chapter, proved: LG7.proved, links: LG7.links, chat: LG7.chat,
+      hintsUsed: LG7.hintsUsed, report: LG7.report, epilogue: LG7.epilogue, viewRoom: LG7.viewRoom};
     localStorage.setItem("lg3d-save-v1", JSON.stringify(raw));
   }catch(e){}
 };
@@ -4744,21 +4888,75 @@ wireConn = function(conn){
     });
   }catch(e){}
 };
+function lg8Apply(saved){
+  if(!saved) return false;
+  if(saved.name) S.name = saved.name;
+  if(saved.room) S.room = saved.room;
+  if(saved.role) S.role = saved.role;
+  if(saved.size) S.size = saved.size;
+  var st = saved.lg8 || saved.lg7;
+  lg7Fresh();
+  if(st){
+    LG7.chapter = st.chapter || 1; LG7.proved = st.proved || {};
+    LG7.links = st.links || []; LG7.chat = st.chat || [];
+    if(saved.lg8){
+      LG7.hintsUsed = st.hintsUsed || 0; LG7.report = st.report || null;
+      LG7.epilogue = st.epilogue || ""; LG7.viewRoom = st.viewRoom || 0;
+    }
+    if(LG7.viewRoom > LG7.chapter - 1) LG7.viewRoom = LG7.chapter - 1;
+    if(LG7.viewRoom < 0) LG7.viewRoom = 0;
+    if(!LG7.report && lg7ChapterComplete()){
+      var chg = lg7ChapterGoals();
+      LG7.report = {chapter: LG7.chapter, stars: lg7Stars(), goals: chg ? chg.goals.length : 0, hintsUsed: LG7.hintsUsed};
+    }
+  }
+  return true;
+}
+function lg8RestoreFromSave(){
+  var saved = null;
+  try{ saved = loadSave(); }catch(e){}
+  if(!saved) return false;
+  if(saved.caseId && S.caseId && saved.caseId !== S.caseId) return false;
+  return lg8Apply(saved);
+}
+function lg8BootParty(){
+  /* On a fresh page load, prefill the setup form + S from the saved party, so
+     openBrief's form-read restores the same party instead of clobbering it
+     with the form defaults (the v7 reload bug). An invite link wins for the
+     room code: buildHome (registered earlier) runs after this at boot, and
+     the DOMContentLoaded re-run below skips the room when an invite is in
+     the URL. A deliberate form edit by the player also wins, because the
+     boot prefill only fills what is still empty/default at load time. */
+  var saved = null;
+  try{ saved = loadSave(); }catch(e){}
+  if(!saved) return false;
+  var inv = null;
+  try{ inv = parseInvite(); }catch(e){}
+  if(saved.name){ S.name = saved.name; var ne = $("player-name"); if(ne && !ne.value) ne.value = saved.name; }
+  if(saved.role){ S.role = saved.role; var re2 = $("player-role"); if(re2) re2.value = saved.role; }
+  if(saved.size){ S.size = saved.size; var se2 = $("team-size"); if(se2) se2.value = String(saved.size); }
+  if(saved.room && !(inv && inv.room)){
+    S.room = saved.room;
+    var rc3 = $("room-code"); if(rc3) rc3.textContent = saved.room;
+    var jc = $("join-code"); if(jc && !jc.value) jc.value = saved.room;
+  }
+  return true;
+}
+try{ lg8BootParty(); }catch(e){}
+document.addEventListener("DOMContentLoaded", function(){ try{ lg8BootParty(); }catch(e){} });
 var enterCase0 = enterCase;
 enterCase = function(){
   enterCase0();
-  var saved = null;
-  try{ saved = loadSave(); }catch(e){}
-  if(saved && saved.caseId === S.caseId && saved.lg7){
-    lg7Fresh();
-    LG7.chapter = saved.lg7.chapter || 1; LG7.proved = saved.lg7.proved || {};
-    LG7.links = saved.lg7.links || []; LG7.chat = saved.lg7.chat || [];
-  } else {
-    lg7Fresh();
-  }
+  var restored = false;
+  try{
+    var saved = loadSave();
+    if(saved && saved.caseId === S.caseId && (saved.lg8 || saved.lg7)) restored = lg8Apply(saved);
+  }catch(e){}
+  if(!restored) lg7Fresh();
   var st = $("stage"); if(st) st.classList.add("vp-mode");
   var jw = $("joywrap"); if(jw) jw.classList.add("hidden");
   setZoom7(1);
+  vp7(LG7.viewRoom);
   tab7("scene"); renderAll7(); brief7();
 };
 
@@ -4784,6 +4982,17 @@ if(!window.__LG7_BOUND__){
       else { LG7.slotA = id; LG7.slotB = null; }
       renderBoard7();
     }
+    else if(act === "board-locked"){
+      var lid = t.getAttribute("data-id");
+      var cev = null; var cc2 = C(); if(cc2) cc2.ev.forEach(function(x){ if(x.id === lid) cev = x; });
+      if(cev && !lg7RoleCan(lid)){
+        LG7.boardFeedback = "<span class='fb-bad'>That clue is sealed for another role \u2014 ask the " + esc(ROLE7[lg7RoleOf(lid)] || "holder") + " to examine and share it.</span>";
+      } else if(cev){
+        LG7.boardFeedback = "<span class='fb-bad'>Not examined yet \u2014 find and examine \u201C" + esc(cev.label) + "\u201D in the Scene first, then link it here.</span>";
+      }
+      renderBoard7();
+    }
+    else if(act === "brief-play"){ playBrief7(); }
     else if(act === "board-link"){ link7(LG7.slotA, LG7.slotB); }
     else if(act === "board-clear"){ LG7.slotA = null; LG7.slotB = null; renderBoard7(); }
     else if(act === "board-next"){ nextChapter7(); }
@@ -4795,7 +5004,18 @@ if(!window.__LG7_BOUND__){
     else if(act === "vp"){ vp7(parseInt(t.getAttribute("data-room"), 10) || 0); }
     else if(act === "vp-zoom-in"){ setZoom7(LG7.zoom + 0.25); }
     else if(act === "vp-zoom-out"){ setZoom7(LG7.zoom - 0.25); }
-    else if(act === "vp-zoom-reset"){ setZoom7(1); }
+    else if(act === "vp-zoom-reset"){ resetView7(); }
+  });
+  document.addEventListener("keydown", function(e){
+    var tag = (e.target && e.target.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    var v3 = $("view-3d"); if(!v3 || v3.classList.contains("hidden")) return;
+    if(LG7.tab !== "scene") return;
+    var kk = e.code || "";
+    if(kk === "KeyA" || kk === "ArrowLeft"){ if(LG7.viewRoom > 0) vp7(LG7.viewRoom - 1); }
+    else if(kk === "KeyD" || kk === "ArrowRight"){ vp7(LG7.viewRoom + 1); }
+    else if(kk === "KeyW" || kk === "ArrowUp"){ setZoom7(LG7.zoom + 0.25); }
+    else if(kk === "KeyS" || kk === "ArrowDown"){ setZoom7(LG7.zoom - 0.25); }
   });
   document.addEventListener("keydown", function(e){
     if(e.key === "Enter" && document.activeElement && document.activeElement.id === "chat-input"){
@@ -4851,6 +5071,12 @@ window.__LG7__ = {
   viewRoom: function(){ return LG7.viewRoom; }, zoom: function(){ return LG7.zoom; }
 };
 if(window.__LG3D__) window.__LG3D__.lg7 = window.__LG7__;
+window.__LG8__ = {
+  LG7: LG7, S: S, applySave: lg8Apply, restoreFromSave: lg8RestoreFromSave,
+  bootParty: lg8BootParty, playBrief: playBrief7, brief7: brief7,
+  setZoom: setZoom7, resetView: resetView7
+};
+if(window.__LG3D__) window.__LG3D__.lg8 = window.__LG8__;
 
 })();
 
